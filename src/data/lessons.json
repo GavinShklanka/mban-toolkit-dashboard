@@ -1,0 +1,376 @@
+[
+  {
+    "course": "5510",
+    "lesson_number": 1,
+    "title": "What is an AI Agent?",
+    "deck_label": "What's AI Agent",
+    "slide_count": 17,
+    "summary": "Traces the history of AI agents from early academic definitions to the 2023 ReAct breakthrough that changed everything. Establishes what \"agentic AI\" actually means versus older AI concepts.",
+    "teaching_points": [
+      "AI agents are autonomous systems that perceive their environments, pursue goals over time, and adapt to change — a definition from Russell & Norvig (1995) that still holds.",
+      "The field divides into Pre-ReAct and ReAct eras. The 2023 ReAct paper (Shunyu Yao, Princeton/Google) unified reasoning and acting in a single loop, making practical agents buildable.",
+      "ReAct architecture requires LLMs to output tool messages in a specific format — Thought → Action → Observation — enabling structured agent behavior.",
+      "Scale matters: Craig Reynolds' 1986 'boids' showed that simple agent rules produce emergent behavior greater than the sum of their parts. Multi-agent systems follow the same principle.",
+      "After 2023, a wave of platforms (LangChain, LangGraph, CrewAI, AutoGen) emerged all building on ReAct fundamentals — so understanding ReAct means understanding all of them."
+    ],
+    "related_methods": ["ReAct Architecture", "Agent Loop", "Multi-Agent Systems"],
+    "common_confusion": "ReAct is not a framework — it's an architecture pattern. LangChain and LangGraph implement it. Learning ReAct means you can reason about any agent platform."
+  },
+  {
+    "course": "5510",
+    "lesson_number": 2,
+    "title": "LLM Foundations for Agent Builders",
+    "deck_label": "Good-to-Know Foundations",
+    "slide_count": 19,
+    "summary": "What you need to know about how LLMs work before building agents — training stages, reasoning vs acting, and why token prediction gives rise to apparently intelligent behavior.",
+    "teaching_points": [
+      "LLMs go through pre-training (learning language patterns from massive text corpora) and post-training (fine-tuning via RLHF/DPO to be helpful and aligned). You interact with post-trained models.",
+      "Reasoning in an LLM emerges from training — it is not explicit logic. When an LLM 'reasons', it is generating likely next tokens based on patterns, not running a theorem prover.",
+      "Acting (the 'Act' in ReAct) means outputting structured tool calls. The LLM knows when to call a tool because its output format is constrained: Thought → Action → Observation → repeat.",
+      "The ReAct loop: the LLM produces a Thought (reasoning step), then an Action (tool call), receives an Observation (tool result), and repeats until it produces a final Answer.",
+      "Knowing this helps you debug agents: if an agent loops infinitely, the LLM's reasoning chain is not converging; if it fails to call tools, the output format is wrong."
+    ],
+    "related_methods": ["ReAct Architecture", "Agent Loop", "LLM Chaining"],
+    "common_confusion": "Post-training alignment doesn't mean the model 'understands' — it means its outputs are shaped to be useful and safe. The underlying mechanism is still next-token prediction."
+  },
+  {
+    "course": "5510",
+    "lesson_number": 3,
+    "title": "Building with LangChain",
+    "deck_label": "Intro to LangChain",
+    "slide_count": 32,
+    "summary": "Practical introduction to LangChain's ecosystem: how Python packages, virtual environments, API keys, and the LCEL (LangChain Expression Language) fit together to build agent pipelines.",
+    "teaching_points": [
+      "LangChain is a Python package that wraps LLM providers (OpenAI, Anthropic, etc.) with a unified interface for building chains, tools, and agents. Install via pip in a virtual environment.",
+      "API keys are credentials passed as environment variables (never hardcoded). LangChain reads them via os.getenv() or a .env file. Always rotate exposed keys.",
+      "LCEL (LangChain Expression Language) uses the pipe operator | to chain components: prompt | model | output_parser. This is the core composition pattern.",
+      "RAG (Retrieval-Augmented Generation) is the most common LangChain pattern: load documents → chunk → embed → store in vector DB → retrieve on query → pass to LLM as context.",
+      "The three main components to know: Prompts (templates), Models (LLM wrappers), and Tools (functions the agent can call). Everything else builds on these."
+    ],
+    "related_methods": ["LLM Chaining", "RAG Patterns", "Agent Workflow Design"],
+    "common_confusion": "LangChain's RAG implementations all follow the same core pattern: retrieve then augment. The various 'RAG variants' (HyDE, Hybrid RAG, etc.) are optimizations of retrieval quality, not different architectures."
+  },
+  {
+    "course": "5510",
+    "lesson_number": 4,
+    "title": "Middleware & Tool Integration",
+    "deck_label": "Middleware",
+    "slide_count": 11,
+    "summary": "Middleware is a LangChain-specific mechanism (not part of ReAct) that lets you intercept and modify agent behavior at each step. Key for control, logging, and safety guardrails.",
+    "teaching_points": [
+      "Middleware is a LangChain abstraction (not in the original ReAct paper) that sits between steps in an agent's execution, allowing interception and modification of inputs/outputs.",
+      "Built-in middleware handles common cases (rate limiting, retry logic, tracing). Custom middleware lets you implement any control logic: content filtering, logging, human approval gates.",
+      "Execution order matters: middleware is applied in the order it is passed. This resembles middleware stacks in web frameworks (Express, Django).",
+      "Middleware is only available in LangChain and Microsoft's agent framework — not CrewAI or AutoGen. It's a LangChain-specific design pattern.",
+      "Use middleware for observability: wrapping agent calls with logging middleware is how you build a trace of every step for debugging or governance."
+    ],
+    "related_methods": ["Middleware (Built-in and Custom)", "HITL Control", "Agent Evaluation"],
+    "common_confusion": "Middleware is not the same as tools. Tools are what the agent calls to act on the world. Middleware wraps the agent's execution pipeline itself."
+  },
+  {
+    "course": "5510",
+    "lesson_number": 5,
+    "title": "Advanced LangChain: RAG & Memory",
+    "deck_label": "Advanced LangChain",
+    "slide_count": 26,
+    "summary": "Deep dive into RAG patterns, short-term and long-term memory, and HITL control in single-agent systems. Also covers structured output schemas for tools.",
+    "teaching_points": [
+      "Advanced RAG: the core pattern (retrieve → augment → generate) stays constant across all variants. Hybrid RAG combines vector search with keyword search (BM25) for better recall.",
+      "Short-term memory = the conversation window the LLM can see. Long-term memory = persisted storage retrieved by similarity search. In 2026, long-term memory techniques are still maturing.",
+      "HITL (Human-in-the-Loop) in LangChain: interrupt the agent chain at a checkpointed step, surface the agent's proposed action to a human, and resume only after approval.",
+      "Structured output schemas force the LLM to return JSON matching a Pydantic model. This is how you build reliable tool integrations — instead of parsing free text, you validate structured data.",
+      "Multimodality: passing images, audio, or documents to the LLM as context alongside text. The agent can then reason about non-text inputs. Supported in GPT-4o and Claude."
+    ],
+    "related_methods": ["RAG Patterns", "Short-Term Memory", "Long-Term Memory", "HITL Control"],
+    "common_confusion": "RAG is often described as 'dead' in favor of long-context models. But long-context models still benefit from RAG for cost efficiency and retrieval precision — the two approaches complement each other."
+  },
+  {
+    "course": "5510",
+    "lesson_number": 6,
+    "title": "Intro to LangGraph",
+    "deck_label": "Intro to LangGraph",
+    "slide_count": 17,
+    "summary": "LangGraph extends LangChain with graph-based orchestration: nodes (agent steps), edges (transitions), and stateful state objects that persist across the entire workflow.",
+    "teaching_points": [
+      "LangGraph models agent workflows as a directed graph: nodes are processing steps (LLM calls, tool calls, conditions), edges define transitions between nodes.",
+      "The key insight: graphs let you represent branching, looping, and parallel execution explicitly — things that are awkward to express as a linear chain.",
+      "Workflow → Agentic Workflow → Agent: a Workflow is a fixed sequence; an Agentic Workflow uses an LLM to decide transitions; an Agent fully controls its own execution path.",
+      "SubGraphs as Nodes: you can nest a compiled graph inside a node of a parent graph. This is how you build modular multi-agent systems — each agent is a subgraph.",
+      "The Graph API has three parts: Nodes (define), Edges (connect), Compilation (build). Compile the graph once, then invoke it with a state object."
+    ],
+    "related_methods": ["Stateful Graph Orchestration", "Agent Workflow Design", "Multi-Agent Systems"],
+    "common_confusion": "LangGraph is not a replacement for LangChain — it extends it. LangGraph handles the orchestration layer (when to call what); LangChain handles the component layer (how to call it)."
+  },
+  {
+    "course": "5510",
+    "lesson_number": 7,
+    "title": "Advanced LangGraph",
+    "deck_label": "Advanced LangGraph",
+    "slide_count": 9,
+    "summary": "Production-grade LangGraph: app structure for local deployment, interrupt functions for fine-grained human control, and integrating LangGraph with a chat UI.",
+    "teaching_points": [
+      "LangGraph app structure for local deployment: a compiled graph + a FastAPI server + a LangGraph Studio UI. The studio lets you visualize graph execution in real time.",
+      "Interrupts are more flexible than HITL: instead of a binary pause/resume, interrupts let you inject values, modify state, or choose a different execution path at any node.",
+      "Super-steps: in LangGraph, nodes in the same super-step execute in parallel. This is how you build fan-out/fan-in patterns for concurrent agent execution.",
+      "Persistence: LangGraph checkpointers save state between steps. This enables long-running agents that can be paused and resumed, even across process restarts.",
+      "Agent Chat UI: LangGraph integrates with streaming front-ends. The agent streams tokens as it generates, giving the user real-time feedback rather than waiting for the full response."
+    ],
+    "related_methods": ["Stateful Graph Orchestration", "Super-Steps", "Interrupt Functions", "HITL Control"],
+    "common_confusion": "Interrupts and HITL are related but different: HITL is a design pattern (human reviews agent output); interrupts are the LangGraph mechanism that implements it — and more."
+  },
+  {
+    "course": "5510",
+    "lesson_number": 8,
+    "title": "Deep Agents & Frontier Topics",
+    "deck_label": "Deep Agents & Misc",
+    "slide_count": 13,
+    "summary": "Frontier architectures: Deep Agent systems with subagents, agent skills, multi-modal agents, and the open research problems in long-term memory and agent reliability.",
+    "teaching_points": [
+      "Deep Agent architecture: a main agent delegates to specialized subagents. The main agent handles high-level planning and routing; subagents handle domain-specific tasks. This is how production systems scale.",
+      "Agent Skills (Anthropic's term): the agent calls a tool to load a 'skill' — a bundle of instructions and capabilities — dynamically. Enables agents to acquire new capabilities at runtime.",
+      "Multi-modal agents: agents that can receive images, audio, and documents, not just text. The agent reasons across modalities to plan and act — e.g., screenshot → identify UI element → click.",
+      "Long-term memory research frontier: current approaches use vector DBs for semantic retrieval, but temporal ordering, memory consolidation, and forgetting are still unsolved.",
+      "The hardest open problems: agents that reliably know when to stop, agents that catch their own errors, and agents that can be trusted with high-stakes decisions without supervision."
+    ],
+    "related_methods": ["Multi-Agent Systems", "Deep Agents", "Long-Term Memory", "Agent Evaluation"],
+    "common_confusion": "Multi-agent ≠ better. Adding more agents increases complexity and failure modes. Use the minimal agent design that solves the problem reliably."
+  },
+  {
+    "course": "5520",
+    "lesson_number": 1,
+    "title": "Data Understanding & Storytelling",
+    "deck_label": "Day 2 — Regression Foundations",
+    "slide_count": 92,
+    "summary": "Why good analytics starts with good data visualization. Covers EDA, choosing the right chart, and how data presentation choices affect the conclusions your audience draws.",
+    "teaching_points": [
+      "Good data analytics is good storytelling. Before running any model, ask: what question am I answering, and for whom?",
+      "A simple picture can tell a powerful story. Complexity in a chart is often a sign of unclear thinking, not rigorous analysis.",
+      "With smaller populations, rates are more volatile — don't confuse variance with signal. Always contextualize metrics by population size.",
+      "Pre-attentive attributes (color, size, position) guide the reader's eye. Use them deliberately to highlight what matters, not to decorate.",
+      "EDA is not optional. Models built without exploratory analysis routinely fail in predictable ways — outliers, data entry errors, and distribution skew that should have been caught first."
+    ],
+    "related_methods": ["Multiple Linear Regression", "Hypothesis Testing"],
+    "common_confusion": "EDA ≠ descriptive statistics. Summary stats (mean, std) collapse distribution shape. Always plot your data before summarizing it numerically."
+  },
+  {
+    "course": "5520",
+    "lesson_number": 2,
+    "title": "Regression Analysis in Practice",
+    "deck_label": "Day 3 — Regression Analysis",
+    "slide_count": 113,
+    "summary": "Hands-on regression: building models in R, interpreting coefficients, testing significance, evaluating fit, and understanding when regression predictions are reliable.",
+    "teaching_points": [
+      "Multiple linear regression: y = β₀ + β₁x₁ + ... + βₙxₙ + ε. Each βᵢ is the expected change in y for a one-unit increase in xᵢ, holding other variables constant.",
+      "Significance testing via t-tests and F-test: the t-test evaluates each coefficient; the F-test evaluates the model as a whole. Both are needed for a complete picture.",
+      "Standardized coefficients (beta weights) let you compare the relative importance of predictors measured on different scales.",
+      "Prediction intervals vs confidence intervals: CI estimates where the mean response falls; PI estimates where a single new observation falls. PIs are always wider.",
+      "Train-test split: always evaluate prediction performance on held-out data you did not use for fitting. In-sample R² is flattering; out-of-sample RMSE is honest."
+    ],
+    "related_methods": ["Multiple Linear Regression", "Hypothesis Testing", "Train-Test Split"],
+    "common_confusion": "R² measures how well the model fits training data, not how well it predicts. A high R² with poor out-of-sample predictions means you overfit."
+  },
+  {
+    "course": "5560",
+    "lesson_number": 1,
+    "title": "Supervised Learning Foundations",
+    "deck_label": "Supervised Learning I",
+    "slide_count": 8,
+    "summary": "The conceptual backbone of MBAN 5560: bias-variance tradeoff, parametric vs nonparametric models, and systematic model selection via grid search and cross-validation.",
+    "teaching_points": [
+      "Bias-variance tradeoff: simple models underfit (high bias), complex models overfit (high variance). The goal is finding the sweet spot on the complexity axis for your data.",
+      "Parametric models (linear regression, logistic regression) assume a functional form; nonparametric models (kNN, trees) let the data define the shape. Parametric models are more interpretable but less flexible.",
+      "Grid search: systematically evaluate all combinations of hyperparameter values on a validation set. Computationally expensive but exhaustive.",
+      "Cross-validation: split data into k folds, train on k-1 folds, validate on the held-out fold, rotate k times. Averages performance across folds for a more robust estimate than a single split.",
+      "The overfitting diagnostic: training error keeps dropping as complexity increases; validation error eventually rises. The minimum of the validation curve is your target complexity."
+    ],
+    "related_methods": ["Grid Search + Cross-Validation", "Bootstrap Resampling", "kNN"],
+    "common_confusion": "Cross-validation selects hyperparameters (model selection); the test set evaluates the final model (model assessment). Never use the test set for selection — that is data leakage."
+  },
+  {
+    "course": "5560",
+    "lesson_number": 2,
+    "title": "kNN, Clustering & Resampling",
+    "deck_label": "Supervised Learning II",
+    "slide_count": 23,
+    "summary": "k-Nearest Neighbors for classification and regression, K-means and DBSCAN for clustering, and bootstrap resampling for uncertainty quantification.",
+    "teaching_points": [
+      "kNN classifies a new point by finding the k nearest training points (by distance) and taking a majority vote. For regression, it averages their values.",
+      "Choosing k: small k = low bias, high variance (memorizes noise); large k = high bias, low variance (over-smooths). Use cross-validation to select k.",
+      "K-means clustering: assign points to the nearest centroid, recompute centroids, repeat until convergence. Results depend on initialization — run multiple times with different seeds.",
+      "Bootstrap: resample with replacement from your training data B times, fit a model each time, aggregate results. Gives you an estimate of model variance without needing more data.",
+      "DBSCAN identifies clusters as dense regions, automatically detects outliers as noise points, and doesn't require you to pre-specify the number of clusters."
+    ],
+    "related_methods": ["k-Nearest Neighbors (kNN)", "K-Means Clustering", "DBSCAN", "Bootstrap Resampling"],
+    "common_confusion": "kNN's weakness is scale sensitivity — features on larger scales dominate the distance calculation. Always normalize features before running kNN."
+  },
+  {
+    "course": "5560",
+    "lesson_number": 3,
+    "title": "Decision Trees & Ensemble Methods",
+    "deck_label": "Decision Trees",
+    "slide_count": 21,
+    "summary": "CART trees, the Gini impurity criterion, and how bagging and boosting turn weak trees into powerful ensemble models (Random Forest, GBM, XGBoost).",
+    "teaching_points": [
+      "CART splits each node by finding the variable and threshold that minimizes Gini impurity (classification) or MSE (regression) in the resulting child nodes.",
+      "Gini impurity G ≈ 0 means a node is pure (all one class); G = 0.5 means perfectly mixed. At each split, CART finds the split that minimizes the weighted average Gini of children.",
+      "Single trees overfit badly. The fix: ensembles. Bagging (Random Forest) trains many trees on bootstrap samples and averages. Boosting (GBM, XGBoost) trains trees sequentially to correct prior errors.",
+      "Random Forest adds feature randomness: each tree only sees a random subset of features at each split. This de-correlates the trees, reducing ensemble variance.",
+      "XGBoost is gradient boosting with regularization, parallelization, and missing-value handling built in. It dominates tabular data competitions for a reason."
+    ],
+    "related_methods": ["CART", "Random Forest", "GBM (Gradient Boosting Machine)", "XGBoost", "Bagging"],
+    "common_confusion": "Random Forest and Gradient Boosting both use trees, but differently: RF trains trees independently and averages; GBM trains trees sequentially where each corrects the last."
+  },
+  {
+    "course": "5560",
+    "lesson_number": 4,
+    "title": "Neural Networks & Deep Learning",
+    "deck_label": "ANN Basics",
+    "slide_count": 22,
+    "summary": "From single-layer perceptrons to deep networks: how ANNs approximate arbitrary functions, the role of activation functions, and backpropagation as the learning algorithm.",
+    "teaching_points": [
+      "An ANN is a layered function: input layer → hidden layers → output layer. Each neuron applies a weighted sum of its inputs followed by a nonlinear activation function.",
+      "Activation functions introduce nonlinearity that lets the network approximate complex functions. ReLU (max(0,x)) is the standard choice for hidden layers; softmax for multi-class output.",
+      "Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule backward through the network. Gradient descent then updates weights.",
+      "Architecture choices drive performance: depth (more layers = more abstract features), width (more neurons = more capacity), and regularization (dropout, L2) control overfitting.",
+      "Deep learning (CNNs for images, RNNs/LSTMs for sequences, Transformers for text) applies the same ANN principle with architectures matched to the data's structure."
+    ],
+    "related_methods": ["Neural Networks", "Gradient Descent Variants", "CNN", "RNN", "LSTM"],
+    "common_confusion": "More layers ≠ better. Very deep networks suffer from vanishing gradients (signals shrink to zero during backprop). Residual connections (ResNets) solve this."
+  },
+  {
+    "course": "5800",
+    "lesson_number": 1,
+    "title": "Bias, Reasoning & Motivated Cognition",
+    "deck_label": "Thacker Deck 2 — Responsible AI",
+    "slide_count": 51,
+    "summary": "Why humans make biased decisions — and why AI inherits and amplifies those biases. Covers Kahneman's System 1/2 thinking, motivated reasoning, and cognitive bias taxonomy.",
+    "teaching_points": [
+      "Kahneman's System 1/2: System 1 is fast, automatic, associative — handles routine decisions. System 2 is slow, deliberate, logical — handles novel problems. Most of the time, System 1 runs.",
+      "Motivated reasoning: we construct justifications for conclusions we already want to reach. This is particularly dangerous when evaluating AI outputs that confirm our priors.",
+      "AI systems encode the biases of their training data. Data bias, algorithmic bias, and deployment bias are distinct failure modes that require different interventions.",
+      "Anchoring bias: the first piece of information encountered disproportionately influences all subsequent judgments. AI recommendations become anchors that human reviewers may not sufficiently adjust.",
+      "The defend-then-critique framework: force yourself to defend a position you disagree with before critiquing it. This is the course's primary methodology for building intellectual flexibility."
+    ],
+    "related_methods": ["Bias Identification in AI Systems", "Motivated Reasoning Self-Analysis"],
+    "common_confusion": "Bias in AI is not just a 'fairness' problem — it is a reliability problem. A biased model is an inaccurate model for the populations that are underrepresented in training data."
+  },
+  {
+    "course": "5800",
+    "lesson_number": 2,
+    "title": "Ethics Frameworks & Governance",
+    "deck_label": "Week 4 — Governance & Ethics",
+    "slide_count": 2,
+    "summary": "Classical ethics frameworks applied to AI governance: Aristotelian virtue ethics, Kantian deontology, and social contract theory, plus professional codes and regulatory frameworks.",
+    "teaching_points": [
+      "Virtue ethics asks: what would a person of good character do? Applied to AI: what values should be embedded in system design, not just compliance rules?",
+      "Kantian ethics (deontology): act only according to rules you could will to be universal laws. Applied to AI: never treat people merely as means to an end, even for greater aggregate benefit.",
+      "Social contract theory: legitimate authority derives from agreements among those it governs. AI governance requires consent and accountability to those affected by AI decisions.",
+      "Professional codes (like Sarbanes-Oxley, EU CSR directives) translate ethical principles into legal obligations. Knowing the law matters but does not substitute for ethical judgment.",
+      "The governance overlay in this toolkit: 8 risk dimensions (interpretability, validation, fairness, privacy, traceability, HITL need, deployment risk, misuse risk) operationalize ethics into checkable criteria."
+    ],
+    "related_methods": ["Bias Identification in AI Systems", "HITL Control"],
+    "common_confusion": "Compliance ≠ ethics. An action can be legal but unethical, and organizations that conflate them create governance gaps that eventually produce failures."
+  },
+  {
+    "course": "5502",
+    "lesson_number": 1,
+    "title": "Python Programming for Analytics",
+    "deck_label": null,
+    "slide_count": null,
+    "summary": "Building Python proficiency from the ground up: scripting, OOP, pandas data manipulation, and applying Python to run and replicate operations management experiments.",
+    "teaching_points": [
+      "Python scripting basics: variables, loops, functions, file I/O. Jupyter Notebooks are the primary medium for analytical Python work — mix code, output, and explanation in one document.",
+      "Object-oriented programming (OOP): classes bundle data (attributes) and behavior (methods). In analytics, you typically consume OOP designs (pandas DataFrames, sklearn models) more than build your own.",
+      "Pandas is the core tool for data manipulation: loading CSVs, filtering rows, grouping, aggregating, merging. The DataFrame is the central data structure.",
+      "Linear regression in Python via scikit-learn or statsmodels. The course used Python to replicate operations management experiments from academic papers.",
+      "Experimental replication methodology: reproduce a published result using the same data and method, then verify your code produces the same output. Builds rigor and catches implementation errors."
+    ],
+    "related_methods": ["Python Scripting", "Linear Regression in Python"],
+    "common_confusion": "No lecture slides extracted — content derived from project artifacts and assignment briefs."
+  },
+  {
+    "course": "5540",
+    "lesson_number": 1,
+    "title": "Linear Programming & Optimization",
+    "deck_label": null,
+    "slide_count": null,
+    "summary": "Prescriptive analytics: formulating LP problems, solving with Excel Solver and Gurobi, interpreting shadow prices, and understanding duality theory.",
+    "teaching_points": [
+      "LP formulation process: (1) define decision variables, (2) write the objective function, (3) write constraints, (4) add non-negativity. This sequence is the same for every problem.",
+      "Excel Solver and Gurobi both solve LPs, but Gurobi (Python) scales to large problems and supports integer programming out of the box. Excel Solver is for learning and small-scale use.",
+      "Shadow price (dual variable): the change in objective value per unit relaxation of a constraint. If the shadow price on a labor constraint is $5, adding one hour of labor increases profit by $5.",
+      "Sensitivity analysis: how much can a coefficient change before the optimal solution changes? The allowable range gives you the stability window for your recommendation.",
+      "Duality: every LP has a 'mirror' problem (the dual). Primal solution and dual solution give you the same optimal value. The dual variables are the shadow prices."
+    ],
+    "related_methods": ["Linear Programming", "Sensitivity Analysis", "Duality (Primal-Dual)"],
+    "common_confusion": "No lecture slides extracted — content derived from exam prep materials and assignment briefs (provisional reconstruction)."
+  },
+  {
+    "course": "5540",
+    "lesson_number": 2,
+    "title": "Integer Programming & Decision Analysis",
+    "deck_label": null,
+    "slide_count": null,
+    "summary": "When LP is not enough: binary and mixed-integer programming for yes/no decisions, plus decision analysis under uncertainty using expected monetary value and EVPI.",
+    "teaching_points": [
+      "Integer programming adds integrality constraints: decision variables must be integers (or binary). This makes problems NP-hard but models real binary decisions (build/don't build, hire/don't hire).",
+      "Binary IP applications: the knapsack problem (what to pack given weight limit), assignment problem (who does which task), transportation problem (how to route shipments).",
+      "Decision analysis under uncertainty: use a decision tree. Expected Monetary Value (EMV) = Σ(probability × payoff). Choose the branch with the highest EMV.",
+      "EVPI (Expected Value of Perfect Information) = EMV with perfect info − EMV without. It is the maximum you should pay for a forecast or study.",
+      "Multi-objective optimization: when you have two objectives (cost and quality), trace the Pareto frontier — no solution is strictly better on both dimensions. Decision-makers choose a point on the frontier."
+    ],
+    "related_methods": ["Binary Integer Programming", "Decision Analysis (EMV/EVPI)", "Multi-Objective Optimization"],
+    "common_confusion": "EMV maximization assumes risk neutrality. If the decision-maker is risk-averse, use utility theory — the utility of a payoff is not proportional to its dollar value."
+  },
+  {
+    "course": "5550",
+    "lesson_number": 1,
+    "title": "Relational Database Design",
+    "deck_label": null,
+    "slide_count": null,
+    "summary": "Building relational databases from scratch: ER modelling, normalization, schema design, and writing SQL queries to extract business intelligence from operational data.",
+    "teaching_points": [
+      "ER diagrams model business entities (Customer, Reservation, Ship) and the relationships between them (Customer MAKES Reservation) before any SQL is written.",
+      "Normalization removes redundancy: 1NF (no repeating groups), 2NF (no partial dependencies), 3NF (no transitive dependencies). Normalized schemas reduce update anomalies.",
+      "SQL query writing: SELECT, FROM, WHERE, JOIN, GROUP BY, HAVING, ORDER BY. Joins connect tables via foreign keys — understanding join types (INNER, LEFT, OUTER) is essential.",
+      "KPI computation via SQL: aggregate functions (COUNT, SUM, AVG, MAX) with GROUP BY. The Cruise Line project required computing occupancy rates, revenue per booking, and fleet utilization.",
+      "Schema design decisions have long-term consequences: a poorly designed schema makes queries harder, slower, and more error-prone. Getting the ER diagram right before building saves significant rework."
+    ],
+    "related_methods": ["SQL Relational DB Design", "ER Diagram Construction", "KPI Computation via SQL"],
+    "common_confusion": "No lecture slides extracted — content derived from the Cruise Line Database Project and SQL assignment artifacts."
+  },
+  {
+    "course": "5570",
+    "lesson_number": 1,
+    "title": "Financial Risk & Monte Carlo Simulation",
+    "deck_label": null,
+    "slide_count": null,
+    "summary": "Quantifying uncertainty in financial decisions using @RISK Monte Carlo simulation, scenario analysis, and pro forma forecasting under uncertain assumptions.",
+    "teaching_points": [
+      "@RISK Monte Carlo: replace point estimates in Excel models with probability distributions. Run thousands of simulations to get a distribution of outcomes, not a single number.",
+      "Pro forma financial statements: income statement, balance sheet, and cash flow statement projected forward using assumptions. The 3-statement dynamic model links all three.",
+      "NPV under uncertainty: run Monte Carlo on the discount rate and cash flow assumptions to get a distribution of NPVs. The probability that NPV > 0 is your go/no-go confidence.",
+      "Decision trees (Precision Tree): model sequential decisions under uncertainty. At each node, choose the branch that maximizes expected utility — same logic as EMV in MBAN 5540.",
+      "Risk communication: a distribution of outcomes is harder to communicate than a single number. Translate to managerial language: 'there is a 20% chance of losing more than $1M'."
+    ],
+    "related_methods": ["Monte Carlo Simulation", "Decision Analysis (EMV/EVPI)", "Pro Forma Forecasting"],
+    "common_confusion": "No lecture slides extracted — content derived from course outline and assignment briefs."
+  },
+  {
+    "course": "5570",
+    "lesson_number": 2,
+    "title": "Equity Research & AI-Assisted Analysis",
+    "deck_label": null,
+    "slide_count": null,
+    "summary": "Equity research methodology: fundamental analysis, AI-assisted financial analysis, and the critical evaluation framework for knowing when to trust (and when to override) AI outputs.",
+    "teaching_points": [
+      "Equity research process: company overview → industry analysis → financial statement analysis → valuation → investment recommendation. Each step informs the next.",
+      "Valuation models: DCF (discounted cash flow), comparable company analysis (comps), and precedent transaction analysis. DCF requires forecasting free cash flows and a discount rate.",
+      "AI-assisted analysis: use LLMs to accelerate literature review, earnings call summarization, and sentiment analysis. But AI pattern recognition can miss structural breaks and economic reasoning.",
+      "The AI evaluation framework (from course): (1) verify AI-generated claims against source data, (2) stress-test AI recommendations with opposing scenarios, (3) retain human judgment for non-routine decisions.",
+      "Event study methodology: measure the abnormal return around a corporate event (earnings announcement, M&A). Separates event impact from market-wide noise using the CAPM residual."
+    ],
+    "related_methods": ["Equity Research Methodology", "NLP Sentiment Analysis", "ML Time Series Forecasting"],
+    "common_confusion": "AI-assisted analysis does not replace judgment — it accelerates research on routine tasks. The value-add is in the critical evaluation layer on top, not the AI output itself."
+  }
+]
