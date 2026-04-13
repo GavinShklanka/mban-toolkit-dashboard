@@ -8,6 +8,7 @@ import SolutionRouter from './pages/SolutionRouter'
 import Refresh from './pages/Refresh'
 import Governance from './pages/Governance'
 import Evidence from './pages/Evidence'
+import AskMBAN from './pages/AskMBAN'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/refresh" element={<Refresh />} />
           <Route path="/governance" element={<Governance />} />
           <Route path="/evidence" element={<Evidence />} />
+          <Route path="/ask" element={<AskMBAN />} />
         </Routes>
       </Layout>
     </HashRouter>
