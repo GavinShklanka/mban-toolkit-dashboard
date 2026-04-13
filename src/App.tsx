@@ -10,6 +10,7 @@ import Refresh from './pages/Refresh'
 import Governance from './pages/Governance'
 import Evidence from './pages/Evidence'
 import AskMBAN from './pages/AskMBAN'
+import ModelLab from './pages/ModelLab'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           {/* Legacy redirect support */}
           <Route path="/evidence" element={<Evidence />} />
           <Route path="/ask" element={<AskMBAN />} />
+          <Route path="/model-lab" element={<ModelLab />} />
         </Routes>
       </Layout>
     </HashRouter>

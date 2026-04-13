@@ -7,7 +7,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=EuBBz3bI-aA",
     "duration_min": 6,
-    "description": "Visual intuition for the bias-variance tradeoff with concrete examples."
+    "description": "Visual intuition for the bias-variance tradeoff with concrete examples.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_cross_validation",
@@ -17,7 +18,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=fSytzGwwBVw",
     "duration_min": 6,
-    "description": "Clear walkthrough of k-fold cross-validation and why it gives honest estimates."
+    "description": "Clear walkthrough of k-fold cross-validation and why it gives honest estimates.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_random_forest",
@@ -27,7 +29,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ",
     "duration_min": 9,
-    "description": "How bagging and random feature selection combine to build robust ensembles."
+    "description": "How bagging and random feature selection combine to build robust ensembles.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_logistic_regression",
@@ -37,7 +40,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=yIYKR4sgzI8",
     "duration_min": 8,
-    "description": "Logistic regression intuition with odds ratios and probability outputs."
+    "description": "Logistic regression intuition with odds ratios and probability outputs.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_knn",
@@ -47,7 +51,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=HVXime0nQeI",
     "duration_min": 5,
-    "description": "Simple visual walkthrough of how kNN classifies new points."
+    "description": "Simple visual walkthrough of how kNN classifies new points.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_bootstrap",
@@ -57,7 +62,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=Xz0x-8-cgaQ",
     "duration_min": 7,
-    "description": "Why bootstrapping works and how out-of-bag samples serve as a free test set."
+    "description": "Why bootstrapping works and how out-of-bag samples serve as a free test set.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_neural_networks",
@@ -67,7 +73,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=CqOfi41LfDw",
     "duration_min": 20,
-    "description": "Neural network fundamentals: forward pass, backpropagation, activation functions."
+    "description": "Neural network fundamentals: forward pass, backpropagation, activation functions.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_gradient_boosting",
@@ -77,7 +84,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=3CC4N4z3GJc",
     "duration_min": 15,
-    "description": "How gradient boosting sequentially corrects residuals to improve prediction."
+    "description": "How gradient boosting sequentially corrects residuals to improve prediction.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_svm",
@@ -87,7 +95,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=efR1C6CvhmE",
     "duration_min": 20,
-    "description": "Maximum margin classifiers, soft margins, and kernel tricks explained visually."
+    "description": "Maximum margin classifiers, soft margins, and kernel tricks explained visually.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_statquest_clustering",
@@ -97,7 +106,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=4b5d3muPQmA",
     "duration_min": 9,
-    "description": "K-means algorithm step-by-step with practical interpretation of cluster results."
+    "description": "K-means algorithm step-by-step with practical interpretation of cluster results.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_3b1b_backprop",
@@ -107,7 +117,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=tIeHLnjs5U8",
     "duration_min": 12,
-    "description": "Visual deep dive into how gradients flow backwards through neural network layers."
+    "description": "Visual deep dive into how gradients flow backwards through neural network layers.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_3b1b_transformers",
@@ -117,7 +128,8 @@
     "type": "video",
     "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
     "duration_min": 26,
-    "description": "Best visual explanation of the self-attention mechanism powering transformers."
+    "description": "Best visual explanation of the self-attention mechanism powering transformers.",
+    "usage_label": "Best quick visual refresher"
   },
   {
     "id": "r_langchain_docs",
@@ -126,7 +138,8 @@
     "author": "LangChain",
     "type": "docs",
     "url": "https://python.langchain.com/docs/introduction/",
-    "description": "Official docs for building chains, agents, and stateful workflows."
+    "description": "Official docs for building chains, agents, and stateful workflows.",
+    "usage_label": "Best for exam review"
   },
   {
     "id": "r_huggingface_nlp_course",
@@ -135,7 +148,8 @@
     "author": "Hugging Face",
     "type": "course",
     "url": "https://huggingface.co/learn/nlp-course/chapter1/1",
-    "description": "Free course covering transformers, fine-tuning, and the Hugging Face ecosystem."
+    "description": "Free course covering transformers, fine-tuning, and the Hugging Face ecosystem.",
+    "usage_label": "Best for comprehensive study"
   },
   {
     "id": "r_towards_ds_normalization",
@@ -144,7 +158,8 @@
     "author": "Towards Data Science",
     "type": "article",
     "url": "https://towardsdatascience.com/database-normalization-explained-53e60a651afe",
-    "description": "Step-by-step walkthrough of 1NF, 2NF, and 3NF with clear examples."
+    "description": "Step-by-step walkthrough of 1NF, 2NF, and 3NF with clear examples.",
+    "usage_label": "Best for deep reading"
   },
   {
     "id": "r_mode_sql_tutorial",
@@ -153,7 +168,8 @@
     "author": "Mode Analytics",
     "type": "interactive",
     "url": "https://mode.com/sql-tutorial/",
-    "description": "Interactive SQL practice from basic SELECT to advanced window functions."
+    "description": "Interactive SQL practice from basic SELECT to advanced window functions.",
+    "usage_label": "Best for hands-on practice"
   },
   {
     "id": "r_investopedia_montecarlo",
@@ -162,7 +178,8 @@
     "author": "Investopedia",
     "type": "article",
     "url": "https://www.investopedia.com/terms/m/montecarlosimulation.asp",
-    "description": "How Monte Carlo simulation is applied in financial risk and portfolio analysis."
+    "description": "How Monte Carlo simulation is applied in financial risk and portfolio analysis.",
+    "usage_label": "Best for deep reading"
   },
   {
     "id": "r_pandas_docs",
@@ -171,6 +188,7 @@
     "author": "pandas Development Team",
     "type": "docs",
     "url": "https://pandas.pydata.org/docs/user_guide/index.html",
-    "description": "Official pandas user guide covering DataFrames, indexing, groupby, and merging."
+    "description": "Official pandas user guide covering DataFrames, indexing, groupby, and merging.",
+    "usage_label": "Best for exam review"
   }
 ]

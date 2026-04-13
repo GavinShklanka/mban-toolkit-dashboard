@@ -88,5 +88,59 @@
     "topic_ids": ["t_5800_ethics","t_5800_bias","t_5800_mr"],
     "bridge_terms": ["fairness","accountability","transparency","bias","stakeholder","institutional","personal morality"],
     "one_liner": "Distinguish ethics (institutional) from morality (personal); use both to evaluate AI systems."
+  },
+  {
+    "id": "cf_optimization_heuristics",
+    "label": "Optimization Heuristics",
+    "description": "Practical techniques for finding good-enough solutions when exact optimization is intractable",
+    "core_tension": "Exactness vs tractability. Global optimum may be unreachable; heuristics trade precision for speed.",
+    "topic_ids": [],
+    "bridge_terms": ["greedy algorithm","local search","genetic algorithm","simulated annealing","branch and bound","approximation","feasibility","LP relaxation","integer programming","sensitivity analysis"],
+    "one_liner": "When exact optimization is too slow, heuristics trade a bit of optimality for a lot of practicality."
+  },
+  {
+    "id": "cf_bayesian_reasoning",
+    "label": "Bayesian Reasoning",
+    "description": "Updating beliefs with evidence using prior distributions and likelihood",
+    "core_tension": "Prior knowledge vs observed data. How much should new evidence change your belief?",
+    "topic_ids": [],
+    "bridge_terms": ["prior","posterior","likelihood","bayes theorem","naive bayes","conditional probability","bayesian network","belief updating","probability","evidence"],
+    "one_liner": "Bayesian thinking is about starting with a belief, seeing evidence, and rationally updating."
+  },
+  {
+    "id": "cf_simulation_uncertainty",
+    "label": "Simulation & Uncertainty",
+    "description": "Modeling systems with randomness to understand outcome distributions and make robust decisions",
+    "core_tension": "Point estimates vs distributions. A single prediction hides the range of what could happen.",
+    "topic_ids": [],
+    "bridge_terms": ["monte carlo","stochastic","random variable","probability distribution","confidence interval","simulation","sensitivity analysis","scenario analysis","uncertainty quantification","risk"],
+    "one_liner": "Simulation replaces single-point guesses with a full distribution of possible futures."
+  },
+  {
+    "id": "cf_dimensionality_reduction",
+    "label": "Dimensionality Reduction",
+    "description": "Compressing high-dimensional data into lower dimensions while preserving structure",
+    "core_tension": "Information retention vs complexity reduction. You lose something; the question is what matters.",
+    "topic_ids": [],
+    "bridge_terms": ["PCA","principal component analysis","variance explained","feature extraction","embedding","projection","compression","curse of dimensionality","latent space","eigenvalue"],
+    "one_liner": "Dimensionality reduction asks: what is the minimum representation that preserves what matters?"
+  },
+  {
+    "id": "cf_causal_inference",
+    "label": "Causal Inference",
+    "description": "Distinguishing correlation from causation to make valid interventional claims",
+    "core_tension": "Observation vs intervention. Seeing X and Y together doesn't mean X causes Y.",
+    "topic_ids": [],
+    "bridge_terms": ["confounding","counterfactual","A/B test","regression discontinuity","instrumental variable","selection bias","treatment effect","control group","randomization","causal graph"],
+    "one_liner": "Causal inference asks not just what happened, but what would have happened under a different action."
+  },
+  {
+    "id": "cf_recommendation_systems",
+    "label": "Recommendation Systems",
+    "description": "Predicting user preferences to surface relevant items from large catalogs",
+    "core_tension": "Exploration vs exploitation. Show users what they know they like, or discover new preferences?",
+    "topic_ids": [],
+    "bridge_terms": ["collaborative filtering","content-based","matrix factorization","user-item matrix","cold start","similarity","embedding","rating prediction","personalization","hybrid model"],
+    "one_liner": "Recommendation systems model the gap between what users know they want and what they might love."
   }
 ]

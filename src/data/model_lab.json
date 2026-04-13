@@ -1,0 +1,154 @@
+{
+  "tracks": [
+    {
+      "id": "classification",
+      "label": "Classification Lab",
+      "description": "Compare classification methods across evaluation, interpretability, and data requirements",
+      "icon": "🎯",
+      "methods": [
+        {
+          "id": "logistic_regression",
+          "name": "Logistic Regression",
+          "family": "Classification",
+          "analytics_level": "predictive",
+          "what_it_does": "Models probability of a binary outcome using a linear combination of features passed through a sigmoid function.",
+          "when_to_use": "When you need interpretable coefficients, have linearly separable classes, or need probability outputs.",
+          "evaluation_metric": "AUC-ROC, log-loss, accuracy",
+          "interpretability": "High — coefficients are directly interpretable as log-odds",
+          "data_requirements": "Works well on small to medium datasets; sensitive to multicollinearity",
+          "common_confusion": "Treating logistic regression as a classification algorithm that outputs a hard class, not a probability",
+          "course": "MBAN 5560",
+          "compare_tags": ["linear","probabilistic","interpretable"]
+        },
+        {
+          "id": "decision_tree",
+          "name": "Decision Tree",
+          "family": "Classification",
+          "analytics_level": "predictive",
+          "what_it_does": "Partitions feature space into rectangular regions using a series of binary splits on feature thresholds.",
+          "when_to_use": "When you need explainability, have categorical features, or want a model that doesn't require feature scaling.",
+          "evaluation_metric": "Accuracy, Gini impurity, information gain",
+          "interpretability": "Very high — tree diagram is directly readable by stakeholders",
+          "data_requirements": "Handles mixed types well; prone to overfitting without pruning",
+          "common_confusion": "Confusing a single decision tree with ensemble tree methods like Random Forest",
+          "course": "MBAN 5560",
+          "compare_tags": ["tree-based","interpretable","non-linear"]
+        },
+        {
+          "id": "random_forest",
+          "name": "Random Forest",
+          "family": "Ensemble",
+          "analytics_level": "ml_ai",
+          "what_it_does": "Aggregates predictions from many decorrelated decision trees trained on bootstrapped subsets of data and features.",
+          "when_to_use": "When prediction accuracy matters more than interpretability; robust to outliers and noisy features.",
+          "evaluation_metric": "OOB error, AUC-ROC, feature importance",
+          "interpretability": "Low to medium — feature importances exist but individual decisions are opaque",
+          "data_requirements": "Works well on medium to large datasets; robust to missing values",
+          "common_confusion": "Assuming bagging alone explains Random Forest — feature subsampling at each split is what creates decorrelation",
+          "course": "MBAN 5560",
+          "compare_tags": ["ensemble","tree-based","robust"]
+        },
+        {
+          "id": "gradient_boosting",
+          "name": "Gradient Boosting",
+          "family": "Ensemble",
+          "analytics_level": "ml_ai",
+          "what_it_does": "Builds an additive model by sequentially fitting shallow trees to the residuals (gradients) of previous trees.",
+          "when_to_use": "When you need top predictive performance on tabular data and have sufficient data to avoid overfitting.",
+          "evaluation_metric": "AUC-ROC, log-loss; early stopping monitors validation loss",
+          "interpretability": "Low — SHAP values can explain predictions post-hoc",
+          "data_requirements": "Sensitive to hyperparameters; requires tuning of learning rate, depth, n_estimators",
+          "common_confusion": "Conflating boosting (sequential, residual correction) with bagging (parallel, variance reduction)",
+          "course": "MBAN 5560",
+          "compare_tags": ["ensemble","boosting","high-performance"]
+        }
+      ]
+    },
+    {
+      "id": "optimization",
+      "label": "Optimization Lab",
+      "description": "Compare optimization formulations and solution methods for business decisions",
+      "icon": "⚙️",
+      "methods": [
+        {
+          "id": "linear_programming",
+          "name": "Linear Programming",
+          "family": "Mathematical Optimization",
+          "analytics_level": "prescriptive",
+          "what_it_does": "Optimizes a linear objective function subject to linear equality and inequality constraints.",
+          "when_to_use": "When decision variables are continuous and both the objective and constraints are linear.",
+          "evaluation_metric": "Optimal objective value, shadow prices, sensitivity ranges",
+          "interpretability": "High — dual variables (shadow prices) directly quantify constraint value",
+          "data_requirements": "Requires explicit formulation of objective and constraints; scales well with simplex method",
+          "common_confusion": "Applying LP when variables must be integer — LP relaxation may give fractional (infeasible) solutions",
+          "course": "MBAN 5540",
+          "compare_tags": ["continuous","exact","linear"]
+        },
+        {
+          "id": "integer_programming",
+          "name": "Integer Programming",
+          "family": "Mathematical Optimization",
+          "analytics_level": "prescriptive",
+          "what_it_does": "Extends LP by requiring some or all decision variables to take integer values, enabling binary yes/no decisions.",
+          "when_to_use": "When decisions are discrete: assign/not assign, open/close facility, select/reject project.",
+          "evaluation_metric": "Optimal integer objective, optimality gap, branch-and-bound nodes explored",
+          "interpretability": "High for formulation; computation is NP-hard in the worst case",
+          "data_requirements": "Same as LP but computationally much harder; heuristics or solvers needed for large instances",
+          "common_confusion": "Assuming you can round an LP relaxation solution to get a feasible integer solution — rounding can violate constraints",
+          "course": "MBAN 5540",
+          "compare_tags": ["discrete","exact","combinatorial"]
+        },
+        {
+          "id": "dynamic_programming",
+          "name": "Dynamic Programming",
+          "family": "Mathematical Optimization",
+          "analytics_level": "prescriptive",
+          "what_it_does": "Solves multi-stage decision problems by breaking them into overlapping subproblems and storing solutions.",
+          "when_to_use": "When a problem has optimal substructure and overlapping subproblems — sequential or staged decisions.",
+          "evaluation_metric": "Optimal value function, policy extraction",
+          "interpretability": "Medium — the recursion logic is clear but can be hard to communicate to non-technical audiences",
+          "data_requirements": "State space must be enumerable; curse of dimensionality limits scalability",
+          "common_confusion": "Confusing DP with greedy algorithms — DP considers all possibilities; greedy commits to locally optimal choices",
+          "course": "MBAN 5540",
+          "compare_tags": ["sequential","exact","recursive"]
+        }
+      ]
+    },
+    {
+      "id": "database_design",
+      "label": "Database Design Lab",
+      "description": "Compare data modeling approaches, normal forms, and schema design patterns",
+      "icon": "🗄️",
+      "methods": [
+        {
+          "id": "conceptual_modeling",
+          "name": "Conceptual Modeling (ERD)",
+          "family": "Database Design",
+          "analytics_level": "descriptive",
+          "what_it_does": "Captures entities, their attributes, and relationships at a business level — independent of implementation.",
+          "when_to_use": "At the start of database design to align with stakeholders before committing to a physical schema.",
+          "evaluation_metric": "Completeness of entity coverage, cardinality correctness, absence of redundancy",
+          "interpretability": "Very high — entity-relationship diagrams communicate directly with business users",
+          "data_requirements": "Requires domain knowledge; no data needed — it models business rules",
+          "common_confusion": "Confusing conceptual ERD (business-level) with logical or physical schema (implementation-level)",
+          "course": "MBAN 5550",
+          "compare_tags": ["design","conceptual","visual"]
+        },
+        {
+          "id": "normalization",
+          "name": "Normalization (1NF–3NF)",
+          "family": "Database Design",
+          "analytics_level": "descriptive",
+          "what_it_does": "Organizes relational tables to eliminate redundancy and update anomalies through normal form decomposition.",
+          "when_to_use": "During logical database design to ensure data integrity before physical implementation.",
+          "evaluation_metric": "Elimination of transitive and partial dependencies; update/insert/delete anomaly freedom",
+          "interpretability": "High — rules are systematic and auditable",
+          "data_requirements": "Requires a candidate key and functional dependency analysis of the data domain",
+          "common_confusion": "Over-normalizing to BCNF/4NF when 3NF is sufficient for most OLTP applications",
+          "course": "MBAN 5550",
+          "compare_tags": ["normalization","relational","integrity"]
+        }
+      ]
+    }
+  ]
+}
