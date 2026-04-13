@@ -1,0 +1,176 @@
+[
+  {
+    "id": "r_statquest_bias_variance",
+    "topic_ids": ["t_5560_bv","t_5560_overfit"],
+    "title": "StatQuest: Bias and Variance",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=EuBBz3bI-aA",
+    "duration_min": 6,
+    "description": "Visual intuition for the bias-variance tradeoff with concrete examples."
+  },
+  {
+    "id": "r_statquest_cross_validation",
+    "topic_ids": ["t_5560_cv"],
+    "title": "StatQuest: Cross Validation",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=fSytzGwwBVw",
+    "duration_min": 6,
+    "description": "Clear walkthrough of k-fold cross-validation and why it gives honest estimates."
+  },
+  {
+    "id": "r_statquest_random_forest",
+    "topic_ids": ["t_5560_rf","t_5560_boost"],
+    "title": "StatQuest: Random Forests",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ",
+    "duration_min": 9,
+    "description": "How bagging and random feature selection combine to build robust ensembles."
+  },
+  {
+    "id": "r_statquest_logistic_regression",
+    "topic_ids": ["t_5560_logreg"],
+    "title": "StatQuest: Logistic Regression",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=yIYKR4sgzI8",
+    "duration_min": 8,
+    "description": "Logistic regression intuition with odds ratios and probability outputs."
+  },
+  {
+    "id": "r_statquest_knn",
+    "topic_ids": ["t_5560_knn"],
+    "title": "StatQuest: K-Nearest Neighbors",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=HVXime0nQeI",
+    "duration_min": 5,
+    "description": "Simple visual walkthrough of how kNN classifies new points."
+  },
+  {
+    "id": "r_statquest_bootstrap",
+    "topic_ids": ["t_5560_bootstrap"],
+    "title": "StatQuest: Bootstrap Resampling",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=Xz0x-8-cgaQ",
+    "duration_min": 7,
+    "description": "Why bootstrapping works and how out-of-bag samples serve as a free test set."
+  },
+  {
+    "id": "r_statquest_neural_networks",
+    "topic_ids": ["t_5560_nn"],
+    "title": "StatQuest: Neural Networks",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=CqOfi41LfDw",
+    "duration_min": 20,
+    "description": "Neural network fundamentals: forward pass, backpropagation, activation functions."
+  },
+  {
+    "id": "r_statquest_gradient_boosting",
+    "topic_ids": ["t_5560_boost"],
+    "title": "StatQuest: Gradient Boosting",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=3CC4N4z3GJc",
+    "duration_min": 15,
+    "description": "How gradient boosting sequentially corrects residuals to improve prediction."
+  },
+  {
+    "id": "r_statquest_svm",
+    "topic_ids": ["t_5560_svm"],
+    "title": "StatQuest: Support Vector Machines",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=efR1C6CvhmE",
+    "duration_min": 20,
+    "description": "Maximum margin classifiers, soft margins, and kernel tricks explained visually."
+  },
+  {
+    "id": "r_statquest_clustering",
+    "topic_ids": ["t_5560_cluster"],
+    "title": "StatQuest: K-Means Clustering",
+    "author": "Josh Starmer",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=4b5d3muPQmA",
+    "duration_min": 9,
+    "description": "K-means algorithm step-by-step with practical interpretation of cluster results."
+  },
+  {
+    "id": "r_3b1b_backprop",
+    "topic_ids": ["t_5560_nn"],
+    "title": "3Blue1Brown: Backpropagation Calculus",
+    "author": "3Blue1Brown",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=tIeHLnjs5U8",
+    "duration_min": 12,
+    "description": "Visual deep dive into how gradients flow backwards through neural network layers."
+  },
+  {
+    "id": "r_3b1b_transformers",
+    "topic_ids": ["t_5560_nlp","t_5570_nlp_fin"],
+    "title": "3Blue1Brown: Attention in Transformers",
+    "author": "3Blue1Brown",
+    "type": "video",
+    "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
+    "duration_min": 26,
+    "description": "Best visual explanation of the self-attention mechanism powering transformers."
+  },
+  {
+    "id": "r_langchain_docs",
+    "topic_ids": ["t_5510_lc","t_5510_lg"],
+    "title": "LangChain + LangGraph Documentation",
+    "author": "LangChain",
+    "type": "docs",
+    "url": "https://python.langchain.com/docs/introduction/",
+    "description": "Official docs for building chains, agents, and stateful workflows."
+  },
+  {
+    "id": "r_huggingface_nlp_course",
+    "topic_ids": ["t_5560_nlp","t_5570_nlp_fin"],
+    "title": "Hugging Face NLP Course",
+    "author": "Hugging Face",
+    "type": "course",
+    "url": "https://huggingface.co/learn/nlp-course/chapter1/1",
+    "description": "Free course covering transformers, fine-tuning, and the Hugging Face ecosystem."
+  },
+  {
+    "id": "r_towards_ds_normalization",
+    "topic_ids": ["t_5550_norm"],
+    "title": "Database Normalization Explained",
+    "author": "Towards Data Science",
+    "type": "article",
+    "url": "https://towardsdatascience.com/database-normalization-explained-53e60a651afe",
+    "description": "Step-by-step walkthrough of 1NF, 2NF, and 3NF with clear examples."
+  },
+  {
+    "id": "r_mode_sql_tutorial",
+    "topic_ids": ["t_5550_sql","t_5550_kpi"],
+    "title": "Mode SQL Tutorial",
+    "author": "Mode Analytics",
+    "type": "interactive",
+    "url": "https://mode.com/sql-tutorial/",
+    "description": "Interactive SQL practice from basic SELECT to advanced window functions."
+  },
+  {
+    "id": "r_investopedia_montecarlo",
+    "topic_ids": ["t_5570_mc"],
+    "title": "Monte Carlo Simulation in Finance",
+    "author": "Investopedia",
+    "type": "article",
+    "url": "https://www.investopedia.com/terms/m/montecarlosimulation.asp",
+    "description": "How Monte Carlo simulation is applied in financial risk and portfolio analysis."
+  },
+  {
+    "id": "r_pandas_docs",
+    "topic_ids": ["t_5502_py"],
+    "title": "pandas Documentation",
+    "author": "pandas Development Team",
+    "type": "docs",
+    "url": "https://pandas.pydata.org/docs/user_guide/index.html",
+    "description": "Official pandas user guide covering DataFrames, indexing, groupby, and merging."
+  }
+]

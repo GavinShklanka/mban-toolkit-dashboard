@@ -1,0 +1,92 @@
+[
+  {
+    "id": "cf_model_selection",
+    "label": "Model Selection Theory",
+    "description": "How to choose models that generalize rather than memorize",
+    "core_tension": "Simpler models underfit; complex models overfit. The goal is the sweet spot.",
+    "topic_ids": ["t_5560_bv","t_5560_overfit","t_5560_cv","t_5560_bootstrap"],
+    "bridge_terms": ["generalization","test error","training error","validation","regularization","model complexity"],
+    "one_liner": "Every model selection question is really asking: where is the bias-variance sweet spot?"
+  },
+  {
+    "id": "cf_ensemble_methods",
+    "label": "Ensemble Methods",
+    "description": "Combining many weak models into one strong predictor",
+    "core_tension": "Individual trees are noisy; aggregation stabilizes predictions. Bagging reduces variance; boosting reduces bias.",
+    "topic_ids": ["t_5560_rf","t_5560_boost","t_5560_bootstrap"],
+    "bridge_terms": ["bagging","boosting","aggregation","wisdom of crowds","decorrelation","weak learners"],
+    "one_liner": "Bagging = parallel independent trees. Boosting = sequential error-correcting trees."
+  },
+  {
+    "id": "cf_database_design",
+    "label": "Database Design",
+    "description": "Translating business requirements into structured, efficient data storage",
+    "core_tension": "Model reality accurately (ERD) while eliminating redundancy (normalization).",
+    "topic_ids": ["t_5550_erd","t_5550_norm","t_5550_keys","t_5550_schema"],
+    "bridge_terms": ["entity","relationship","attribute","key","constraint","decomposition","dependency"],
+    "one_liner": "ERD captures the business; normalization purifies the structure; keys enforce integrity."
+  },
+  {
+    "id": "cf_optimization",
+    "label": "Mathematical Optimization",
+    "description": "Finding the best decision subject to constraints",
+    "core_tension": "Real decisions are constrained — LP/IP find the optimal solution within those constraints.",
+    "topic_ids": ["t_5540_lp","t_5540_dual","t_5540_ip","t_5540_dp"],
+    "bridge_terms": ["objective function","feasible region","constraints","optimal solution","shadow price","Bellman"],
+    "one_liner": "Define variables → write objective → specify constraints → solve and interpret."
+  },
+  {
+    "id": "cf_uncertainty_modeling",
+    "label": "Uncertainty Modeling",
+    "description": "Quantifying and reasoning under uncertainty",
+    "core_tension": "Point estimates hide risk; distributions reveal it. Both probabilistic and simulation approaches needed.",
+    "topic_ids": ["t_5540_da","t_5570_mc","t_5540_markov"],
+    "bridge_terms": ["probability","expected value","distribution","simulation","risk","uncertainty"],
+    "one_liner": "From EMV in decision trees to Monte Carlo distributions — always characterize the spread, not just the mean."
+  },
+  {
+    "id": "cf_agentic_ai",
+    "label": "Agentic AI Systems",
+    "description": "AI that acts autonomously in multi-step workflows",
+    "core_tension": "More autonomy = more capability but more risk. HITL controls and monitoring are the safety net.",
+    "topic_ids": ["t_5510_react","t_5510_lc","t_5510_lg","t_5510_int","t_5510_ls","t_5510_deep"],
+    "bridge_terms": ["agent","tool use","planning","memory","orchestration","interrupts","observability"],
+    "one_liner": "ReAct loop → LangChain chains → LangGraph state machines → HITL + LangSmith governance."
+  },
+  {
+    "id": "cf_nlp",
+    "label": "Natural Language Processing",
+    "description": "Teaching machines to understand and generate human language",
+    "core_tension": "Words lack inherent numerical meaning — embeddings and attention mechanisms bridge this gap.",
+    "topic_ids": ["t_5560_nlp","t_5570_nlp_fin"],
+    "bridge_terms": ["embedding","tokenization","attention","fine-tuning","sentiment","context window"],
+    "one_liner": "Word2Vec: words as vectors. Transformers: words in context via attention."
+  },
+  {
+    "id": "cf_classification",
+    "label": "Classification Methods",
+    "description": "Assigning observations to discrete categories",
+    "core_tension": "Interpretability vs accuracy. Logistic regression is transparent; SVMs/NNs are more powerful but opaque.",
+    "topic_ids": ["t_5560_logreg","t_5560_knn","t_5560_svm","t_5560_nn"],
+    "bridge_terms": ["decision boundary","probability","class label","threshold","precision","recall","F1"],
+    "one_liner": "Logistic = interpretable linear. kNN = instance-based. SVM = margin-based. NN = representation-based."
+  },
+  {
+    "id": "cf_financial_analysis",
+    "label": "Financial Analysis",
+    "description": "Valuing businesses and assessing investment risk",
+    "core_tension": "Models require assumptions; AI can accelerate analysis but requires critical evaluation.",
+    "topic_ids": ["t_5570_fs","t_5570_equity","t_5570_mc"],
+    "bridge_terms": ["DCF","valuation","free cash flow","discount rate","scenario","fundamentals","multiples"],
+    "one_liner": "3-statement model → DCF valuation → Monte Carlo risk → AI-augmented research."
+  },
+  {
+    "id": "cf_ethics_governance",
+    "label": "Ethics and AI Governance",
+    "description": "Frameworks for responsible decision-making and AI deployment",
+    "core_tension": "Efficiency and accuracy can conflict with fairness and accountability. Both matter.",
+    "topic_ids": ["t_5800_ethics","t_5800_bias","t_5800_mr"],
+    "bridge_terms": ["fairness","accountability","transparency","bias","stakeholder","institutional","personal morality"],
+    "one_liner": "Distinguish ethics (institutional) from morality (personal); use both to evaluate AI systems."
+  }
+]

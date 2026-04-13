@@ -1,0 +1,182 @@
+[
+  {
+    "id": "a_5550_db_design",
+    "course_code": "MBAN_5550",
+    "title": "Database Design — ERD + Normalization",
+    "type": "assignment",
+    "topics": ["t_5550_erd","t_5550_norm","t_5550_keys","t_5550_schema"],
+    "description": "Design an ER diagram for a business scenario, normalize to 3NF, and convert to a relational schema with proper keys and constraints.",
+    "deliverables": ["ERD diagram","Relational schema","Normalization justification"]
+  },
+  {
+    "id": "a_5550_sql_kpi",
+    "course_code": "MBAN_5550",
+    "title": "SQL KPI Queries",
+    "type": "assignment",
+    "topics": ["t_5550_sql","t_5550_kpi"],
+    "description": "Write SQL queries using JOINs, GROUP BY, and aggregate functions to compute business KPIs from a provided database.",
+    "deliverables": ["SQL query file","Results table","Managerial interpretation"]
+  },
+  {
+    "id": "a_5550_cruise_line",
+    "course_code": "MBAN_5550",
+    "title": "Cruise Line Database Project",
+    "type": "project",
+    "topics": ["t_5550_schema","t_5550_erd","t_5550_norm","t_5550_sql","t_5550_kpi"],
+    "description": "Full database project supervised by Hai Wang. Design a cruise line database, implement it, and extract business insights via SQL queries.",
+    "deliverables": ["ERD","Relational schema","SQL implementation","KPI report"]
+  },
+  {
+    "id": "a_5560_a1",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 1 — Classification Fundamentals",
+    "type": "assignment",
+    "topics": ["t_5560_bv","t_5560_overfit","t_5560_logreg"],
+    "description": "Implement logistic regression, analyze bias-variance tradeoff, and evaluate overfitting on a classification dataset.",
+    "deliverables": ["Model implementation","Bias-variance analysis","Performance metrics"]
+  },
+  {
+    "id": "a_5560_a2",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 2 — Model Validation & Instance-Based",
+    "type": "assignment",
+    "topics": ["t_5560_cv","t_5560_bootstrap","t_5560_knn","t_5560_cluster"],
+    "description": "Apply k-fold CV and bootstrap for model evaluation; implement kNN and clustering algorithms.",
+    "deliverables": ["CV/bootstrap comparison","kNN tuning","Cluster analysis"]
+  },
+  {
+    "id": "a_5560_a3",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 3 — Ensemble Methods",
+    "type": "assignment",
+    "topics": ["t_5560_rf","t_5560_boost"],
+    "description": "Compare Random Forest and boosting methods (GBM, XGBoost, AdaBoost) on a prediction task.",
+    "deliverables": ["Model comparison","Feature importance analysis","Performance report"]
+  },
+  {
+    "id": "a_5560_a4",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 4 — SVMs and Neural Networks",
+    "type": "assignment",
+    "topics": ["t_5560_svm","t_5560_nn"],
+    "description": "Implement SVMs with kernel selection and train neural networks for classification tasks.",
+    "deliverables": ["SVM with kernel analysis","Neural network architecture","Comparison report"]
+  },
+  {
+    "id": "a_5560_a5",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 5 — NLP and Transformers",
+    "type": "assignment",
+    "topics": ["t_5560_nlp"],
+    "description": "Apply NLP techniques: Word2Vec embeddings, transformer fine-tuning with Hugging Face.",
+    "deliverables": ["Embedding analysis","Fine-tuned model","NLP pipeline"]
+  },
+  {
+    "id": "a_5540_a2_lp",
+    "course_code": "MBAN_5540",
+    "title": "Assignment 2 — LP Formulation and Duality",
+    "type": "assignment",
+    "topics": ["t_5540_lp","t_5540_dual"],
+    "description": "Formulate and solve linear programs; interpret dual solutions and shadow prices for business decisions.",
+    "deliverables": ["LP formulation","Solver output","Dual interpretation","Sensitivity report"]
+  },
+  {
+    "id": "a_5540_a3_ip",
+    "course_code": "MBAN_5540",
+    "title": "Assignment 3 — Integer Programming",
+    "type": "assignment",
+    "topics": ["t_5540_ip"],
+    "description": "Model discrete decision problems using binary and integer variables; solve facility location and project selection problems.",
+    "deliverables": ["IP model","Solution","Business interpretation"]
+  },
+  {
+    "id": "a_5540_a5_da",
+    "course_code": "MBAN_5540",
+    "title": "Assignment 5 — Decision Analysis",
+    "type": "assignment",
+    "topics": ["t_5540_da"],
+    "description": "Build decision trees with EMV calculations, compute EVPI, and apply Bayesian updating for multi-stage decisions.",
+    "deliverables": ["Decision tree","EMV calculation","EVPI analysis","Bayes update"]
+  },
+  {
+    "id": "a_5570_ea1",
+    "course_code": "MBAN_5570",
+    "title": "EA1 — Monte Carlo Simulation",
+    "type": "assignment",
+    "topics": ["t_5570_mc"],
+    "description": "Use @RISK to model uncertainty in a financial investment decision with Monte Carlo simulation.",
+    "deliverables": ["@RISK model","Distribution analysis","NPV distribution","Risk report"]
+  },
+  {
+    "id": "a_5570_ea2",
+    "course_code": "MBAN_5570",
+    "title": "EA2 — Financial Statement Analytics",
+    "type": "assignment",
+    "topics": ["t_5570_fs"],
+    "description": "Build a 3-statement financial model and perform DCF valuation with scenario analysis.",
+    "deliverables": ["Pro forma model","DCF valuation","Scenario analysis"]
+  },
+  {
+    "id": "a_5570_ea4",
+    "course_code": "MBAN_5570",
+    "title": "EA4 — NLP in Finance",
+    "type": "assignment",
+    "topics": ["t_5570_nlp_fin"],
+    "description": "Apply NLP to analyze financial text — earnings calls, news sentiment, and event-driven signals.",
+    "deliverables": ["Sentiment pipeline","Event study","Findings report"]
+  },
+  {
+    "id": "a_5570_whitepaper",
+    "course_code": "MBAN_5570",
+    "title": "AI-Assisted Equity Research Whitepaper",
+    "type": "project",
+    "topics": ["t_5570_equity","t_5570_fs"],
+    "description": "Full equity research report combining traditional fundamental analysis with AI-assisted tools; critically evaluate AI output quality.",
+    "deliverables": ["Company analysis","Valuation model","AI evaluation section","Final whitepaper"]
+  },
+  {
+    "id": "a_5510_agentic",
+    "course_code": "MBAN_5510",
+    "title": "Agentic AI System Project",
+    "type": "project",
+    "topics": ["t_5510_react","t_5510_lc","t_5510_lg","t_5510_int","t_5510_ls","t_5510_deep"],
+    "description": "Build a full agentic AI pipeline using LangChain/LangGraph with HITL controls and LangSmith monitoring.",
+    "deliverables": ["Agent architecture","LangGraph workflow","HITL implementation","LangSmith traces","Demo"]
+  },
+  {
+    "id": "a_5520_regression",
+    "course_code": "MBAN_5520",
+    "title": "Regression Analysis Project",
+    "type": "assignment",
+    "topics": ["t_5520_reg","t_5520_pi"],
+    "description": "Fit multiple regression models, interpret coefficients, compute prediction intervals, and assess model quality.",
+    "deliverables": ["Regression output","Coefficient interpretation","Prediction intervals","Model diagnostics"]
+  },
+  {
+    "id": "a_5800_bias",
+    "course_code": "MBAN_5800",
+    "title": "AI Bias Identification Assignment",
+    "type": "assignment",
+    "topics": ["t_5800_ethics","t_5800_bias","t_5800_mr"],
+    "description": "Identify and analyze AI bias across 6 real-world scenarios using ethics frameworks and the defend-then-critique methodology.",
+    "deliverables": ["Bias analysis","Ethical framework application","Recommendations"]
+  },
+  {
+    "id": "a_5502_labs",
+    "course_code": "MBAN_5502",
+    "title": "Python Programming Labs",
+    "type": "assignment",
+    "topics": ["t_5502_py"],
+    "description": "Series of labs covering Python fundamentals, pandas, OOP, and Jupyter notebooks.",
+    "deliverables": ["Lab notebooks","Code submissions"]
+  },
+  {
+    "id": "a_5502_forecasting",
+    "course_code": "MBAN_5502",
+    "title": "Forecasting Web App",
+    "type": "project",
+    "topics": ["t_5502_exp","t_5502_py"],
+    "description": "Build a Flask-based forecasting web application that replicates an experimental research design.",
+    "deliverables": ["Flask app","Experiment design","Data collection","Analysis report"]
+  }
+]

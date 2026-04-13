@@ -82,5 +82,39 @@
       "course_origin": "MBAN 5560 Wk 1-2 (logistic regression, kernel regression, Naive Bayes)",
       "review_next": "bias-variance tradeoff, kNN, classification validation metrics"
     }
+  },
+  {
+    "query": "What is the difference between an ER diagram and normalization?",
+    "detected_mode": "recalibration",
+    "confusion_pair": ["ER_DIAGRAM", "NORMALIZATION"],
+    "response": {
+      "key_distinction": "ERD is a visual model of business reality — entities, attributes, and relationships — done BEFORE you touch tables. Normalization is a decomposition procedure applied to a relational schema to eliminate redundancy and anomalies. You ERD first, then normalize.",
+      "answer": "ER diagrams answer: 'what exists in the business and how are things related?' Normalization answers: 'does this table structure have redundancy or update anomalies?' You convert the ERD to a relational schema, then check if it satisfies 1NF → 2NF → 3NF. Many well-designed ERDs already normalize cleanly.",
+      "memory_anchor": "ERD = model reality; normalization = purify the tables",
+      "course_origin": "MBAN 5550 — DB design, ERD construction, normalization to 3NF",
+      "review_next": "relational keys and constraints, schema design, SQL query writing"
+    }
+  },
+  {
+    "query": "What is EMV and how does it relate to EVPI?",
+    "detected_mode": "recall",
+    "response": {
+      "answer": "EMV (Expected Monetary Value) = the weighted average outcome across possible states of nature, where weights are probabilities. Choose the decision with the highest EMV. EVPI (Expected Value of Perfect Information) = EMV under certainty minus best EMV under uncertainty. It answers: 'what is the maximum you would pay for a perfect forecast?' If EVPI = $50K, no forecast service is worth more than $50K.",
+      "key_distinction": "EMV is the decision criterion under uncertainty. EVPI is the ceiling price for eliminating that uncertainty. Always compute EVPI before deciding whether to buy market research or a forecast.",
+      "fix_chain": ["1. List all alternatives and states of nature", "2. Compute EMV for each alternative (sum: probability × payoff)", "3. Select best EMV — this is your optimal decision under uncertainty", "4. Compute best outcome in each state (assume you know which state occurs)", "5. EVPI = EMV under certainty − best EMV under uncertainty"],
+      "course_origin": "MBAN 5540 — Decision analysis, EMV/EVPI, decision trees",
+      "review_next": "Bayesian updating, decision trees, utility theory"
+    }
+  },
+  {
+    "query": "What does Monte Carlo simulation do that a point estimate cannot?",
+    "detected_mode": "recall",
+    "response": {
+      "answer": "A point estimate gives you one number (e.g., NPV = $2.3M). Monte Carlo replaces uncertain inputs with probability distributions, runs thousands of simulations, and produces a distribution of outcomes — revealing the spread, shape, and tail risk. You learn not just the expected value but the probability of a loss, the 5th-percentile worst case, and which input drives the most uncertainty.",
+      "key_distinction": "Point estimates hide risk; distributions reveal it. A project with NPV = $2.3M but 35% chance of being negative looks very different from one with NPV = $2.3M and 2% chance of loss.",
+      "managerial_explanation": "Use Monte Carlo when decisions are sensitive to uncertain inputs (commodity prices, demand, exchange rates) and where the downside matters as much as the expected return.",
+      "course_origin": "MBAN 5570 — Monte Carlo simulation with @RISK, financial modelling under uncertainty",
+      "review_next": "sensitivity analysis, distribution selection, scenario analysis"
+    }
   }
 ]

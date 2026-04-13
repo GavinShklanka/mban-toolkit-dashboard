@@ -4,6 +4,8 @@ import courses from '../data/courses.json'
 import slides from '../data/slides.json'
 import projects from '../data/projects.json'
 import lessonsData from '../data/lessons.json'
+import topicsData from '../data/topics.json'
+import assignmentsData from '../data/assignments.json'
 
 type Course = typeof courses[0]
 type Lesson = typeof lessonsData[0]
@@ -147,6 +149,9 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
     { id: 'ask', label: 'Ask' },
     { id: 'sources', label: 'Sources' },
   ]
+
+  const courseTopics = topicsData.filter(t => t.course_code === `MBAN_${code}`)
+  const courseAssignments = assignmentsData.filter(a => a.course_code === `MBAN_${code}`)
 
   return (
     <div className="fixed inset-0 bg-black/75 z-50 flex items-start justify-center p-3 md:p-6 overflow-y-auto">
@@ -360,7 +365,29 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {courseProjects.length === 0 && course.deliverables.length === 0 && (
+              {/* Assignments from assignments.json */}
+              {courseAssignments.length > 0 && (
+                <div>
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">Assignments</div>
+                  <div className="space-y-2">
+                    {courseAssignments.map(a => (
+                      <div key={a.id} className="bg-gray-800/60 border border-gray-700/60 rounded-xl px-4 py-3">
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <span className="text-gray-200 text-sm font-medium">{a.title}</span>
+                          <span className={`text-xs px-1.5 py-0.5 rounded shrink-0 ${
+                            a.type === 'project'
+                              ? 'bg-orange-900/30 text-orange-300'
+                              : 'bg-blue-900/30 text-blue-300'
+                          }`}>{a.type}</span>
+                        </div>
+                        <p className="text-gray-500 text-xs leading-relaxed">{a.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {courseProjects.length === 0 && course.deliverables.length === 0 && courseAssignments.length === 0 && (
                 <p className="text-gray-500 text-sm text-center py-6">No project data available for this course.</p>
               )}
             </div>
@@ -381,12 +408,33 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 Review concepts from {course.course_code}
               </button>
 
-              {/* Quick-action chips from top methods */}
-              {(course.methods as string[]).length > 0 && (
+              {/* Course-specific topic chips */}
+              {courseTopics.length > 0 && (
+                <div>
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">
+                    Concepts ({courseTopics.length})
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {courseTopics.map(t => (
+                      <button
+                        key={t.id}
+                        onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}&q=${encodeURIComponent(t.label)}`) }}
+                        style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
+                        className="bg-gray-800 border border-gray-700 hover:border-purple-600 text-gray-300 hover:text-white text-sm px-3 py-1.5 rounded-xl transition-colors text-left"
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Fallback: method chips if no topics */}
+              {courseTopics.length === 0 && (course.methods as string[]).length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Quick topics</div>
                   <div className="flex flex-wrap gap-2">
-                    {(course.methods as string[]).slice(0, 3).map(m => (
+                    {(course.methods as string[]).slice(0, 4).map(m => (
                       <button
                         key={m}
                         onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}&q=${encodeURIComponent(m)}`) }}
