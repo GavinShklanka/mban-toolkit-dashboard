@@ -35,7 +35,6 @@ function runSearch(query: string): SearchResult[] {
   const q = query.trim()
   const results: SearchResult[] = []
 
-  // Methods
   for (const m of methods) {
     const score =
       scoreText(m.method_name, q) * 4 +
@@ -47,7 +46,6 @@ function runSearch(query: string): SearchResult[] {
     if (score > 0) results.push({ kind: 'method', score, item: m })
   }
 
-  // Courses
   for (const c of courses) {
     const score =
       scoreText(c.course_code, q) * 4 +
@@ -60,7 +58,6 @@ function runSearch(query: string): SearchResult[] {
     if (score > 0) results.push({ kind: 'course', score, item: c })
   }
 
-  // Slides
   for (const deck of slides) {
     for (const slide of deck.slides) {
       const titleScore = scoreText(slide.title, q) * 3
@@ -85,7 +82,6 @@ function runSearch(query: string): SearchResult[] {
     }
   }
 
-  // Projects
   for (const p of projects) {
     const score =
       scoreText(p.name, q) * 4 +
@@ -102,81 +98,200 @@ function runSearch(query: string): SearchResult[] {
   return results.sort((a, b) => b.score - a.score).slice(0, 20)
 }
 
-// ─── Evidence badge helper ────────────────────────────────────────────────────
-
-function evidenceBadge(origin: string) {
-  if (!origin) return null
-  const o = origin.toUpperCase()
-  if (o.includes('OUTLINE'))
-    return <span className="inline-flex items-center gap-1 bg-green-900/40 text-green-300 border border-green-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-green-400" />Outline</span>
-  if (o.includes('ARTIFACT'))
-    return <span className="inline-flex items-center gap-1 bg-blue-900/40 text-blue-300 border border-blue-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" />Artifact</span>
-  if (o.includes('GAP') || o.includes('UNKNOWN'))
-    return <span className="inline-flex items-center gap-1 bg-red-900/40 text-red-300 border border-red-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-red-400" />Gap</span>
-  return null
-}
-
-function projectEvidenceBadge(type: string) {
-  const map: Record<string, React.ReactElement> = {
-    outline:     <span className="inline-flex items-center gap-1 bg-green-900/40 text-green-300 border border-green-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-green-400" />Outline</span>,
-    artifact:    <span className="inline-flex items-center gap-1 bg-blue-900/40 text-blue-300 border border-blue-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" />Artifact</span>,
-    provisional: <span className="inline-flex items-center gap-1 bg-yellow-900/40 text-yellow-300 border border-yellow-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />Provisional</span>,
-    pptx:        <span className="inline-flex items-center gap-1 bg-purple-900/40 text-purple-300 border border-purple-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-purple-400" />PPTX</span>,
-  }
-  return map[type] ?? null
-}
-
-// ─── Mode badge colors ─────────────────────────────────────────────────────────
-const modeColor: Record<string, string> = {
-  recalibration: 'bg-yellow-900/40 text-yellow-300 border-yellow-700',
-  selection: 'bg-green-900/40 text-green-300 border-green-700',
-  troubleshooting: 'bg-red-900/40 text-red-300 border-red-700',
-  transfer: 'bg-blue-900/40 text-blue-300 border-blue-700',
-  recall: 'bg-purple-900/40 text-purple-300 border-purple-700',
-}
+// ─── Answer Cards ─────────────────────────────────────────────────────────────
 
 const levelColor: Record<string, string> = {
   descriptive: 'bg-blue-900/40 text-blue-300 border-blue-700',
+  diagnostic: 'bg-cyan-900/40 text-cyan-300 border-cyan-700',
   predictive: 'bg-purple-900/40 text-purple-300 border-purple-700',
   prescriptive: 'bg-green-900/40 text-green-300 border-green-700',
+  'ml_ai': 'bg-orange-900/40 text-orange-300 border-orange-700',
   'ML/AI': 'bg-orange-900/40 text-orange-300 border-orange-700',
   agentic: 'bg-red-900/40 text-red-300 border-red-700',
+  'agentic AI': 'bg-red-900/40 text-red-300 border-red-700',
 }
 
-// ─── Template Card ────────────────────────────────────────────────────────────
+function MethodAnswerCard({ item }: { item: typeof methods[0] }) {
+  const lvlCls = levelColor[(item as any).analytics_level?.toLowerCase()] || levelColor[(item as any).analytics_level] || 'bg-gray-700 text-gray-300 border-gray-600'
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-3">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <div className="text-white font-semibold text-base">{item.method_name}</div>
+          <div className="text-gray-500 text-xs mt-0.5">{item.method_family}</div>
+        </div>
+        <span className={`border text-xs px-1.5 py-0.5 rounded shrink-0 ${lvlCls}`}>{item.analytics_level}</span>
+      </div>
 
-function TemplateCard({ t, onSelect }: { t: Template; onSelect: (q: string) => void }) {
+      {/* Answer — what it does */}
+      <div className="bg-gray-900/60 rounded-xl p-3">
+        <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">What it does</div>
+        <p className="text-gray-200 text-sm leading-relaxed">{item.what_it_solves}</p>
+      </div>
+
+      {/* When to use */}
+      {item.when_to_use && (
+        <div>
+          <div className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-1">When to use</div>
+          <p className="text-gray-400 text-sm">{item.when_to_use}</p>
+        </div>
+      )}
+
+      {/* Learned in + Related */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs pt-1 border-t border-gray-700/60">
+        {(item.linked_courses || []).length > 0 && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-600">Learned in</span>
+            {(item.linked_courses || []).map((c: string) => (
+              <Link key={c} to="/courses" className="bg-purple-900/30 text-purple-300 px-1.5 py-0.5 rounded hover:bg-purple-900/50 transition-colors">
+                MBAN {c}
+              </Link>
+            ))}
+          </div>
+        )}
+        {(item.linked_problems || []).length > 0 && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-600">Business use</span>
+            <span className="text-gray-400">{item.linked_problems.slice(0, 2).join(', ')}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-3 text-xs">
+        <Link to="/methods" className="text-purple-400 hover:text-purple-300 underline">Full detail →</Link>
+        <Link to="/router" className="text-blue-400 hover:text-blue-300 underline">Business problems →</Link>
+      </div>
+    </div>
+  )
+}
+
+function CourseAnswerCard({ item }: { item: typeof courses[0] }) {
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-3">
+      <div>
+        <div className="text-white font-semibold text-base">{item.course_code}</div>
+        <div className="text-gray-300 text-sm">{item.title}</div>
+        <div className="text-gray-500 text-xs mt-0.5">{(item.instructors || []).join(', ')} · {item.semester}</div>
+      </div>
+
+      {item.business_framing && (
+        <div className="bg-gray-900/60 rounded-xl p-3">
+          <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">What it covered</div>
+          <p className="text-gray-200 text-sm leading-relaxed">{item.business_framing}</p>
+        </div>
+      )}
+
+      {(item.methods || []).length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {(item.methods as string[]).slice(0, 4).map(m => (
+            <span key={m} className="bg-gray-700 text-gray-400 text-xs px-2 py-0.5 rounded-lg">{m}</span>
+          ))}
+          {(item.methods as string[]).length > 4 && (
+            <span className="text-gray-600 text-xs px-1 py-0.5">+{(item.methods as string[]).length - 4} more</span>
+          )}
+        </div>
+      )}
+
+      <div className="flex gap-3 text-xs pt-1 border-t border-gray-700/60">
+        <Link to="/courses" className="text-purple-400 hover:text-purple-300 underline">Course portal →</Link>
+        <Link to="/methods" className="text-blue-400 hover:text-blue-300 underline">Methods taught →</Link>
+      </div>
+    </div>
+  )
+}
+
+function SlideAnswerCard({ item }: { item: { deck: string; course: string; title: string; bullets: string[]; slideNum: number } }) {
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-2">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <div className="text-white font-semibold text-base">{item.title || 'Slide content'}</div>
+          <div className="text-gray-500 text-xs mt-0.5">{item.deck} · Slide {item.slideNum} · MBAN {item.course}</div>
+        </div>
+        <span className="bg-blue-900/30 text-blue-300 text-xs px-1.5 py-0.5 rounded shrink-0">Slide</span>
+      </div>
+
+      {item.bullets.length > 0 && (
+        <div className="bg-gray-900/60 rounded-xl p-3 space-y-1">
+          {item.bullets.map((b, i) => (
+            <div key={i} className="text-gray-300 text-xs flex items-start gap-2">
+              <span className="text-gray-600 shrink-0">·</span>
+              <span className="line-clamp-2">{b}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-center gap-1.5 text-xs pt-1 border-t border-gray-700/60">
+        <span className="text-gray-600">Learned in</span>
+        <Link to="/courses" className="bg-purple-900/30 text-purple-300 px-1.5 py-0.5 rounded hover:bg-purple-900/50 transition-colors">
+          MBAN {item.course}
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+function ProjectAnswerCard({ item }: { item: ProjectItem }) {
+  return (
+    <div className="bg-gray-800 border border-purple-900/40 rounded-2xl p-5 space-y-3">
+      <div>
+        <div className="text-white font-semibold text-base">{item.name}</div>
+        <div className="text-gray-500 text-xs mt-0.5">
+          {item.professor !== 'unknown' ? item.professor : 'Instructor TBD'} · {item.course} · {item.term}
+        </div>
+      </div>
+
+      <div className="bg-gray-900/60 rounded-xl p-3">
+        <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Business problem</div>
+        <p className="text-gray-200 text-sm leading-relaxed">{item.business_problem}</p>
+      </div>
+
+      <div className="flex flex-wrap gap-1">
+        {item.methods.slice(0, 3).map(m => (
+          <span key={m} className="bg-purple-900/30 text-purple-300 text-xs px-2 py-0.5 rounded-lg">{m}</span>
+        ))}
+        {item.methods.length > 3 && (
+          <span className="text-gray-600 text-xs px-1 py-0.5">+{item.methods.length - 3} more</span>
+        )}
+      </div>
+
+      <div className="flex gap-3 text-xs pt-1 border-t border-gray-700/60">
+        <Link to="/projects" className="text-purple-400 hover:text-purple-300 underline">Project detail →</Link>
+        <Link to="/courses" className="text-blue-400 hover:text-blue-300 underline">Course page →</Link>
+      </div>
+    </div>
+  )
+}
+
+// ─── Common Question Card ─────────────────────────────────────────────────────
+
+function CommonQuestionCard({ t, onSelect }: { t: Template; onSelect: (q: string) => void }) {
   const [open, setOpen] = useState(false)
   const r = t.response as Record<string, unknown>
-  const modeCls = modeColor[t.detected_mode] || 'bg-gray-700 text-gray-300 border-gray-600'
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
+    <div className="bg-gray-800/70 border border-gray-700 rounded-2xl overflow-hidden">
       <button
-        className="w-full text-left p-4 hover:bg-gray-750 transition-colors"
+        className="w-full text-left p-4 hover:bg-gray-800 transition-colors"
         onClick={() => setOpen(v => !v)}
       >
-        <div className="flex items-start gap-3">
-          <span className="text-purple-400 text-lg mt-0.5 shrink-0">?</span>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2 mb-1">
-              <p className="text-white text-sm font-medium leading-snug">{t.query}</p>
-              <span className={`border text-xs px-1.5 py-0.5 rounded shrink-0 capitalize ${modeCls}`}>
-                {t.detected_mode}
-              </span>
-            </div>
-            <button
-              onClick={e => { e.stopPropagation(); onSelect(t.query) }}
-              className="text-xs text-purple-400 hover:text-purple-300 underline"
-            >
-              Search this →
-            </button>
-          </div>
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-gray-200 text-sm leading-snug">{t.query}</p>
+          <span className="text-gray-500 shrink-0 text-sm">{open ? '−' : '+'}</span>
         </div>
+        {!open && (
+          <button
+            onClick={e => { e.stopPropagation(); onSelect(t.query) }}
+            className="mt-2 text-xs text-purple-400 hover:text-purple-300 underline"
+          >
+            Search this →
+          </button>
+        )}
       </button>
 
       {open && (
-        <div className="border-t border-gray-700 p-4 space-y-3 bg-gray-900/50">
+        <div className="border-t border-gray-700 p-4 space-y-3 bg-gray-900/40">
           {!!r.key_distinction && (
             <div>
               <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Key Distinction</div>
@@ -209,7 +324,7 @@ function TemplateCard({ t, onSelect }: { t: Template; onSelect: (q: string) => v
           )}
           {!!(r.course_origin || r.where_learned || r.course_anchor) && (
             <div className="flex items-center gap-2">
-              <span className="text-gray-500 text-xs">Where learned:</span>
+              <span className="text-gray-500 text-xs">Learned in:</span>
               <span className="bg-purple-900/30 text-purple-300 text-xs px-2 py-0.5 rounded">
                 {String(r.course_origin || r.where_learned || r.course_anchor)}
               </span>
@@ -221,232 +336,25 @@ function TemplateCard({ t, onSelect }: { t: Template; onSelect: (q: string) => v
               <span className="text-yellow-400 text-xs">{String(r.review_next)}</span>
             </div>
           )}
-          {!!r.adjacent_concept && (
-            <div>
-              <span className="text-gray-500 text-xs">Related: </span>
-              <span className="text-gray-300 text-xs">{String(r.adjacent_concept)}</span>
-            </div>
-          )}
+          <button
+            onClick={() => onSelect(t.query)}
+            className="text-xs text-purple-400 hover:text-purple-300 underline"
+          >
+            Search for more on this →
+          </button>
         </div>
       )}
     </div>
   )
 }
 
-// ─── Search Result Cards ───────────────────────────────────────────────────────
+// ─── Suggested Chips ──────────────────────────────────────────────────────────
 
-function MethodResult({ item }: { item: typeof methods[0] }) {
-  const lvlCls = levelColor[(item as any).analytics_level] || 'bg-gray-700 text-gray-300 border-gray-600'
-  const m = item as any
-  return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-2">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.method_name}</div>
-          <div className="text-gray-500 text-xs mt-0.5">{item.method_family}</div>
-        </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-xs text-gray-600 uppercase font-semibold">Method</span>
-          <span className={`border text-xs px-1.5 py-0.5 rounded ${lvlCls}`}>{item.analytics_level}</span>
-        </div>
-      </div>
-
-      {/* Business Use */}
-      <div className="flex items-start gap-1 text-xs text-gray-400">
-        <span className="shrink-0">💼</span>
-        <span>{item.what_it_solves}</span>
-      </div>
-
-      {/* Learned In */}
-      {(item.linked_courses || []).length > 0 && (
-        <div className="flex items-center gap-1 flex-wrap">
-          <span className="text-gray-600 text-xs">Learned in:</span>
-          {(item.linked_courses || []).map((c: string) => (
-            <Link key={c} to="/courses" className="bg-purple-900/30 text-purple-300 text-xs px-1.5 py-0.5 rounded hover:bg-purple-900/50 transition-colors">
-              MBAN {c}
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* Sources */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-gray-600 text-xs">Sources:</span>
-        {evidenceBadge((item as any).evidence_origin || '')}
-        <span className="text-gray-600 text-xs">{(item as any).confidence}</span>
-      </div>
-
-      {/* Related problems */}
-      {(item.linked_problems || []).length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {item.linked_problems.slice(0, 3).map((p: string) => (
-            <span key={p} className="bg-gray-700 text-gray-400 text-xs px-1.5 py-0.5 rounded">{p}</span>
-          ))}
-        </div>
-      )}
-
-      {m.exam_formula && (
-        <div className="bg-gray-900 rounded p-2">
-          <div className="text-gray-500 text-xs font-semibold mb-1">Formula</div>
-          <code className="text-green-300 text-xs">{m.exam_formula}</code>
-        </div>
-      )}
-
-      {/* Outward links */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-gray-700/60">
-        <Link to="/methods" className="text-xs text-purple-400 hover:text-purple-300 underline">Full detail →</Link>
-        <Link to="/router" className="text-xs text-blue-400 hover:text-blue-300 underline">Business problems →</Link>
-        <Link to="/governance" className="text-xs text-orange-400 hover:text-orange-300 underline">Governance →</Link>
-      </div>
-    </div>
-  )
-}
-
-function CourseResult({ item }: { item: typeof courses[0] }) {
-  return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-2">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.course_code} — {item.title}</div>
-          <div className="text-gray-500 text-xs mt-0.5">
-            {(item.instructors || []).join(', ')} · {item.semester}
-          </div>
-        </div>
-        <span className="text-xs text-gray-600 uppercase font-semibold shrink-0">Course</span>
-      </div>
-
-      {/* Business Use */}
-      {item.business_framing && (
-        <div className="flex items-start gap-1 text-xs text-gray-400">
-          <span className="shrink-0">💼</span>
-          <span>{item.business_framing}</span>
-        </div>
-      )}
-
-      {/* Sources */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-gray-600 text-xs">Sources:</span>
-        {evidenceBadge(item.evidence_origin || '')}
-        <span className="text-gray-600 text-xs">{item.confidence}</span>
-      </div>
-
-      {/* Methods preview */}
-      {(item.methods || []).length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {(item.methods as string[]).slice(0, 4).map(m => (
-            <span key={m} className="bg-gray-700 text-gray-400 text-xs px-1.5 py-0.5 rounded">{m}</span>
-          ))}
-          {(item.methods as string[]).length > 4 && (
-            <span className="text-gray-600 text-xs px-1 py-0.5">+{(item.methods as string[]).length - 4} more</span>
-          )}
-        </div>
-      )}
-
-      {/* Outward links */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-gray-700/60">
-        <Link to="/courses" className="text-xs text-purple-400 hover:text-purple-300 underline">Course detail →</Link>
-        <Link to="/methods" className="text-xs text-blue-400 hover:text-blue-300 underline">Methods taught →</Link>
-        <Link to="/projects" className="text-xs text-green-400 hover:text-green-300 underline">Projects →</Link>
-      </div>
-    </div>
-  )
-}
-
-function SlideResult({ item }: { item: { deck: string; course: string; title: string; bullets: string[]; slideNum: number } }) {
-  return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-2">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.title || 'Untitled Slide'}</div>
-          <div className="text-gray-500 text-xs mt-0.5">{item.deck} · Slide {item.slideNum}</div>
-        </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-xs text-gray-600 uppercase font-semibold">Slide</span>
-          <span className="bg-blue-900/30 text-blue-300 text-xs px-1.5 py-0.5 rounded">MBAN {item.course}</span>
-        </div>
-      </div>
-
-      {/* Learned In */}
-      <div className="flex items-center gap-1">
-        <span className="text-gray-600 text-xs">Learned in:</span>
-        <Link to="/courses" className="bg-purple-900/30 text-purple-300 text-xs px-1.5 py-0.5 rounded hover:bg-purple-900/50 transition-colors">
-          MBAN {item.course}
-        </Link>
-      </div>
-
-      {/* Matched bullets */}
-      {item.bullets.length > 0 && (
-        <ul className="space-y-1">
-          {item.bullets.map((b, i) => (
-            <li key={i} className="text-xs text-gray-400 flex items-start gap-2">
-              <span className="text-gray-600 shrink-0">·</span>
-              <span className="line-clamp-2">{b}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {/* Outward links */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-gray-700/60">
-        <Link to="/courses" className="text-xs text-purple-400 hover:text-purple-300 underline">View course page →</Link>
-        <Link to="/methods" className="text-xs text-blue-400 hover:text-blue-300 underline">Related methods →</Link>
-      </div>
-    </div>
-  )
-}
-
-function ProjectResult({ item }: { item: ProjectItem }) {
-  return (
-    <div className="bg-gray-800 border border-purple-900/40 rounded-xl p-4 space-y-2">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.name}</div>
-          <div className="text-gray-500 text-xs mt-0.5">
-            {item.professor !== 'unknown' ? item.professor : 'Instructor TBD'} · {item.course} · {item.term}
-          </div>
-        </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-xs text-gray-600 uppercase font-semibold">Project</span>
-          {projectEvidenceBadge(item.evidence_type)}
-        </div>
-      </div>
-
-      {/* Business Problem */}
-      <div className="flex items-start gap-1 text-xs text-gray-300">
-        <span className="shrink-0">💼</span>
-        <span>{item.business_problem}</span>
-      </div>
-
-      {/* Methods */}
-      <div className="flex flex-wrap gap-1">
-        {item.methods.slice(0, 3).map(m => (
-          <span key={m} className="bg-purple-900/30 text-purple-300 text-xs px-1.5 py-0.5 rounded">{m}</span>
-        ))}
-        {item.methods.length > 3 && (
-          <span className="text-gray-600 text-xs px-1 py-0.5">+{item.methods.length - 3} more</span>
-        )}
-      </div>
-
-      {/* Review Next */}
-      <div className="text-xs text-yellow-400/80">
-        Review next: {item.review_next}
-      </div>
-
-      {/* Outward links */}
-      <div className="flex flex-wrap gap-2 pt-1 border-t border-gray-700/60">
-        <Link to="/projects" className="text-xs text-purple-400 hover:text-purple-300 underline">View project detail →</Link>
-        <Link to="/courses" className="text-xs text-blue-400 hover:text-blue-300 underline">Course page →</Link>
-        {item.related_methods.length > 0 && (
-          <Link to="/methods" className="text-xs text-green-400 hover:text-green-300 underline">Related methods →</Link>
-        )}
-      </div>
-    </div>
-  )
-}
+const suggestions = [
+  'overfitting', 'LangGraph', 'Bayes', 'random forest',
+  'Hai Wang', 'cruise line', 'equity research', 'NS Health',
+  'linear programming', 'sentiment analysis', 'neural network',
+]
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
@@ -471,56 +379,58 @@ export default function AskMBAN() {
     setSubmitted(query)
   }
 
-  const totalMethods = methods.length
   const totalSlides = slides.reduce((a, d) => a + d.slide_count, 0)
 
   return (
-    <div className="p-4 md:p-8 max-w-5xl mx-auto">
+    <div className="p-5 md:p-10 max-w-3xl mx-auto">
+
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">Ask MBAN</h1>
+      <div className="mb-8 text-center">
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Ask MBAN</h1>
         <p className="text-gray-400 text-sm">
-          Search across {totalMethods} methods, {courses.length} courses, {projects.length} projects, and {totalSlides} extracted slides
+          Search your MBAN knowledge base — {methods.length} methods, {courses.length} courses, {projects.length} projects, {totalSlides} slides
+        </p>
+        <p className="text-gray-600 text-xs mt-1">
+          Client-side search · Conversational AI tutor coming soon
         </p>
       </div>
 
-      {/* Search Bar */}
-      <form onSubmit={handleSubmit} className="mb-8">
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">🔍</span>
-            <input
-              type="text"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="e.g. cruise line, overfitting, LangGraph, Hai Wang, equity research..."
-              className="w-full bg-gray-800 border border-gray-700 focus:border-purple-500 rounded-xl pl-9 pr-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none transition-colors"
-              autoFocus
-            />
-            {query && (
-              <button
-                type="button"
-                onClick={() => { setQuery(''); setSubmitted('') }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-xs"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+      {/* Search Input — large, centered */}
+      <form onSubmit={handleSubmit} className="mb-6">
+        <div className="relative">
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="What would you like to review?"
+            className="w-full bg-gray-800 border border-gray-700 focus:border-purple-500 rounded-2xl px-5 py-4 text-base text-gray-100 placeholder-gray-500 focus:outline-none transition-colors pr-24"
+            autoFocus
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => { setQuery(''); setSubmitted('') }}
+              className="absolute right-14 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-sm"
+            >
+              ✕
+            </button>
+          )}
           <button
             type="submit"
-            className="bg-purple-700 hover:bg-purple-600 text-white font-medium px-5 py-3 rounded-xl text-sm transition-colors shrink-0"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-purple-700 hover:bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
           >
-            Search
+            Ask
           </button>
         </div>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {['overfitting', 'LangGraph', 'Bayes', 'Hai Wang', 'cruise line', 'equity research', 'NS Health', 'Looms of Ladakh'].map(s => (
+
+        {/* Suggested chips */}
+        <div className="mt-3 flex flex-wrap gap-2 justify-center">
+          {suggestions.map(s => (
             <button
               key={s}
               type="button"
               onClick={() => handleSearch(s)}
-              className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-200 border border-gray-700 px-2 py-1 rounded-lg transition-colors"
+              className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-200 border border-gray-700 hover:border-gray-600 px-3 py-1.5 rounded-full transition-colors"
             >
               {s}
             </button>
@@ -528,33 +438,36 @@ export default function AskMBAN() {
         </div>
       </form>
 
-      {/* Search Results */}
+      {/* Results */}
       {submitted && (
         <div className="mb-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-white font-semibold">
-              Results for <span className="text-purple-300">"{submitted}"</span>
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-white font-semibold text-lg">
+              <span className="text-purple-300">"{submitted}"</span>
             </h2>
-            <span className="text-gray-500 text-xs">{results.length} matches</span>
+            <button
+              onClick={() => { setQuery(''); setSubmitted('') }}
+              className="text-gray-600 hover:text-gray-400 text-xs underline"
+            >
+              Clear
+            </button>
           </div>
 
           {results.length === 0 ? (
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
-              <div className="text-gray-500 mb-2 text-2xl">🔍</div>
-              <p className="text-gray-400 text-sm">No results found for "{submitted}"</p>
+            <div className="bg-gray-800 border border-gray-700 rounded-2xl p-10 text-center">
+              <div className="text-gray-500 mb-2 text-3xl">💭</div>
+              <p className="text-gray-400">No results for "{submitted}"</p>
               <p className="text-gray-600 text-xs mt-1">Try a course code (5560), professor name, or method keyword</p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {projectResults.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
                     Projects ({projectResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {projectResults.map(r => (
-                      <ProjectResult key={r.item.id} item={r.item} />
-                    ))}
+                  <div className="space-y-3">
+                    {projectResults.map(r => <ProjectAnswerCard key={r.item.id} item={r.item} />)}
                   </div>
                 </div>
               )}
@@ -564,10 +477,8 @@ export default function AskMBAN() {
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
                     Methods ({methodResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {methodResults.slice(0, 6).map(r => (
-                      <MethodResult key={r.item.method_name} item={r.item} />
-                    ))}
+                  <div className="space-y-3">
+                    {methodResults.slice(0, 5).map(r => <MethodAnswerCard key={r.item.method_name} item={r.item} />)}
                   </div>
                 </div>
               )}
@@ -577,10 +488,8 @@ export default function AskMBAN() {
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
                     Courses ({courseResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {courseResults.map(r => (
-                      <CourseResult key={r.item.course_code} item={r.item} />
-                    ))}
+                  <div className="space-y-3">
+                    {courseResults.map(r => <CourseAnswerCard key={r.item.course_code} item={r.item} />)}
                   </div>
                 </div>
               )}
@@ -590,10 +499,8 @@ export default function AskMBAN() {
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
                     Slides ({slideResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {slideResults.slice(0, 8).map((r, i) => (
-                      <SlideResult key={i} item={r.item} />
-                    ))}
+                  <div className="space-y-3">
+                    {slideResults.slice(0, 6).map((r, i) => <SlideAnswerCard key={i} item={r.item} />)}
                   </div>
                 </div>
               )}
@@ -602,45 +509,37 @@ export default function AskMBAN() {
         </div>
       )}
 
-      {/* Featured Q&A — always visible when not searching */}
+      {/* Common questions — always visible when no query */}
       {!submitted && (
         <div>
-          <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-white font-semibold">Featured Q&A</h2>
-            <span className="text-gray-600 text-xs">7 curated responses — click to expand</span>
+          <div className="mb-4">
+            <h2 className="text-white font-semibold text-lg mb-1">Common Questions</h2>
+            <p className="text-gray-500 text-sm">7 curated Q&A pairs — click to expand</p>
           </div>
           <div className="space-y-3">
             {templates.map((t, i) => (
-              <TemplateCard key={i} t={t} onSelect={handleSearch} />
+              <CommonQuestionCard key={i} t={t} onSelect={handleSearch} />
             ))}
           </div>
         </div>
       )}
 
-      {/* Show featured Q&A below results too */}
+      {/* Show common questions below results */}
       {submitted && results.length > 0 && (
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-white font-semibold">Featured Q&A</h2>
+            <h2 className="text-white font-semibold">Common Questions</h2>
             <button
               onClick={() => { setQuery(''); setSubmitted('') }}
               className="text-xs text-gray-500 hover:text-gray-300 underline"
             >
-              Clear search to browse
+              Browse all
             </button>
           </div>
           <div className="space-y-3">
             {templates.slice(0, 3).map((t, i) => (
-              <TemplateCard key={i} t={t} onSelect={handleSearch} />
+              <CommonQuestionCard key={i} t={t} onSelect={handleSearch} />
             ))}
-            {templates.length > 3 && (
-              <button
-                onClick={() => { setQuery(''); setSubmitted('') }}
-                className="text-xs text-purple-400 hover:text-purple-300 w-full py-2 text-center"
-              >
-                View all {templates.length} featured responses →
-              </button>
-            )}
           </div>
         </div>
       )}

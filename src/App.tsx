@@ -24,6 +24,8 @@ function App() {
           <Route path="/router" element={<SolutionRouter />} />
           <Route path="/refresh" element={<Refresh />} />
           <Route path="/governance" element={<Governance />} />
+          <Route path="/admin/evidence" element={<Evidence />} />
+          {/* Legacy redirect support */}
           <Route path="/evidence" element={<Evidence />} />
           <Route path="/ask" element={<AskMBAN />} />
         </Routes>
