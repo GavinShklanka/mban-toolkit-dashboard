@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import courses from '../data/courses.json'
 import slides from '../data/slides.json'
 import projects from '../data/projects.json'
@@ -33,11 +33,11 @@ function getEvidenceType(course: Course): EvidenceType {
 }
 
 const EVconfig: Record<EvidenceType, { dot: string; pill: string; label: string }> = {
-  outline:     { dot: 'bg-green-400',  pill: 'bg-green-900/30 text-green-300 border-green-700',   label: 'Full Outline' },
-  pptx:        { dot: 'bg-purple-400', pill: 'bg-purple-900/30 text-purple-300 border-purple-700', label: 'PPTX Slides' },
-  artifact:    { dot: 'bg-blue-400',   pill: 'bg-blue-900/30 text-blue-300 border-blue-700',       label: 'Artifacts' },
-  provisional: { dot: 'bg-yellow-400', pill: 'bg-yellow-900/30 text-yellow-300 border-yellow-700', label: 'Provisional' },
-  gap:         { dot: 'bg-red-400',    pill: 'bg-red-900/30 text-red-300 border-red-700',           label: 'Unresolved' },
+  outline:     { dot: 'bg-green-600',  pill: 'bg-gray-800 text-gray-500 border-gray-700',          label: 'Outline verified' },
+  pptx:        { dot: 'bg-purple-600', pill: 'bg-gray-800 text-gray-500 border-gray-700',          label: 'Slides available' },
+  artifact:    { dot: 'bg-blue-600',   pill: 'bg-gray-800 text-gray-500 border-gray-700',          label: 'Source material' },
+  provisional: { dot: 'bg-yellow-600', pill: 'bg-gray-800 text-yellow-600/80 border-gray-700',     label: 'Needs verification' },
+  gap:         { dot: 'bg-red-700',    pill: 'bg-gray-800 text-red-600/80 border-gray-700',        label: 'Unresolved' },
 }
 
 // ─── Lesson Card ──────────────────────────────────────────────────────────────
@@ -131,6 +131,8 @@ function LessonCard({ lesson, index }: { lesson: Lesson; index: number }) {
 
 function CourseDetail({ course, onClose }: { course: Course; onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('overview')
+  const [govOpen, setGovOpen] = useState(false)
+  const navigate = useNavigate()
   const code = getCourseCode(course)
   const ev = getEvidenceType(course)
   const cfg = EVconfig[ev]
@@ -337,15 +339,24 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {/* Governance */}
+              {/* Risk / governance notes — collapsed by default */}
               {course.governance_elements.length > 0 && (
                 <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Governance Elements</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {course.governance_elements.map(g => (
-                      <span key={g} className="bg-red-900/15 text-red-300 text-xs px-2 py-1 rounded-lg border border-red-900/40">{g}</span>
-                    ))}
-                  </div>
+                  <button
+                    onClick={() => setGovOpen(v => !v)}
+                    style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
+                    className="w-full flex items-center justify-between text-left"
+                  >
+                    <div className="text-gray-600 text-xs font-semibold uppercase tracking-wider">Risk / governance notes</div>
+                    <span className="text-gray-600 text-xs">{govOpen ? '−' : '+'}</span>
+                  </button>
+                  {govOpen && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {course.governance_elements.map(g => (
+                        <span key={g} className="bg-gray-800/60 text-gray-500 text-xs px-2 py-1 rounded-lg border border-gray-700/40">{g}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -357,23 +368,37 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
 
           {/* ASK */}
           {tab === 'ask' && (
-            <div className="text-center py-4">
-              <div className="text-3xl mb-3">💬</div>
-              <div className="text-white font-semibold mb-2">Search this course</div>
-              <p className="text-gray-400 text-sm mb-5 max-w-sm mx-auto">
-                Ask MBAN will prioritize content from {course.course_code} when you include the course code in your search.
-              </p>
-              <Link
-                to={`/ask`}
-                onClick={onClose}
-                className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
-              >
-                <span>💬</span>
-                Search "{code}" in Ask MBAN
-              </Link>
-              <div className="mt-4 text-xs text-gray-600">
-                Try: "{code} methods", "professor {course.instructors[0]?.split(' ').pop()}", or paste a concept name
+            <div className="space-y-5 py-2">
+              <div>
+                <div className="text-white font-semibold text-base mb-1">Review this course</div>
+                <p className="text-gray-400 text-sm">Results will be scoped to this course first.</p>
               </div>
+
+              <button
+                onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}`) }}
+                className="w-full flex items-center justify-center gap-2 bg-purple-700 hover:bg-purple-600 text-white px-5 py-3 rounded-xl text-sm font-medium transition-colors"
+              >
+                Review concepts from {course.course_code}
+              </button>
+
+              {/* Quick-action chips from top methods */}
+              {(course.methods as string[]).length > 0 && (
+                <div>
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Quick topics</div>
+                  <div className="flex flex-wrap gap-2">
+                    {(course.methods as string[]).slice(0, 3).map(m => (
+                      <button
+                        key={m}
+                        onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}&q=${encodeURIComponent(m)}`) }}
+                        style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
+                        className="bg-gray-800 border border-gray-700 hover:border-purple-600 text-gray-300 hover:text-white text-sm px-4 py-2 rounded-xl transition-colors"
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -459,29 +484,40 @@ export default function Courses() {
         onClick={() => setSelected(course)}
         className="bg-gray-800/80 border border-gray-700/70 hover:border-purple-600/60 hover:bg-gray-800 rounded-2xl p-5 text-left w-full transition-all group"
       >
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <span className="font-mono text-purple-400 text-sm font-bold">{course.course_code}</span>
+        {/* Title first */}
+        <div className="text-white text-base font-semibold leading-snug mb-1">{course.title}</div>
+
+        {/* Learning summary */}
+        {(course as any).learning_summary && (
+          <p className="text-gray-400 text-xs leading-relaxed mb-2">{(course as any).learning_summary}</p>
+        )}
+
+        {/* Term */}
+        <div className="text-gray-500 text-xs mb-3">{course.semester}</div>
+
+        {/* Method/tool pills */}
+        <div className="flex flex-wrap gap-1 mb-2">
+          {(course.methods as string[]).slice(0, 3).map(m => (
+            <span key={m} className="bg-gray-700/60 text-gray-400 text-xs px-2 py-0.5 rounded-lg">{m}</span>
+          ))}
+          {(course.methods as string[]).length > 3 && (
+            <span className="text-gray-600 text-xs px-1 py-0.5">+{(course.methods as string[]).length - 3}</span>
+          )}
+        </div>
+
+        {/* Evidence badge + course code — subdued, bottom */}
+        <div className="flex items-center justify-between mt-1">
+          <span className="font-mono text-gray-600 text-xs">{course.course_code}</span>
           <span className={`inline-flex items-center gap-1 border text-xs px-1.5 py-0.5 rounded ${cfg.pill}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
             {cfg.label}
           </span>
         </div>
-        <div className="text-white text-sm font-medium mb-1 leading-snug">{course.title}</div>
-        <div className="text-gray-500 text-xs mb-3">{course.semester}</div>
-        <div className="flex flex-wrap gap-1">
-          {course.tools.slice(0, 3).map(t => (
-            <span key={t} className="bg-gray-700/60 text-gray-400 text-xs px-2 py-0.5 rounded-lg">{t}</span>
-          ))}
-          {course.tools.length > 3 && <span className="text-gray-600 text-xs px-1 py-0.5">+{course.tools.length - 3}</span>}
-        </div>
-        {lessonCount > 0 && (
-          <div className="mt-2.5 text-xs text-purple-400/70">
-            {lessonCount} lesson{lessonCount !== 1 ? 's' : ''} available
-          </div>
-        )}
-        {pptx && (
-          <div className="mt-1 text-xs text-gray-600">
-            {pptx.count} deck{pptx.count !== 1 ? 's' : ''} · {pptx.slides} slides
+
+        {(lessonCount > 0 || pptx) && (
+          <div className="mt-2 text-xs text-gray-600 flex gap-3">
+            {lessonCount > 0 && <span className="text-purple-400/60">{lessonCount} lesson{lessonCount !== 1 ? 's' : ''}</span>}
+            {pptx && <span>{pptx.count} deck{pptx.count !== 1 ? 's' : ''} · {pptx.slides} slides</span>}
           </div>
         )}
       </button>
