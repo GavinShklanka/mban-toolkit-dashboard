@@ -3,6 +3,19 @@ import methods from '../data/methods.json'
 
 type Method = typeof methods[0]
 
+// ─── Evidence badge ──────────────────────────────────────────────────────────
+function evidenceBadge(origin: string) {
+  if (!origin) return null
+  const o = origin.toUpperCase()
+  if (o.includes('OUTLINE'))
+    return <span className="inline-flex items-center gap-1 bg-green-900/40 text-green-300 border border-green-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-green-400" />Outline</span>
+  if (o.includes('ARTIFACT'))
+    return <span className="inline-flex items-center gap-1 bg-blue-900/40 text-blue-300 border border-blue-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" />Artifact</span>
+  if (o.includes('GAP') || o.includes('UNKNOWN'))
+    return <span className="inline-flex items-center gap-1 bg-red-900/40 text-red-300 border border-red-700 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-red-400" />Gap</span>
+  return <span className="inline-flex items-center gap-1 bg-gray-700 text-gray-400 border border-gray-600 text-xs px-1.5 py-0.5 rounded"><span className="w-1.5 h-1.5 rounded-full bg-gray-500" />Unknown</span>
+}
+
 const riskColor = (risk: string) => {
   if (risk?.includes('VERY HIGH') || risk?.includes('VERY LOW')) return 'text-red-400'
   if (risk?.includes('HIGH') || risk?.includes('LOW')) return 'text-orange-400'
@@ -37,11 +50,12 @@ function MethodCard({ method, onClick }: { method: Method; onClick: () => void }
         </span>
       </div>
       <div className="text-gray-400 text-xs mb-3 line-clamp-2">{method.what_it_solves}</div>
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-1 items-center">
         <span className="bg-gray-700 text-gray-400 text-xs px-1.5 py-0.5 rounded">{method.method_family}</span>
         {method.linked_courses?.map(c => (
           <span key={c} className="bg-purple-900/30 text-purple-300 text-xs px-1.5 py-0.5 rounded">{c}</span>
         ))}
+        <span className="ml-auto">{evidenceBadge((method as any).evidence_origin || '')}</span>
       </div>
     </button>
   )
@@ -201,7 +215,14 @@ export default function Methods() {
         </select>
       </div>
 
-      <div className="text-xs text-gray-500 mb-4">{filtered.length} of {methods.length} methods</div>
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-xs text-gray-500">{filtered.length} of {methods.length} methods</span>
+        <div className="flex items-center gap-3 text-xs text-gray-500">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" />Outline</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-400" />Artifact</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" />Gap</span>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map(m => (
