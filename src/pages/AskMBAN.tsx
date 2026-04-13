@@ -6,7 +6,7 @@ import templates from '../data/templates.json'
 import slides from '../data/slides.json'
 import projects from '../data/projects.json'
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 type Template = typeof templates[0]
 type ProjectItem = typeof projects[0]
@@ -16,7 +16,7 @@ type SearchResult =
   | { kind: 'slide'; score: number; item: { deck: string; course: string; title: string; bullets: string[]; slideNum: number } }
   | { kind: 'project'; score: number; item: ProjectItem }
 
-// ─── Search Engine ─────────────────────────────────────────────────────────────
+// ─── Search Engine ────────────────────────────────────────────────────────────
 
 function scoreText(text: string, q: string): number {
   if (!text) return 0
@@ -74,7 +74,7 @@ function runSearch(query: string): SearchResult[] {
             deck: deck.deck_label,
             course: deck.course,
             title: slide.title || `Slide ${slide.slide_number}`,
-            bullets: matchedBullets.slice(0, 3),
+            bullets: matchedBullets.slice(0, 4),
             slideNum: slide.slide_number,
           },
         })
@@ -98,63 +98,216 @@ function runSearch(query: string): SearchResult[] {
   return results.sort((a, b) => b.score - a.score).slice(0, 20)
 }
 
-// ─── Mode badge colors ─────────────────────────────────────────────────────────
+// ─── Answer Cards ─────────────────────────────────────────────────────────────
 
-const modeColor: Record<string, string> = {
-  recalibration: 'bg-yellow-900/40 text-yellow-300 border-yellow-700',
-  selection:     'bg-green-900/40 text-green-300 border-green-700',
-  troubleshooting:'bg-red-900/40 text-red-300 border-red-700',
-  transfer:      'bg-blue-900/40 text-blue-300 border-blue-700',
-  recall:        'bg-purple-900/40 text-purple-300 border-purple-700',
+const levelColor: Record<string, string> = {
+  descriptive: 'bg-blue-900/40 text-blue-300 border-blue-700',
+  diagnostic: 'bg-cyan-900/40 text-cyan-300 border-cyan-700',
+  predictive: 'bg-purple-900/40 text-purple-300 border-purple-700',
+  prescriptive: 'bg-green-900/40 text-green-300 border-green-700',
+  'ml_ai': 'bg-orange-900/40 text-orange-300 border-orange-700',
+  'ML/AI': 'bg-orange-900/40 text-orange-300 border-orange-700',
+  agentic: 'bg-red-900/40 text-red-300 border-red-700',
+  'agentic AI': 'bg-red-900/40 text-red-300 border-red-700',
 }
 
-// ─── Featured Q&A Card ────────────────────────────────────────────────────────
+function MethodAnswerCard({ item }: { item: typeof methods[0] }) {
+  const lvlCls = levelColor[(item as any).analytics_level?.toLowerCase()] || levelColor[(item as any).analytics_level] || 'bg-gray-700 text-gray-300 border-gray-600'
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-3">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <div className="text-white font-semibold text-base">{item.method_name}</div>
+          <div className="text-gray-500 text-xs mt-0.5">{item.method_family}</div>
+        </div>
+        <span className={`border text-xs px-1.5 py-0.5 rounded shrink-0 ${lvlCls}`}>{item.analytics_level}</span>
+      </div>
 
-function FeaturedCard({ t, onSelect }: { t: Template; onSelect: (q: string) => void }) {
+      {/* Answer — what it does */}
+      <div className="bg-gray-900/60 rounded-xl p-3">
+        <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">What it does</div>
+        <p className="text-gray-200 text-sm leading-relaxed">{item.what_it_solves}</p>
+      </div>
+
+      {/* When to use */}
+      {item.when_to_use && (
+        <div>
+          <div className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-1">When to use</div>
+          <p className="text-gray-400 text-sm">{item.when_to_use}</p>
+        </div>
+      )}
+
+      {/* Learned in + Related */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs pt-1 border-t border-gray-700/60">
+        {(item.linked_courses || []).length > 0 && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-600">Learned in</span>
+            {(item.linked_courses || []).map((c: string) => (
+              <Link key={c} to="/courses" className="bg-purple-900/30 text-purple-300 px-1.5 py-0.5 rounded hover:bg-purple-900/50 transition-colors">
+                MBAN {c}
+              </Link>
+            ))}
+          </div>
+        )}
+        {(item.linked_problems || []).length > 0 && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-600">Business use</span>
+            <span className="text-gray-400">{item.linked_problems.slice(0, 2).join(', ')}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-3 text-xs">
+        <Link to="/methods" className="text-purple-400 hover:text-purple-300 underline">Full detail →</Link>
+        <Link to="/router" className="text-blue-400 hover:text-blue-300 underline">Business problems →</Link>
+      </div>
+    </div>
+  )
+}
+
+function CourseAnswerCard({ item }: { item: typeof courses[0] }) {
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-3">
+      <div>
+        <div className="text-white font-semibold text-base">{item.course_code}</div>
+        <div className="text-gray-300 text-sm">{item.title}</div>
+        <div className="text-gray-500 text-xs mt-0.5">{(item.instructors || []).join(', ')} · {item.semester}</div>
+      </div>
+
+      {item.business_framing && (
+        <div className="bg-gray-900/60 rounded-xl p-3">
+          <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">What it covered</div>
+          <p className="text-gray-200 text-sm leading-relaxed">{item.business_framing}</p>
+        </div>
+      )}
+
+      {(item.methods || []).length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {(item.methods as string[]).slice(0, 4).map(m => (
+            <span key={m} className="bg-gray-700 text-gray-400 text-xs px-2 py-0.5 rounded-lg">{m}</span>
+          ))}
+          {(item.methods as string[]).length > 4 && (
+            <span className="text-gray-600 text-xs px-1 py-0.5">+{(item.methods as string[]).length - 4} more</span>
+          )}
+        </div>
+      )}
+
+      <div className="flex gap-3 text-xs pt-1 border-t border-gray-700/60">
+        <Link to="/courses" className="text-purple-400 hover:text-purple-300 underline">Course portal →</Link>
+        <Link to="/methods" className="text-blue-400 hover:text-blue-300 underline">Methods taught →</Link>
+      </div>
+    </div>
+  )
+}
+
+function SlideAnswerCard({ item }: { item: { deck: string; course: string; title: string; bullets: string[]; slideNum: number } }) {
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-2">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <div className="text-white font-semibold text-base">{item.title || 'Slide content'}</div>
+          <div className="text-gray-500 text-xs mt-0.5">{item.deck} · Slide {item.slideNum} · MBAN {item.course}</div>
+        </div>
+        <span className="bg-blue-900/30 text-blue-300 text-xs px-1.5 py-0.5 rounded shrink-0">Slide</span>
+      </div>
+
+      {item.bullets.length > 0 && (
+        <div className="bg-gray-900/60 rounded-xl p-3 space-y-1">
+          {item.bullets.map((b, i) => (
+            <div key={i} className="text-gray-300 text-xs flex items-start gap-2">
+              <span className="text-gray-600 shrink-0">·</span>
+              <span className="line-clamp-2">{b}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-center gap-1.5 text-xs pt-1 border-t border-gray-700/60">
+        <span className="text-gray-600">Learned in</span>
+        <Link to="/courses" className="bg-purple-900/30 text-purple-300 px-1.5 py-0.5 rounded hover:bg-purple-900/50 transition-colors">
+          MBAN {item.course}
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+function ProjectAnswerCard({ item }: { item: ProjectItem }) {
+  return (
+    <div className="bg-gray-800 border border-purple-900/40 rounded-2xl p-5 space-y-3">
+      <div>
+        <div className="text-white font-semibold text-base">{item.name}</div>
+        <div className="text-gray-500 text-xs mt-0.5">
+          {item.professor !== 'unknown' ? item.professor : 'Instructor TBD'} · {item.course} · {item.term}
+        </div>
+      </div>
+
+      <div className="bg-gray-900/60 rounded-xl p-3">
+        <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Business problem</div>
+        <p className="text-gray-200 text-sm leading-relaxed">{item.business_problem}</p>
+      </div>
+
+      <div className="flex flex-wrap gap-1">
+        {item.methods.slice(0, 3).map(m => (
+          <span key={m} className="bg-purple-900/30 text-purple-300 text-xs px-2 py-0.5 rounded-lg">{m}</span>
+        ))}
+        {item.methods.length > 3 && (
+          <span className="text-gray-600 text-xs px-1 py-0.5">+{item.methods.length - 3} more</span>
+        )}
+      </div>
+
+      <div className="flex gap-3 text-xs pt-1 border-t border-gray-700/60">
+        <Link to="/projects" className="text-purple-400 hover:text-purple-300 underline">Project detail →</Link>
+        <Link to="/courses" className="text-blue-400 hover:text-blue-300 underline">Course page →</Link>
+      </div>
+    </div>
+  )
+}
+
+// ─── Common Question Card ─────────────────────────────────────────────────────
+
+function CommonQuestionCard({ t, onSelect }: { t: Template; onSelect: (q: string) => void }) {
   const [open, setOpen] = useState(false)
   const r = t.response as Record<string, unknown>
-  const modeCls = modeColor[t.detected_mode] || 'bg-gray-700 text-gray-300 border-gray-600'
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden">
+    <div className="bg-gray-800/70 border border-gray-700 rounded-2xl overflow-hidden">
       <button
-        className="w-full text-left p-4 hover:bg-gray-750 transition-colors"
+        className="w-full text-left p-4 hover:bg-gray-800 transition-colors"
         onClick={() => setOpen(v => !v)}
       >
-        <div className="flex items-start gap-3">
-          <span className="text-purple-400 text-base mt-0.5 shrink-0">💬</span>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-white text-sm font-medium leading-snug">{t.query}</p>
-              <span className={`border text-xs px-1.5 py-0.5 rounded shrink-0 capitalize ${modeCls}`}>
-                {t.detected_mode}
-              </span>
-            </div>
-            {!open && (
-              <p className="text-gray-500 text-xs mt-1">Click to see answer</p>
-            )}
-          </div>
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-gray-200 text-sm leading-snug">{t.query}</p>
+          <span className="text-gray-500 shrink-0 text-sm">{open ? '−' : '+'}</span>
         </div>
+        {!open && (
+          <button
+            onClick={e => { e.stopPropagation(); onSelect(t.query) }}
+            className="mt-2 text-xs text-purple-400 hover:text-purple-300 underline"
+          >
+            Search this →
+          </button>
+        )}
       </button>
 
       {open && (
-        <div className="border-t border-gray-700 p-4 space-y-3 bg-gray-900/50">
+        <div className="border-t border-gray-700 p-4 space-y-3 bg-gray-900/40">
           {!!r.key_distinction && (
             <div>
               <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Key Distinction</div>
-              <p className="text-gray-200 text-sm leading-relaxed">{String(r.key_distinction)}</p>
+              <p className="text-gray-200 text-sm">{String(r.key_distinction)}</p>
             </div>
           )}
           {!!r.answer && (
             <div>
               <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Answer</div>
-              <p className="text-gray-200 text-sm leading-relaxed">{String(r.answer)}</p>
+              <p className="text-gray-200 text-sm">{String(r.answer)}</p>
             </div>
           )}
           {!!r.managerial_explanation && (
             <div>
               <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Manager-Level</div>
-              <p className="text-gray-200 text-sm leading-relaxed">{String(r.managerial_explanation)}</p>
+              <p className="text-gray-200 text-sm">{String(r.managerial_explanation)}</p>
             </div>
           )}
           {!!r.fix_chain && Array.isArray(r.fix_chain) && (
@@ -170,16 +323,16 @@ function FeaturedCard({ t, onSelect }: { t: Template; onSelect: (q: string) => v
             </div>
           )}
           {!!(r.course_origin || r.where_learned || r.course_anchor) && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-gray-600 text-xs">Learned in:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500 text-xs">Learned in:</span>
               <span className="bg-purple-900/30 text-purple-300 text-xs px-2 py-0.5 rounded">
                 {String(r.course_origin || r.where_learned || r.course_anchor)}
               </span>
             </div>
           )}
           {!!r.review_next && (
-            <div className="flex items-center gap-2 pt-2 border-t border-gray-800">
-              <span className="text-gray-500 text-xs">Review next:</span>
+            <div className="pt-2 border-t border-gray-800">
+              <span className="text-gray-500 text-xs">Review next: </span>
               <span className="text-yellow-400 text-xs">{String(r.review_next)}</span>
             </div>
           )}
@@ -187,7 +340,7 @@ function FeaturedCard({ t, onSelect }: { t: Template; onSelect: (q: string) => v
             onClick={() => onSelect(t.query)}
             className="text-xs text-purple-400 hover:text-purple-300 underline"
           >
-            Search this topic →
+            Search for more on this →
           </button>
         </div>
       )}
@@ -195,162 +348,12 @@ function FeaturedCard({ t, onSelect }: { t: Template; onSelect: (q: string) => v
   )
 }
 
-// ─── Answer Cards (search results) ────────────────────────────────────────────
+// ─── Suggested Chips ──────────────────────────────────────────────────────────
 
-const levelCls: Record<string, string> = {
-  descriptive:  'bg-blue-900/40 text-blue-300 border-blue-700',
-  diagnostic:   'bg-cyan-900/40 text-cyan-300 border-cyan-700',
-  predictive:   'bg-purple-900/40 text-purple-300 border-purple-700',
-  prescriptive: 'bg-green-900/40 text-green-300 border-green-700',
-  'ML/AI':      'bg-orange-900/40 text-orange-300 border-orange-700',
-  'Agentic AI': 'bg-red-900/40 text-red-300 border-red-700',
-}
-
-function MethodAnswer({ item }: { item: typeof methods[0] }) {
-  const lvlCls = levelCls[item.analytics_level] || 'bg-gray-700 text-gray-300 border-gray-600'
-  return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-2.5">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.method_name}</div>
-          <div className="text-gray-500 text-xs">{item.method_family}</div>
-        </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-xs text-gray-600 font-semibold">Method</span>
-          <span className={`border text-xs px-1.5 py-0.5 rounded ${lvlCls}`}>{item.analytics_level}</span>
-        </div>
-      </div>
-      <p className="text-gray-300 text-xs leading-relaxed">{item.what_it_solves}</p>
-      {(item.linked_courses || []).length > 0 && (
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-gray-600 text-xs">Learned in:</span>
-          {(item.linked_courses || []).map((c: string) => (
-            <Link key={c} to="/courses" className="bg-purple-900/30 text-purple-300 text-xs px-2 py-0.5 rounded hover:bg-purple-900/50">
-              MBAN {c}
-            </Link>
-          ))}
-        </div>
-      )}
-      {(item as any).exam_formula && (
-        <code className="block bg-gray-900 text-green-300 text-xs px-3 py-2 rounded">{(item as any).exam_formula}</code>
-      )}
-      <div className="flex gap-3 pt-1 border-t border-gray-700/60">
-        <Link to="/methods" className="text-xs text-purple-400 hover:text-purple-300 underline">Full detail →</Link>
-        <Link to="/governance" className="text-xs text-orange-400 hover:text-orange-300 underline">Governance →</Link>
-      </div>
-    </div>
-  )
-}
-
-function CourseAnswer({ item }: { item: typeof courses[0] }) {
-  return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-2.5">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.course_code} — {item.title}</div>
-          <div className="text-gray-500 text-xs">
-            {(item.instructors || []).filter(i => i !== 'unknown').join(', ') || 'Instructor TBD'} · {item.semester}
-          </div>
-        </div>
-        <span className="text-xs text-gray-600 font-semibold shrink-0">Course</span>
-      </div>
-      {item.business_framing && (
-        <p className="text-gray-400 text-xs leading-relaxed">{item.business_framing}</p>
-      )}
-      {(item.methods || []).length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {(item.methods as string[]).slice(0, 4).map(m => (
-            <span key={m} className="bg-gray-700 text-gray-400 text-xs px-1.5 py-0.5 rounded">{m}</span>
-          ))}
-          {(item.methods as string[]).length > 4 && (
-            <span className="text-gray-600 text-xs">+{(item.methods as string[]).length - 4} more</span>
-          )}
-        </div>
-      )}
-      <div className="flex gap-3 pt-1 border-t border-gray-700/60">
-        <Link to="/courses" className="text-xs text-purple-400 hover:text-purple-300 underline">Course detail →</Link>
-        <Link to="/methods" className="text-xs text-blue-400 hover:text-blue-300 underline">Methods taught →</Link>
-      </div>
-    </div>
-  )
-}
-
-function SlideAnswer({ item }: { item: { deck: string; course: string; title: string; bullets: string[]; slideNum: number } }) {
-  return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 space-y-2">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.title || 'Untitled Slide'}</div>
-          <div className="text-gray-500 text-xs">{item.deck} · Slide {item.slideNum}</div>
-        </div>
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-xs text-gray-600 font-semibold">Slide</span>
-          <span className="bg-purple-900/20 text-purple-300 text-xs px-1.5 py-0.5 rounded">MBAN {item.course}</span>
-        </div>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span className="text-gray-600 text-xs">Learned in:</span>
-        <Link to="/courses" className="bg-purple-900/20 text-purple-300 text-xs px-2 py-0.5 rounded hover:bg-purple-900/40">
-          MBAN {item.course}
-        </Link>
-      </div>
-      {item.bullets.length > 0 && (
-        <ul className="space-y-1">
-          {item.bullets.map((b, i) => (
-            <li key={i} className="text-xs text-gray-400 flex items-start gap-2">
-              <span className="text-gray-600 shrink-0">·</span>
-              <span className="line-clamp-2">{b}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
-}
-
-function ProjectAnswer({ item }: { item: ProjectItem }) {
-  return (
-    <div className="bg-gray-800 border border-purple-900/30 rounded-xl p-4 space-y-2.5">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="text-white font-medium text-sm">{item.name}</div>
-          <div className="text-gray-500 text-xs">
-            {item.professor !== 'unknown' ? item.professor : 'Instructor TBD'} · {item.course} · {item.term}
-          </div>
-        </div>
-        <span className="text-xs text-gray-600 font-semibold shrink-0">Project</span>
-      </div>
-      <p className="text-gray-300 text-xs leading-relaxed flex items-start gap-1.5">
-        <span className="shrink-0">💼</span>
-        <span>{item.business_problem}</span>
-      </p>
-      <div className="flex flex-wrap gap-1">
-        {item.methods.slice(0, 3).map(m => (
-          <span key={m} className="bg-purple-900/20 text-purple-300 text-xs px-1.5 py-0.5 rounded">{m}</span>
-        ))}
-        {item.methods.length > 3 && (
-          <span className="text-gray-600 text-xs">+{item.methods.length - 3} more</span>
-        )}
-      </div>
-      <p className="text-yellow-400/70 text-xs">Review next: {item.review_next}</p>
-      <div className="pt-1 border-t border-gray-700/60">
-        <Link to="/projects" className="text-xs text-purple-400 hover:text-purple-300 underline">View project detail →</Link>
-      </div>
-    </div>
-  )
-}
-
-// ─── Suggested chips ──────────────────────────────────────────────────────────
-
-const suggestedQueries = [
-  'bootstrap vs cross-validation',
-  'overfitting',
-  'LangGraph interrupts',
-  'equity research',
-  'LangChain',
-  'cruise line',
-  'Hai Wang',
-  'random forest',
+const suggestions = [
+  'overfitting', 'LangGraph', 'Bayes', 'random forest',
+  'Hai Wang', 'cruise line', 'equity research', 'NS Health',
+  'linear programming', 'sentiment analysis', 'neural network',
 ]
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
@@ -361,9 +364,9 @@ export default function AskMBAN() {
 
   const results = useMemo(() => runSearch(submitted), [submitted])
 
-  const methodResults  = results.filter(r => r.kind === 'method')  as Extract<SearchResult, { kind: 'method' }>[]
-  const courseResults  = results.filter(r => r.kind === 'course')  as Extract<SearchResult, { kind: 'course' }>[]
-  const slideResults   = results.filter(r => r.kind === 'slide')   as Extract<SearchResult, { kind: 'slide' }>[]
+  const methodResults = results.filter(r => r.kind === 'method') as Extract<SearchResult, { kind: 'method' }>[]
+  const courseResults = results.filter(r => r.kind === 'course') as Extract<SearchResult, { kind: 'course' }>[]
+  const slideResults = results.filter(r => r.kind === 'slide') as Extract<SearchResult, { kind: 'slide' }>[]
   const projectResults = results.filter(r => r.kind === 'project') as Extract<SearchResult, { kind: 'project' }>[]
 
   const handleSearch = (q: string) => {
@@ -379,56 +382,55 @@ export default function AskMBAN() {
   const totalSlides = slides.reduce((a, d) => a + d.slide_count, 0)
 
   return (
-    <div className="p-4 md:p-8 max-w-3xl mx-auto">
+    <div className="p-5 md:p-10 max-w-3xl mx-auto">
 
-      {/* Conversational header */}
+      {/* Header */}
       <div className="mb-8 text-center">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Ask MBAN</h1>
         <p className="text-gray-400 text-sm">
-          Search across {methods.length} methods, {courses.length} courses, {projects.length} projects, and {totalSlides} slides
+          Search your MBAN knowledge base — {methods.length} methods, {courses.length} courses, {projects.length} projects, {totalSlides} slides
+        </p>
+        <p className="text-gray-600 text-xs mt-1">
+          Client-side search · Conversational AI tutor coming soon
         </p>
       </div>
 
-      {/* Large centered search input */}
+      {/* Search Input — large, centered */}
       <form onSubmit={handleSubmit} className="mb-6">
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg pointer-events-none">💬</span>
           <input
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="What would you like to review?"
-            className="w-full bg-gray-800 border border-gray-700 focus:border-purple-500 rounded-2xl pl-12 pr-28 py-4 text-base text-gray-100 placeholder-gray-500 focus:outline-none transition-colors shadow-lg"
+            className="w-full bg-gray-800 border border-gray-700 focus:border-purple-500 rounded-2xl px-5 py-4 text-base text-gray-100 placeholder-gray-500 focus:outline-none transition-colors pr-24"
             autoFocus
           />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
-            {query && (
-              <button
-                type="button"
-                onClick={() => { setQuery(''); setSubmitted('') }}
-                className="text-gray-500 hover:text-gray-300 text-sm px-2"
-              >
-                ✕
-              </button>
-            )}
+          {query && (
             <button
-              type="submit"
-              className="bg-purple-700 hover:bg-purple-600 text-white font-medium px-4 py-2 rounded-xl text-sm transition-colors"
+              type="button"
+              onClick={() => { setQuery(''); setSubmitted('') }}
+              className="absolute right-14 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 text-sm"
             >
-              Ask
+              ✕
             </button>
-          </div>
+          )}
+          <button
+            type="submit"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-purple-700 hover:bg-purple-600 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
+          >
+            Ask
+          </button>
         </div>
 
         {/* Suggested chips */}
         <div className="mt-3 flex flex-wrap gap-2 justify-center">
-          <span className="text-gray-600 text-xs self-center">Try:</span>
-          {suggestedQueries.map(s => (
+          {suggestions.map(s => (
             <button
               key={s}
               type="button"
               onClick={() => handleSearch(s)}
-              className="text-xs bg-gray-800/80 hover:bg-gray-700 text-gray-400 hover:text-gray-200 border border-gray-700 px-3 py-1.5 rounded-full transition-colors"
+              className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-200 border border-gray-700 hover:border-gray-600 px-3 py-1.5 rounded-full transition-colors"
             >
               {s}
             </button>
@@ -436,73 +438,69 @@ export default function AskMBAN() {
         </div>
       </form>
 
-      {/* Search Results */}
+      {/* Results */}
       {submitted && (
         <div className="mb-10">
           <div className="flex items-center justify-between mb-5">
-            <div>
-              <p className="text-gray-500 text-sm">Results for</p>
-              <h2 className="text-white font-semibold text-lg">"{submitted}"</h2>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-gray-600 text-xs">{results.length} matches</span>
-              <button
-                onClick={() => { setQuery(''); setSubmitted('') }}
-                className="text-xs text-gray-500 hover:text-gray-300 underline"
-              >
-                Clear
-              </button>
-            </div>
+            <h2 className="text-white font-semibold text-lg">
+              <span className="text-purple-300">"{submitted}"</span>
+            </h2>
+            <button
+              onClick={() => { setQuery(''); setSubmitted('') }}
+              className="text-gray-600 hover:text-gray-400 text-xs underline"
+            >
+              Clear
+            </button>
           </div>
 
           {results.length === 0 ? (
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 text-center">
-              <div className="text-4xl mb-3">🤔</div>
-              <p className="text-gray-300 text-sm font-medium mb-1">Nothing found for "{submitted}"</p>
-              <p className="text-gray-500 text-xs">Try a course code (5560), professor name, or method keyword</p>
+            <div className="bg-gray-800 border border-gray-700 rounded-2xl p-10 text-center">
+              <div className="text-gray-500 mb-2 text-3xl">💭</div>
+              <p className="text-gray-400">No results for "{submitted}"</p>
+              <p className="text-gray-600 text-xs mt-1">Try a course code (5560), professor name, or method keyword</p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-8">
               {projectResults.length > 0 && (
                 <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <span>📁</span> Projects ({projectResults.length})
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
+                    Projects ({projectResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {projectResults.map(r => <ProjectAnswer key={r.item.id} item={r.item} />)}
+                  <div className="space-y-3">
+                    {projectResults.map(r => <ProjectAnswerCard key={r.item.id} item={r.item} />)}
                   </div>
                 </div>
               )}
 
               {methodResults.length > 0 && (
                 <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <span>🔬</span> Methods ({methodResults.length})
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
+                    Methods ({methodResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {methodResults.slice(0, 6).map(r => <MethodAnswer key={r.item.method_name} item={r.item} />)}
+                  <div className="space-y-3">
+                    {methodResults.slice(0, 5).map(r => <MethodAnswerCard key={r.item.method_name} item={r.item} />)}
                   </div>
                 </div>
               )}
 
               {courseResults.length > 0 && (
                 <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <span>📚</span> Courses ({courseResults.length})
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
+                    Courses ({courseResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {courseResults.map(r => <CourseAnswer key={r.item.course_code} item={r.item} />)}
+                  <div className="space-y-3">
+                    {courseResults.map(r => <CourseAnswerCard key={r.item.course_code} item={r.item} />)}
                   </div>
                 </div>
               )}
 
               {slideResults.length > 0 && (
                 <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
-                    <span>📄</span> Lecture Slides ({slideResults.length})
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
+                    Slides ({slideResults.length})
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {slideResults.slice(0, 8).map((r, i) => <SlideAnswer key={i} item={r.item} />)}
+                  <div className="space-y-3">
+                    {slideResults.slice(0, 6).map((r, i) => <SlideAnswerCard key={i} item={r.item} />)}
                   </div>
                 </div>
               )}
@@ -511,36 +509,36 @@ export default function AskMBAN() {
         </div>
       )}
 
-      {/* Common Questions — always visible when not searching */}
+      {/* Common questions — always visible when no query */}
       {!submitted && (
         <div>
           <div className="mb-4">
-            <h2 className="text-white font-semibold text-base mb-1">Common Questions</h2>
-            <p className="text-gray-500 text-xs">7 curated answers — click any to expand</p>
+            <h2 className="text-white font-semibold text-lg mb-1">Common Questions</h2>
+            <p className="text-gray-500 text-sm">7 curated Q&A pairs — click to expand</p>
           </div>
-          <div className="grid grid-cols-1 gap-3">
+          <div className="space-y-3">
             {templates.map((t, i) => (
-              <FeaturedCard key={i} t={t} onSelect={handleSearch} />
+              <CommonQuestionCard key={i} t={t} onSelect={handleSearch} />
             ))}
           </div>
         </div>
       )}
 
-      {/* Show 3 featured questions below results */}
+      {/* Show common questions below results */}
       {submitted && results.length > 0 && (
-        <div className="mt-8 pt-6 border-t border-gray-800">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-gray-400 text-sm font-semibold">Common Questions</h2>
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-white font-semibold">Common Questions</h2>
             <button
               onClick={() => { setQuery(''); setSubmitted('') }}
               className="text-xs text-gray-500 hover:text-gray-300 underline"
             >
-              See all →
+              Browse all
             </button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {templates.slice(0, 3).map((t, i) => (
-              <FeaturedCard key={i} t={t} onSelect={handleSearch} />
+              <CommonQuestionCard key={i} t={t} onSelect={handleSearch} />
             ))}
           </div>
         </div>
