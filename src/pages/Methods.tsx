@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import methods from '../data/methods.json'
 
 type Method = typeof methods[0]
@@ -49,7 +50,14 @@ function MethodCard({ method, onClick }: { method: Method; onClick: () => void }
           {method.analytics_level}
         </span>
       </div>
-      <div className="text-gray-400 text-xs mb-3 line-clamp-2">{method.what_it_solves}</div>
+      <div className="text-gray-400 text-xs mb-2 line-clamp-2">{method.what_it_solves}</div>
+      {/* Business Use */}
+      {(method.linked_problems || []).length > 0 && (
+        <div className="text-xs text-gray-500 mb-3 flex items-start gap-1">
+          <span className="shrink-0">💼</span>
+          <span className="line-clamp-1">{method.linked_problems.slice(0, 2).join(', ')}</span>
+        </div>
+      )}
       <div className="flex flex-wrap gap-1 items-center">
         <span className="bg-gray-700 text-gray-400 text-xs px-1.5 py-0.5 rounded">{method.method_family}</span>
         {method.linked_courses?.map(c => (
@@ -76,10 +84,19 @@ function MethodModal({ method, onClose }: { method: Method; onClose: () => void 
           <button onClick={onClose} className="text-gray-500 hover:text-gray-300 text-xl ml-4">✕</button>
         </div>
         <div className="p-5 space-y-4">
-          <div>
-            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">What it Solves</div>
-            <p className="text-gray-200 text-sm">{method.what_it_solves}</p>
+          {/* Business Use — visible, not expandable */}
+          <div className="bg-gray-800/80 border border-purple-900/40 rounded-xl p-3">
+            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1.5">
+              <span>💼</span> Business Use
+            </div>
+            <p className="text-gray-200 text-sm">
+              {method.what_it_solves}
+              {(method.linked_problems || []).length > 0 && (
+                <span className="text-gray-400"> — applied to: {method.linked_problems.slice(0, 3).join(', ')}.</span>
+              )}
+            </p>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">When to Use</div>
@@ -143,7 +160,18 @@ function MethodModal({ method, onClose }: { method: Method; onClose: () => void 
             </div>
           )}
           <div className="pt-2 border-t border-gray-800">
-            <div className="text-xs text-gray-600">Evidence: {method.evidence_origin} · Confidence: {method.confidence}</div>
+            <div className="text-xs text-gray-600 mb-3">Evidence: {method.evidence_origin} · Confidence: {method.confidence}</div>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/courses" onClick={onClose} className="text-xs text-purple-400 hover:text-purple-300 underline">
+                Browse courses where this is taught →
+              </Link>
+              <Link to="/ask" onClick={onClose} className="text-xs text-green-400 hover:text-green-300 underline">
+                Ask MBAN about this method →
+              </Link>
+              <Link to="/router" onClick={onClose} className="text-xs text-blue-400 hover:text-blue-300 underline">
+                Find business problems this solves →
+              </Link>
+            </div>
           </div>
         </div>
       </div>
