@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+# MBAN Toolkit Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A phone-viewable, portfolio-grade knowledge system dashboard for the Master of Business Analytics (MBAN) program at Saint Mary's University.
 
-Currently, two official plugins are available:
+**Live site:** https://GavinShklanka.github.io/mban-toolkit-dashboard
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What This Dashboard Is
 
-## React Compiler
+A governed knowledge system showing:
+- What was learned, where, and in which courses
+- How analytics concepts connect across the 6-stage Analytics Ladder (Descriptive to Agentic AI)
+- Which methods and tools apply to which business problems
+- What governance and risk concerns matter for each method
+- The evidence quality behind every claim
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How Evidence Works
 
-## Expanding the ESLint configuration
+Every method, course, and claim has an evidence tier:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| Badge | Tier | Meaning |
+|---|---|---|
+| Outline (green) | full_outline_confirmed | Full course outline uploaded and verified |
+| Artifact (blue) | partial_artifacts_only | Evidence from assignments, exams, or labs only |
+| Provisional (yellow) | user_confirmed_reconstruction | User-reconstructed from memory + artifacts, no outline |
+| Gap (red) | unresolved | Course identity or content unknown |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## What "User-Confirmed Reconstruction" Means for MBAN 5540
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+MBAN 5540 (Optimization & Decision Analysis, Instructor: Majid Taghavi) was not accompanied by an uploaded course outline. All content for this course -- including LP formulation, Integer Programming, Duality, Sensitivity Analysis, Decision Analysis (EMV/EVPI), Multi-objective optimization, Gurobi, and Excel Solver -- was reconstructed from exam preparation materials and assignment briefs submitted during the course.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Topics are labeled "Provisional" and marked as partial_artifacts_only evidence. They represent high-confidence reconstruction but are not outline-verified.
+
+## Pages
+
+1. Knowledge Cockpit -- Metric overview, evidence health, confusion pairs, quick navigation
+2. Analytics Ladder -- 6-stage progression with methods, tools, governance per stage
+3. Course Intelligence -- 9 course cards with full detail drill-down
+4. Method Registry -- 35+ searchable/filterable methods with governance risks
+5. Solution Router -- Map business problems to candidate methods and tools
+6. Interactive Refresh -- 7 Q&A pairs + 25 self-test prompts by topic
+7. Governance & Risk -- Methods x risk dimensions color-coded grid
+8. Evidence Audit -- Tier distribution, correction log, gap register
+
+## Run Locally
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app runs at http://localhost:5173
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Deploy to GitHub Pages
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run deploy
 ```
+
+## Tech Stack
+
+- Vite + React + TypeScript
+- Tailwind CSS v4
+- React Router v7 (HashRouter for GitHub Pages compatibility)
+- Static JSON data, no backend
+
+## Data Sources
+
+All data is sourced from the MBAN Master Notes knowledge system (v2.1-delta, April 2026):
+- Course objects with methods, tools, deliverables
+- Method registry with governance risk assessments
+- Business problem to method routing
+- Governance overlay (methods x risk dimensions)
+- Evidence health and correction log
