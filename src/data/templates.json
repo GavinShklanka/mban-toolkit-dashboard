@@ -1,0 +1,96 @@
+[
+  {
+    "query": "What's the difference between k-fold CV and bootstrap in what I learned?",
+    "detected_mode": "recalibration",
+    "confusion_pair": ["METHOD_GRID_SEARCH_CV", "METHOD_BOOTSTRAP"],
+    "response": {
+      "you_may_be_confusing": "k-fold cross-validation and bootstrap resampling",
+      "key_distinction": "k-fold partitions data into non-overlapping folds and rotates the test set; bootstrap samples with replacement, leaving ~36.8% out-of-bag for testing",
+      "comparison": {"sampling": {"kfold": "without replacement, non-overlapping", "bootstrap": "with replacement, overlapping"}, "test_set": {"kfold": "1/k of data, rotated", "bootstrap": "~36.8% OOB, varies per draw"}, "best_for": {"kfold": "systematic hyperparameter comparison", "bootstrap": "model stability estimation, small data"}},
+      "memory_anchor": "k-fold = partitions; bootstrap = resampling with replacement",
+      "course_origin": "MBAN 5560 Wk 3-4 (grid search + CV), R scripts CV.R and OOB.R",
+      "evidence": "LOCAL_COURSE_OUTLINE + LOCAL_COURSE_ARTIFACT",
+      "review_next": "PROMPT_RECALL_OVERFITTING"
+    }
+  },
+  {
+    "query": "What method should I use if I need classification with limited data?",
+    "detected_mode": "selection",
+    "response": {
+      "problem": "binary classification with small sample",
+      "analytics_layer": "predictive",
+      "candidate_methods": ["Logistic regression (interpretable, works well with small data)", "Naive Bayes (performs surprisingly well with limited samples)", "SVM (effective in high-dimensional small-sample settings)", "kNN (if features are low-dimensional and standardized)"],
+      "avoid": ["neural networks (need large data)", "XGBoost (overfits small samples without careful tuning)"],
+      "tools": ["R glm/e1071/caret", "Python scikit-learn"],
+      "managerial_explanation": "With limited data, use methods that make strong assumptions (like logistic regression) because they're less likely to overfit. More flexible methods need more data to learn reliably.",
+      "governance_cautions": ["validate with bootstrap rather than k-fold to preserve sample size", "report confidence intervals, not just point estimates", "check class balance"],
+      "course_anchors": ["MBAN_5560"],
+      "route_confidence": "HIGH",
+      "review_before_applying": ["bias-variance tradeoff", "cross-validation", "class imbalance handling"]
+    }
+  },
+  {
+    "query": "I'm overfitting. What concept chain should I revisit?",
+    "detected_mode": "troubleshooting",
+    "response": {
+      "symptom": "Training error much lower than test error; model memorizes noise",
+      "likely_causes": ["Model too complex for data size (too many parameters, too deep tree, too many polynomial terms)", "No validation during training (no CV, no early stopping)", "Data leakage (test information leaked into training)"],
+      "fix_chain": ["1. Compare training RMSPE vs test RMSPE (Overfitting.R from 5560)", "2. Simplify model: reduce polynomial degree, prune tree, add regularization", "3. Implement k-fold CV or bootstrap validation", "4. For boosting: add early stopping, reduce learning rate", "5. For neural networks: add dropout, reduce layers"],
+      "prevention": "Always evaluate on held-out data. Use the bias-variance tradeoff framework: more complexity reduces bias but increases variance.",
+      "course_anchor": "MBAN 5560 Wk 1-2 (theory), Overfitting.R script (linear vs polynomial vs spline demonstration)",
+      "evidence": "LOCAL_COURSE_OUTLINE + LOCAL_COURSE_ARTIFACT",
+      "review_next": "PROMPT_TROUBLESHOOTING_VALIDATION"
+    }
+  },
+  {
+    "query": "How do I map prescriptive analytics to hospital staffing?",
+    "detected_mode": "transfer",
+    "response": {
+      "source": "LP formulation from MBAN 5540 (production planning, resource allocation)",
+      "target": "hospital staffing optimization",
+      "mapping": "Decision variables: staff assigned per shift per department. Objective: minimize total cost OR maximize coverage. Constraints: minimum staff per department (patient safety), maximum hours per employee (labor law), demand forecasts by time block.",
+      "adaptations_needed": ["Integer programming required (can't assign fractional staff)", "Multi-period constraints for shift scheduling", "Stochastic demand may require simulation (@RISK) or robust optimization"],
+      "governance_in_new_context": "Patient safety minimums as hard constraints (not soft). Fairness in shift distribution across staff. Rural access equity if multi-site. See MBAN 5540 healthcare routing optimization brief.",
+      "confidence": "MEDIUM (transfer from manufacturing LP to healthcare staffing is well-supported but requires adaptation)",
+      "limitations": "LP assumes linear relationships; real staffing has nonlinear fatigue effects, morale factors, and regulatory complexity",
+      "course_anchor": "MBAN 5540 (LP/IP), optimization_brief.pdf (healthcare routing)"
+    }
+  },
+  {
+    "query": "What did I learn about LangGraph interrupts and why do they matter?",
+    "detected_mode": "recall",
+    "response": {
+      "answer": "LangGraph supports interrupt functions that pause execution at defined points in a workflow graph. These create checkpoints where human review or automated validation can occur before the agent proceeds. Interrupts are essential because agent loops can produce unexpected behavior — an uninterrupted agent might take irreversible actions based on hallucinated reasoning.",
+      "where_learned": "MBAN 5510 Module III (Intro to LangGraph + Advanced LangGraph), LO #9",
+      "evidence": "LOCAL_COURSE_OUTLINE",
+      "adjacent_concept": "super-steps (the execution units between interrupts), HITL control, LangSmith monitoring for post-hoc trace analysis",
+      "common_mistake": "Placing interrupts too late in the workflow — by the time you pause, the agent may have already taken a harmful action",
+      "review_next": "PROMPT_RECALL_HITL_CONTROL"
+    }
+  },
+  {
+    "query": "How do I explain a white paper method to non-technical stakeholders?",
+    "detected_mode": "transfer",
+    "response": {
+      "source": "MBAN 5510 NS Health Data Project white paper methodology",
+      "target": "general stakeholder communication",
+      "mapping": "The 5510 white paper framework requires: (1) methodological descriptions that are non-technical and easily understood by laypeople, (2) results presented accessibly for Nova Scotian stakeholders rather than academics, (3) transparent code for replication, (4) framing around why the research question matters to the audience.",
+      "key_principles": ["Lead with the 'so what' — what does this mean for the stakeholder?", "Describe methods in plain language: 'we compared X against Y to see which better predicts Z'", "Use visuals over equations", "Identify methodological trade-offs in simple terms", "State what you can and cannot claim (especially: relational analysis cannot claim causation without experimental design, per 5510 methodology assessment criteria)"],
+      "governance_in_new_context": "Transparency requirement: code and data must be reviewable. Peer evaluation built into process (peer data evaluation 5%, peer code evaluation 5%).",
+      "confidence": "HIGH",
+      "course_anchor": "MBAN 5510 NS Health Data Project (45% of grade), white paper rubric"
+    }
+  },
+  {
+    "query": "What can I use LangSmith for in the way I was taught?",
+    "detected_mode": "recall",
+    "response": {
+      "answer": "LangSmith Studio is used for monitoring application performance and debugging agent systems. In the MBAN 5510 curriculum, it's positioned as the observability layer for LangChain/LangGraph applications — you use it to trace agent execution, identify where agents fail or hallucinate, measure performance, and debug workflow issues.",
+      "where_learned": "MBAN 5510 LO #11: 'Monitor application performance and debugging via LangSmith Studio'",
+      "evidence": "LOCAL_COURSE_OUTLINE",
+      "adjacent_concept": "LangGraph checkpoints (state snapshots for debugging), interrupt functions (pause points for inspection), agent evaluation (systematic testing)",
+      "common_mistake": "Using LangSmith only for post-mortem debugging instead of continuous monitoring during development",
+      "review_next": "PROMPT_RECALL_AGENT_GOVERNANCE"
+    }
+  }
+]

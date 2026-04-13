@@ -1,0 +1,35 @@
+{
+  "system_metadata": {
+    "name": "MBAN Toolkit Dashboard Knowledge System",
+    "version": "2.1-delta",
+    "date": "2026-04-12",
+    "total_courses": 9,
+    "total_methods": 35,
+    "total_tools": 22,
+    "total_business_problems": 12,
+    "total_governance_overlays": 14,
+    "total_learning_prompts": 25,
+    "total_evidence_items": 100,
+    "outline_confirmed_courses": 3,
+    "artifact_only_courses": 5,
+    "unresolved_courses": 1
+  },
+  "evidence_health": {
+    "courses_with_outline": ["MBAN_5510", "MBAN_5560", "MBAN_5570"],
+    "courses_artifact_only": ["MBAN_5502", "MBAN_5520", "MBAN_5540", "MBAN_5550", "MBAN_5800"],
+    "courses_unresolved": ["MBAN_5891"],
+    "critical_gaps": ["MBAN_5540_outline", "MBAN_5891_identity", "elective_options"],
+    "corrections_applied": 23,
+    "items_upgraded": 23,
+    "items_downgraded": 0
+  },
+  "confusion_pairs": [
+    {"pair": ["bootstrap", "k-fold CV"], "key_distinction": "sampling with replacement (~36.8% OOB) vs non-overlapping fold partitioning", "course": "MBAN_5560"},
+    {"pair": ["bagging", "boosting"], "key_distinction": "parallel variance reduction vs sequential bias reduction", "course": "MBAN_5560"},
+    {"pair": ["predictive analytics", "diagnostic analytics"], "key_distinction": "forward-looking model (what will happen) vs backward-looking explanation (why did it happen)", "course": "MBAN_5520/5560"},
+    {"pair": ["workflow", "agentic workflow"], "key_distinction": "deterministic step sequence vs LLM-driven adaptive execution with tool use", "course": "MBAN_5510"},
+    {"pair": ["confidence interval", "prediction interval"], "key_distinction": "uncertainty about the mean vs uncertainty about an individual observation", "course": "MBAN_5520"},
+    {"pair": ["shadow price", "reduced cost"], "key_distinction": "marginal value of relaxing a constraint vs penalty for forcing a non-basic variable into solution", "course": "MBAN_5540"},
+    {"pair": ["correlation", "causation"], "key_distinction": "statistical association vs established directional mechanism — relational analysis cannot claim cause and effect without experimental design", "course": "MBAN_5510/5520"}
+  ]
+}
