@@ -4,6 +4,7 @@ import Cockpit from './pages/Cockpit'
 import Ladder from './pages/Ladder'
 import Courses from './pages/Courses'
 import Methods from './pages/Methods'
+import Projects from './pages/Projects'
 import SolutionRouter from './pages/SolutionRouter'
 import Refresh from './pages/Refresh'
 import Governance from './pages/Governance'
@@ -19,6 +20,7 @@ function App() {
           <Route path="/ladder" element={<Ladder />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/methods" element={<Methods />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/router" element={<SolutionRouter />} />
           <Route path="/refresh" element={<Refresh />} />
           <Route path="/governance" element={<Governance />} />

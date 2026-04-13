@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import courses from '../data/courses.json'
 import slides from '../data/slides.json'
 
@@ -131,6 +132,16 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
             </div>
           )}
 
+          {/* Business Applications — visible, not hidden */}
+          {course.business_framing && (
+            <div className="bg-gray-800/80 border border-purple-900/40 rounded-xl p-3">
+              <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                <span>💼</span> Business Applications
+              </div>
+              <p className="text-gray-200 text-sm">{course.business_framing}</p>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <div className="text-gray-500 text-xs mb-1">Semester</div>
@@ -210,7 +221,18 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
           )}
 
           <div className="pt-2 border-t border-gray-800">
-            <div className="text-xs text-gray-600">Evidence: {course.evidence_origin}</div>
+            <div className="text-xs text-gray-600 mb-3">Evidence: {course.evidence_origin}</div>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/methods" onClick={onClose} className="text-xs text-purple-400 hover:text-purple-300 underline">
+                Browse methods from this course →
+              </Link>
+              <Link to="/projects" onClick={onClose} className="text-xs text-blue-400 hover:text-blue-300 underline">
+                View projects from this course →
+              </Link>
+              <Link to="/ask" onClick={onClose} className="text-xs text-green-400 hover:text-green-300 underline">
+                Ask MBAN about this course →
+              </Link>
+            </div>
           </div>
         </div>
       </div>

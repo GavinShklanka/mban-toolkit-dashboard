@@ -5,6 +5,7 @@ const navItems = [
   { path: '/ladder', label: 'Ladder', icon: '📊', short: 'Ladder' },
   { path: '/courses', label: 'Courses', icon: '📚', short: 'Courses' },
   { path: '/methods', label: 'Methods', icon: '🔬', short: 'Methods' },
+  { path: '/projects', label: 'Projects', icon: '📁', short: 'Projects' },
   { path: '/ask', label: 'Ask MBAN', icon: '🔍', short: 'Ask' },
   { path: '/router', label: 'Router', icon: '🗺️', short: 'Router' },
   { path: '/refresh', label: 'Refresh', icon: '💡', short: 'Refresh' },
@@ -56,20 +57,20 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Mobile Bottom Nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-gray-950 border-t border-gray-800 z-10">
-        <div className="flex">
+        <div className="flex overflow-x-auto scrollbar-hide">
           {navItems.map(item => (
             <NavLink
               key={item.path}
               to={item.path}
               end={item.path === '/'}
               className={({ isActive }) =>
-                `flex-1 flex flex-col items-center py-2 text-xs transition-colors ${
+                `flex-none flex flex-col items-center py-2 px-2.5 min-w-[52px] text-xs transition-colors ${
                   isActive ? 'text-purple-400' : 'text-gray-500'
                 }`
               }
             >
               <span className="text-lg leading-none">{item.icon}</span>
-              <span className="mt-0.5">{item.short}</span>
+              <span className="mt-0.5 whitespace-nowrap">{item.short}</span>
             </NavLink>
           ))}
         </div>

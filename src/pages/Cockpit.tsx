@@ -74,13 +74,43 @@ const metrics = [
   { label: 'Governance Overlays', value: seed.system_metadata.total_governance_overlays, color: 'text-orange-400' },
 ]
 
-const navCards = [
-  { path: '/ask', icon: '💬', label: 'Ask MBAN', desc: 'Search methods, courses, and 476 extracted slides. 7 featured Q&A responses.', highlight: true },
-  { path: '/ladder', icon: '📊', label: 'Analytics Ladder', desc: '6-stage progression from Descriptive → Agentic AI' },
-  { path: '/courses', icon: '📚', label: 'Course Intelligence', desc: '9 courses with evidence, methods, and deliverables' },
-  { path: '/methods', icon: '🔬', label: 'Method Registry', desc: '51 searchable/filterable analytics methods' },
-  { path: '/router', icon: '🗺️', label: 'Solution Router', desc: 'Map business problems to methods and tools' },
-  { path: '/refresh', icon: '💡', label: 'Interactive Refresh', desc: 'Q&A pairs and self-test prompts by topic' },
+const actionCards = [
+  {
+    path: '/ask',
+    icon: '💬',
+    label: 'Refresh a concept',
+    desc: 'Search 51 methods, 9 courses, and 476 extracted slides by keyword, professor, or topic.',
+    highlight: true,
+  },
+  {
+    path: '/methods',
+    icon: '🔬',
+    label: 'Find where a method was taught',
+    desc: 'Browse the full method registry — filter by analytics level, family, or course.',
+  },
+  {
+    path: '/projects',
+    icon: '📁',
+    label: 'Browse projects & assignments',
+    desc: '6 substantive projects across 5 courses — SQL, ML, optimization, equity research, white paper.',
+  },
+  {
+    path: '/courses',
+    icon: '📚',
+    label: 'Browse by course',
+    desc: '9 MBAN courses with evidence strips, methods, tools, and deliverables.',
+  },
+  {
+    path: '/router',
+    icon: '🗺️',
+    label: 'Map a business problem to methods',
+    desc: '18 business problems pre-routed to candidate methods, tools, and governance cautions.',
+  },
+]
+
+const moreCards = [
+  { path: '/ladder', icon: '📊', label: 'Analytics Ladder', desc: '6-stage progression: Descriptive → Agentic AI' },
+  { path: '/refresh', icon: '💡', label: 'Interactive Refresh', desc: '7 featured Q&A pairs + self-test prompts by topic' },
   { path: '/governance', icon: '🛡️', label: 'Governance & Risk', desc: 'Methods × risk dimensions color-coded grid' },
   { path: '/evidence', icon: '📋', label: 'Evidence Audit', desc: 'Tier distribution, correction log, gap register' },
 ]
@@ -88,10 +118,22 @@ const navCards = [
 export default function Cockpit() {
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto">
-      {/* Header */}
+      {/* Header + Orientation */}
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">Knowledge Cockpit</h1>
-        <p className="text-gray-400 text-sm">MBAN Toolkit Dashboard · Saint Mary's University · v2.0</p>
+        <p className="text-gray-400 text-sm mb-3">MBAN Toolkit Dashboard · Saint Mary's University · v2.0</p>
+        <div className="bg-gray-800/60 border border-gray-700 rounded-xl px-4 py-3">
+          <p className="text-gray-200 text-sm font-medium">
+            MBAN knowledge library and learning toolkit —{' '}
+            <span className="text-blue-400">9 courses</span>,{' '}
+            <span className="text-purple-400">51 methods</span>,{' '}
+            <span className="text-green-400">476 slides</span>,{' '}
+            <span className="text-yellow-400">6 projects</span>, source-backed retrieval
+          </p>
+          <p className="text-gray-500 text-xs mt-1">
+            All content sourced from actual MBAN coursework, PPTX decks, SQL files, notebooks, and R scripts.
+          </p>
+        </div>
       </div>
 
       {/* Alert Banner */}
@@ -195,26 +237,48 @@ export default function Cockpit() {
         </div>
       </div>
 
-      {/* Quick Jump Nav Cards */}
-      <div>
-        <h2 className="text-white font-semibold mb-4">Quick Jump</h2>
+      {/* What can I do? — Action Cards */}
+      <div className="mb-8">
+        <h2 className="text-white font-semibold mb-1">What can I do?</h2>
+        <p className="text-gray-500 text-xs mb-4">Primary entry points</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {navCards.map(card => (
+          {actionCards.map(card => (
             <Link
               key={card.path}
               to={card.path}
               className={`border rounded-xl p-4 transition-all group ${
-                (card as any).highlight
-                  ? 'bg-purple-900/20 border-purple-700 hover:border-purple-500 col-span-1 sm:col-span-2 lg:col-span-1'
+                card.highlight
+                  ? 'bg-purple-900/20 border-purple-700 hover:border-purple-500'
                   : 'bg-gray-800 border-gray-700 hover:border-purple-600'
               }`}
             >
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-xl">{card.icon}</span>
-                <span className={`font-medium text-sm group-hover:text-purple-300 ${(card as any).highlight ? 'text-purple-200' : 'text-white'}`}>{card.label}</span>
-                {(card as any).highlight && <span className="ml-auto text-xs bg-purple-700/50 text-purple-300 px-1.5 py-0.5 rounded">New</span>}
+                <span className={`font-medium text-sm group-hover:text-purple-300 ${card.highlight ? 'text-purple-200' : 'text-white'}`}>
+                  {card.label}
+                </span>
               </div>
               <p className="text-gray-400 text-xs">{card.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* More tools */}
+      <div>
+        <h2 className="text-gray-400 text-sm font-semibold mb-3">More tools</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {moreCards.map(card => (
+            <Link
+              key={card.path}
+              to={card.path}
+              className="bg-gray-800/60 border border-gray-700/60 rounded-xl p-3 transition-all group hover:border-gray-600"
+            >
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-base">{card.icon}</span>
+                <span className="text-gray-300 text-xs font-medium group-hover:text-white">{card.label}</span>
+              </div>
+              <p className="text-gray-500 text-xs">{card.desc}</p>
             </Link>
           ))}
         </div>

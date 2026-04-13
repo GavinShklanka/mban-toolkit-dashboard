@@ -1,0 +1,176 @@
+[
+  {
+    "id": "cruise-line-db",
+    "name": "Cruise Line Database Project",
+    "course": "MBAN 5550",
+    "course_code": "5550",
+    "professor": "Hai Wang",
+    "term": "Fall 2025",
+    "source_artifacts": [
+      "CruiseReserveBuild.sql",
+      "KPI_Step3.sql",
+      "ExpandData_Step4.sql",
+      "GroupProject2-5550.pptx"
+    ],
+    "methods": ["SQL analytics", "ER modelling", "KPI computation", "relational database design"],
+    "tools": ["SQL", "SQL Server", "Visual Studio"],
+    "business_problem": "Extract business intelligence from operational cruise line reservation data",
+    "what_it_taught": "Database design thinking, SQL query construction, ER modelling, managerial insight derivation from structured data",
+    "related_methods": ["SQL Relational DB Design"],
+    "related_courses": ["5550"],
+    "review_next": "method cards for SQL analytics, course page for 5550",
+    "evidence_type": "artifact",
+    "search_keywords": ["cruise line", "SQL project", "database", "Hai Wang", "KPI", "ER model", "5550", "relational"]
+  },
+  {
+    "id": "ns-health-white-paper",
+    "name": "NS Health Open Data White Paper",
+    "course": "MBAN 5510",
+    "course_code": "5510",
+    "professor": "Dr. Boland",
+    "term": "Winter 2026",
+    "source_artifacts": [
+      "White Paper Proposal Presentation.pptx",
+      "optimization_brief.pdf",
+      "health_routing_optimizer.py"
+    ],
+    "methods": [
+      "Research question formulation",
+      "data cleaning and merging",
+      "peer evaluation",
+      "stakeholder-facing white paper writing",
+      "multi-objective optimization"
+    ],
+    "tools": ["Python", "R"],
+    "business_problem": "Address stakeholder-relevant healthcare questions for Nova Scotian policy makers using open data",
+    "what_it_taught": "Public utility research orientation, transparent methodology, peer code evaluation, non-technical communication, multi-objective healthcare optimization",
+    "related_methods": ["HITL Control", "Multi-Objective Optimization"],
+    "related_courses": ["5510"],
+    "review_next": "Ask MBAN for 'white paper methodology'",
+    "evidence_type": "outline",
+    "search_keywords": ["NS health", "white paper", "open data", "Nova Scotia", "healthcare", "Dr. Boland", "Boland", "5510", "optimization", "health routing"]
+  },
+  {
+    "id": "forecasting-experiment",
+    "name": "Forecasting Web Experiment",
+    "course": "MBAN 5502",
+    "course_code": "5502",
+    "professor": "unknown",
+    "term": "Fall 2025",
+    "source_artifacts": [
+      "MBAN5502_Forecasting/ (Flask app)",
+      "forecasting_web/",
+      "run_experiment.py",
+      "participant_MBAN_condition CSVs"
+    ],
+    "methods": [
+      "Experimental design",
+      "Python web development (Flask)",
+      "time series forecasting",
+      "data collection"
+    ],
+    "tools": ["Python", "Flask", "Jupyter"],
+    "business_problem": "Build interactive experimental platform for forecasting research",
+    "what_it_taught": "Full-stack experiment implementation, participant data collection, experimental replication methodology",
+    "related_methods": [],
+    "related_courses": ["5502"],
+    "review_next": "5502 course page, Python methods",
+    "evidence_type": "artifact",
+    "search_keywords": ["forecasting experiment", "Flask", "web experiment", "5502", "time series", "experimental design", "forecasting web"]
+  },
+  {
+    "id": "ml-assignment-cluster",
+    "name": "ML Assignment Cluster (kNN + Ensembles)",
+    "course": "MBAN 5560",
+    "course_code": "5560",
+    "professor": "Dr. Aydede",
+    "term": "Winter 2026",
+    "source_artifacts": [
+      "A2_student.qmd (kNN regression + classification)",
+      "Assignment3_Gavin_Shklanka.ipynb",
+      "Assignment4.ipynb",
+      "R scripts (CV.R, OOB.R, Overfitting.R)"
+    ],
+    "methods": ["kNN", "cross-validation", "bootstrap", "random forest", "GBM", "XGBoost"],
+    "tools": ["R", "caret", "tidyverse", "Python"],
+    "business_problem": "Predict housing prices (Ames dataset) and classify customer churn (Telco dataset)",
+    "what_it_taught": "Full ML pipeline from preprocessing through hyperparameter tuning to evaluation; bias-variance tradeoff in practice",
+    "related_methods": [
+      "k-Nearest Neighbors (kNN)",
+      "Random Forest",
+      "GBM (Gradient Boosting Machine)",
+      "XGBoost",
+      "Bootstrap Resampling",
+      "Grid Search + Cross-Validation"
+    ],
+    "related_courses": ["5560"],
+    "review_next": "overfitting troubleshooting, ensemble method comparison",
+    "evidence_type": "outline",
+    "search_keywords": [
+      "kNN", "random forest", "XGBoost", "ensemble", "5560", "Aydede",
+      "housing prices", "churn", "Ames", "Telco", "ML assignment", "cross-validation", "bootstrap"
+    ]
+  },
+  {
+    "id": "financial-analytics",
+    "name": "Financial Analytics Equity Research",
+    "course": "MBAN 5570",
+    "course_code": "5570",
+    "professor": "Dr. Rahaman",
+    "term": "Winter 2026",
+    "source_artifacts": [
+      "MBAN5570 assignment PDFs (1–4)",
+      "Palantir_Equity_Research deck",
+      "slides_10a_10b_FINAL.pptx",
+      "MBAN5570_FinModelling_3SDDM.xlsx"
+    ],
+    "methods": [
+      "@RISK Monte Carlo",
+      "pro forma forecasting",
+      "valuation models",
+      "equity research methodology",
+      "AI-assisted analysis with critical evaluation"
+    ],
+    "tools": ["Excel", "@RISK", "Python", "WRDS", "Power BI"],
+    "business_problem": "Conduct equity research on a publicly listed company and produce a client-facing White Paper with investment recommendation",
+    "what_it_taught": "Traditional vs AI-assisted financial analysis, critical evaluation of AI outputs, professional presentation skills",
+    "related_methods": ["Monte Carlo Simulation", "Decision Analysis (EMV/EVPI)"],
+    "related_courses": ["5570"],
+    "review_next": "Monte Carlo method card, equity research method card",
+    "evidence_type": "outline",
+    "search_keywords": [
+      "equity research", "financial analytics", "Palantir", "Monte Carlo", "5570",
+      "Rahaman", "pro forma", "valuation", "WRDS", "@RISK", "investment"
+    ]
+  },
+  {
+    "id": "looms-of-ladakh",
+    "name": "Optimization Case: Looms of Ladakh",
+    "course": "MBAN 5540",
+    "course_code": "5540",
+    "professor": "Majid Taghavi",
+    "term": "Winter 2026",
+    "source_artifacts": [
+      "Looms_of_Ladakh_Executive 1.pptx",
+      "looms_of_ladakh_optimization.py",
+      "Case 7 PDF"
+    ],
+    "methods": [
+      "Linear programming",
+      "production optimization",
+      "resource allocation",
+      "sensitivity analysis"
+    ],
+    "tools": ["Python (Gurobi)", "Excel Solver"],
+    "business_problem": "Optimize textile production (shawls vs stoles) under resource constraints to maximize profit",
+    "what_it_taught": "LP formulation in real business context, translating constraints from case narrative, sensitivity analysis for managerial recommendations",
+    "related_methods": ["Linear Programming", "Duality (Primal-Dual)"],
+    "related_courses": ["5540"],
+    "review_next": "LP method card, duality method card",
+    "evidence_type": "provisional",
+    "search_keywords": [
+      "looms of Ladakh", "optimization case", "linear programming", "5540",
+      "Taghavi", "textile", "production", "shawls", "Gurobi", "resource allocation"
+    ]
+  }
+]
