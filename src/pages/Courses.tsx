@@ -1,7 +1,38 @@
 import { useState } from 'react'
 import courses from '../data/courses.json'
+import slides from '../data/slides.json'
 
 type Course = typeof courses[0]
+
+// Pre-compute PPTX deck + slide counts per course code (numeric part)
+const decksByCourse: Record<string, { decks: number; slides: number }> = slides.reduce((acc, d) => {
+  acc[d.course] = acc[d.course]
+    ? { decks: acc[d.course].decks + 1, slides: acc[d.course].slides + d.slide_count }
+    : { decks: 1, slides: d.slide_count }
+  return acc
+}, {} as Record<string, { decks: number; slides: number }>)
+
+function getCourseCode(course: Course) {
+  return course.course_code.replace('MBAN ', '')
+}
+
+type EvidenceType = 'outline' | 'pptx' | 'artifact' | 'provisional' | 'gap'
+
+function getEvidenceType(course: Course): EvidenceType {
+  if (course.source_status === 'unresolved') return 'gap'
+  if ((course as any).provisional) return 'provisional'
+  if (course.source_status === 'full_outline_confirmed') return 'outline'
+  if (decksByCourse[getCourseCode(course)]) return 'pptx'
+  return 'artifact'
+}
+
+const EVconfig: Record<EvidenceType, { dot: string; bg: string; text: string; border: string; label: string }> = {
+  outline:     { dot: 'bg-green-400',  bg: 'bg-green-900/30',  text: 'text-green-300',  border: 'border-green-700',  label: 'Full Outline' },
+  pptx:        { dot: 'bg-purple-400', bg: 'bg-purple-900/30', text: 'text-purple-300', border: 'border-purple-700', label: 'PPTX Slides' },
+  artifact:    { dot: 'bg-blue-400',   bg: 'bg-blue-900/30',   text: 'text-blue-300',   border: 'border-blue-700',   label: 'Artifacts' },
+  provisional: { dot: 'bg-yellow-400', bg: 'bg-yellow-900/30', text: 'text-yellow-300', border: 'border-yellow-700', label: 'Provisional' },
+  gap:         { dot: 'bg-red-400',    bg: 'bg-red-900/30',    text: 'text-red-300',    border: 'border-red-700',    label: 'Unresolved' },
+}
 
 function statusBadge(status: string) {
   switch (status) {
@@ -34,6 +65,47 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
           </div>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-300 text-xl ml-4">✕</button>
         </div>
+
+        {/* ── Evidence Strip ────────────────────────────────────────── */}
+        {(() => {
+          const ev = getEvidenceType(course)
+          const cfg = EVconfig[ev]
+          const code = getCourseCode(course)
+          const pptx = decksByCourse[code]
+          const delivCount = course.deliverables.length
+          const methodCount = course.methods.length
+          const toolCount = course.tools.length
+          return (
+            <div className={`px-5 py-3 border-b border-gray-800 ${cfg.bg} flex flex-wrap items-center gap-3`}>
+              {/* Primary evidence badge */}
+              <span className={`inline-flex items-center gap-1.5 border rounded-md px-2 py-1 text-xs font-semibold ${cfg.text} ${cfg.border}`}>
+                <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
+                {cfg.label}
+              </span>
+              {/* PPTX chip */}
+              {pptx && (
+                <span className="inline-flex items-center gap-1 bg-purple-900/20 text-purple-300 border border-purple-800 rounded-md px-2 py-1 text-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                  {pptx.decks} PPTX {pptx.decks === 1 ? 'deck' : 'decks'} · {pptx.slides} slides
+                </span>
+              )}
+              {/* Deliverables chip */}
+              {delivCount > 0 && (
+                <span className="text-xs text-gray-500">{delivCount} deliverable{delivCount !== 1 ? 's' : ''}</span>
+              )}
+              {/* Methods chip */}
+              {methodCount > 0 && (
+                <span className="text-xs text-gray-500">{methodCount} method{methodCount !== 1 ? 's' : ''}</span>
+              )}
+              {/* Tools chip */}
+              {toolCount > 0 && (
+                <span className="text-xs text-gray-500">{toolCount} tool{toolCount !== 1 ? 's' : ''}</span>
+              )}
+              {/* Confidence */}
+              <span className={`ml-auto text-xs ${cfg.text} opacity-70`}>{course.confidence}</span>
+            </div>
+          )
+        })()}
 
         <div className="p-5 space-y-5">
           {/* Provisional warning */}
@@ -158,19 +230,23 @@ export default function Courses() {
 
       {/* Legend */}
       <div className="flex flex-wrap gap-3 mb-6 text-xs">
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-green-400 inline-block"></span> <span className="text-gray-400">Outline Confirmed</span></div>
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-blue-400 inline-block"></span> <span className="text-gray-400">Artifact Only</span></div>
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-yellow-400 inline-block"></span> <span className="text-gray-400">Provisional</span></div>
-        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-sm bg-red-400 inline-block"></span> <span className="text-gray-400">Unresolved</span></div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-400 inline-block"></span> <span className="text-gray-400">Outline</span></div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-400 inline-block"></span> <span className="text-gray-400">PPTX-primary</span></div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block"></span> <span className="text-gray-400">Artifact</span></div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block"></span> <span className="text-gray-400">Provisional</span></div>
+        <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-400 inline-block"></span> <span className="text-gray-400">Unresolved</span></div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {courses.map(course => {
-          const borderColor =
-            course.source_status === 'full_outline_confirmed' ? 'border-green-700/60' :
-            (course as any).provisional ? 'border-yellow-700/60' :
-            course.source_status === 'unresolved' ? 'border-red-700/60' :
-            'border-blue-700/60'
+          const ev = getEvidenceType(course)
+          const borderColor = {
+            outline:     'border-green-700/60',
+            pptx:        'border-purple-700/60',
+            artifact:    'border-blue-700/60',
+            provisional: 'border-yellow-700/60',
+            gap:         'border-red-700/60',
+          }[ev]
 
           return (
             <button
@@ -180,7 +256,16 @@ export default function Courses() {
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="font-mono text-purple-400 text-sm font-bold">{course.course_code}</span>
-                {statusBadge((course as any).provisional ? 'provisional' : course.source_status)}
+                {(() => {
+                const ev = getEvidenceType(course)
+                const cfg = EVconfig[ev]
+                return (
+                  <span className={`inline-flex items-center gap-1 border text-xs px-1.5 py-0.5 rounded ${cfg.bg} ${cfg.text} ${cfg.border}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+                    {cfg.label}
+                  </span>
+                )
+              })()}
               </div>
               <div className="text-white text-sm font-medium mb-1">{course.title}</div>
               <div className="text-gray-500 text-xs mb-3">{course.semester}</div>

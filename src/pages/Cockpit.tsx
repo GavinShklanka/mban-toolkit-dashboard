@@ -1,5 +1,70 @@
 import { Link } from 'react-router-dom'
 import seed from '../data/seed.json'
+import courses from '../data/courses.json'
+import slides from '../data/slides.json'
+
+// ─── Evidence classification ────────────────────────────────────────────────
+const decksByCourse: Record<string, number> = slides.reduce((acc, d) => {
+  acc[d.course] = (acc[d.course] || 0) + 1
+  return acc
+}, {} as Record<string, number>)
+
+type EvidenceType = 'outline' | 'pptx' | 'artifact' | 'provisional' | 'gap'
+
+function getEvidenceType(course: typeof courses[0]): EvidenceType {
+  if (course.source_status === 'unresolved') return 'gap'
+  if ((course as any).provisional) return 'provisional'
+  if (course.source_status === 'full_outline_confirmed') return 'outline'
+  const code = course.course_code.replace('MBAN ', '')
+  if (decksByCourse[code]) return 'pptx'
+  return 'artifact'
+}
+
+const EVtype: Record<EvidenceType, { dot: string; pill: string; label: string; short: string }> = {
+  outline:     { dot: 'bg-green-400',  pill: 'bg-green-900/40 text-green-300 border-green-700',   label: 'Outline',     short: 'Outline' },
+  pptx:        { dot: 'bg-purple-400', pill: 'bg-purple-900/40 text-purple-300 border-purple-700', label: 'PPTX',        short: 'PPTX' },
+  artifact:    { dot: 'bg-blue-400',   pill: 'bg-blue-900/40 text-blue-300 border-blue-700',       label: 'Artifact',    short: 'Artifact' },
+  provisional: { dot: 'bg-yellow-400', pill: 'bg-yellow-900/40 text-yellow-300 border-yellow-700', label: 'Provisional', short: 'Provisional' },
+  gap:         { dot: 'bg-red-400',    pill: 'bg-red-900/40 text-red-300 border-red-700',           label: 'Unresolved',  short: 'Gap' },
+}
+
+// Group courses by term
+const fall2025  = courses.filter(c => c.semester === 'Fall 2025')
+const winter2026 = courses.filter(c => c.semester === 'Winter 2026')
+const unknown   = courses.filter(c => c.semester !== 'Fall 2025' && c.semester !== 'Winter 2026')
+
+// Maturity summary counts
+const counts = { outline: 0, pptx: 0, artifact: 0, provisional: 0, gap: 0 }
+courses.forEach(c => { counts[getEvidenceType(c)]++ })
+
+function CoursePill({ course }: { course: typeof courses[0] }) {
+  const ev = getEvidenceType(course)
+  const style = EVtype[ev]
+  const code = course.course_code.replace('MBAN ', '')
+  const deckCount = decksByCourse[code]
+  return (
+    <div className={`inline-flex items-center gap-1.5 border rounded-lg px-2.5 py-1.5 ${style.pill}`}>
+      <span className={`w-2 h-2 rounded-full shrink-0 ${style.dot}`} />
+      <span className="font-mono font-bold text-xs">{course.course_code}</span>
+      {deckCount && <span className="text-xs opacity-70">{deckCount}d</span>}
+    </div>
+  )
+}
+
+function TermRow({ label, term, courses: termCourses }: { label: string; term: string; courses: typeof courses }) {
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-gray-400 text-xs font-semibold uppercase tracking-wider">{label}</span>
+        <span className="text-gray-600 text-xs">{term}</span>
+        <span className="text-gray-600 text-xs">· {termCourses.length} courses</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {termCourses.map(c => <CoursePill key={c.course_code} course={c} />)}
+      </div>
+    </div>
+  )
+}
 
 const metrics = [
   { label: 'Courses Mapped', value: seed.system_metadata.total_courses, color: 'text-blue-400' },
@@ -48,6 +113,37 @@ export default function Cockpit() {
             <div className="text-gray-400 text-xs mt-1">{m.label}</div>
           </div>
         ))}
+      </div>
+
+      {/* ── Coverage Rail ──────────────────────────────────────── */}
+      <div className="mb-8 bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+        <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-gray-700/60">
+          <h2 className="text-white font-semibold text-sm">Coverage Rail</h2>
+          <div className="flex items-center gap-3 text-xs">
+            {(Object.entries(EVtype) as [EvidenceType, typeof EVtype[EvidenceType]][]).map(([k, v]) => (
+              <span key={k} className="flex items-center gap-1">
+                <span className={`w-2 h-2 rounded-full ${v.dot}`} />
+                <span className="text-gray-400">{v.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="px-5 py-4 space-y-4">
+          <TermRow label="Term 1" term="Fall 2025" courses={fall2025} />
+          <TermRow label="Term 2" term="Winter 2026" courses={[...winter2026, ...unknown]} />
+        </div>
+
+        {/* Maturity summary */}
+        <div className="px-5 py-3 bg-gray-900/40 border-t border-gray-700/60">
+          <p className="text-gray-400 text-xs leading-relaxed">
+            <span className="text-green-400 font-semibold">{counts.outline} of {courses.length}</span> courses have full outlines.{' '}
+            {counts.pptx > 0 && <><span className="text-purple-400 font-semibold">{counts.pptx}</span> are PPTX-primary. </>}
+            {counts.artifact > 0 && <><span className="text-blue-400 font-semibold">{counts.artifact}</span> are artifact-backed. </>}
+            {counts.provisional > 0 && <><span className="text-yellow-400 font-semibold">{counts.provisional}</span> {counts.provisional === 1 ? 'is' : 'are'} provisional. </>}
+            {counts.gap > 0 && <><span className="text-red-400 font-semibold">{counts.gap}</span> {counts.gap === 1 ? 'is' : 'are'} unresolved.</>}
+          </p>
+        </div>
       </div>
 
       {/* Evidence Health */}
