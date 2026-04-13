@@ -4,6 +4,7 @@ import courses from '../data/courses.json'
 import slides from '../data/slides.json'
 import projects from '../data/projects.json'
 import lessonsData from '../data/lessons.json'
+import topicsData from '../data/topics.json'
 
 type Course = typeof courses[0]
 type Lesson = typeof lessonsData[0]
@@ -381,24 +382,46 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 Review concepts from {course.course_code}
               </button>
 
-              {/* Quick-action chips from top methods */}
-              {(course.methods as string[]).length > 0 && (
-                <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Quick topics</div>
-                  <div className="flex flex-wrap gap-2">
-                    {(course.methods as string[]).slice(0, 3).map(m => (
-                      <button
-                        key={m}
-                        onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}&q=${encodeURIComponent(m)}`) }}
-                        style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
-                        className="bg-gray-800 border border-gray-700 hover:border-purple-600 text-gray-300 hover:text-white text-sm px-4 py-2 rounded-xl transition-colors"
-                      >
-                        {m}
-                      </button>
-                    ))}
+              {/* Quick Topics from topics.json */}
+              {(() => {
+                const courseTopics = topicsData.filter(t => t.course_code === `MBAN_${code}`)
+                if (courseTopics.length === 0) return null
+                return (
+                  <div>
+                    <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Quick Topics</div>
+                    <div className="flex flex-wrap gap-2">
+                      {courseTopics.slice(0, 6).map(t => (
+                        <button
+                          key={t.id}
+                          onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}&q=${encodeURIComponent(t.label)}`) }}
+                          style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
+                          className="bg-gray-800 border border-gray-700 hover:border-purple-600 text-gray-300 hover:text-white text-sm px-4 py-2 rounded-xl transition-colors"
+                        >
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )
+              })()}
+
+              {/* Secondary links */}
+              <div className="flex flex-wrap gap-3 pt-2 border-t border-gray-800">
+                <Link
+                  to="/methods"
+                  onClick={onClose}
+                  className="text-xs text-purple-400 hover:text-purple-300 underline"
+                >
+                  Browse methods from this course →
+                </Link>
+                <Link
+                  to="/projects"
+                  onClick={onClose}
+                  className="text-xs text-blue-400 hover:text-blue-300 underline"
+                >
+                  View projects →
+                </Link>
+              </div>
             </div>
           )}
 
@@ -449,14 +472,8 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
 
         {/* Footer links */}
         <div className="px-5 pb-5 flex flex-wrap gap-3 border-t border-gray-800 pt-4">
-          <Link to="/methods" onClick={onClose} className="text-xs text-purple-400 hover:text-purple-300 underline">
-            Browse methods from this course →
-          </Link>
-          <Link to="/projects" onClick={onClose} className="text-xs text-blue-400 hover:text-blue-300 underline">
-            View projects →
-          </Link>
-          <Link to="/ask" onClick={onClose} className="text-xs text-green-400 hover:text-green-300 underline">
-            Ask MBAN →
+          <Link to={`/ask?course=MBAN_${code}`} onClick={onClose} className="text-xs text-green-400 hover:text-green-300 underline">
+            Ask about this course →
           </Link>
         </div>
       </div>

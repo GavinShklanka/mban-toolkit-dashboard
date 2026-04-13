@@ -1,0 +1,102 @@
+[
+  {
+    "id": "optimization_search_heuristics",
+    "label": "Optimization and search heuristics",
+    "description": "Methods for searching large solution spaces when exact optimization is computationally infeasible.",
+    "related_terms": ["genetic algorithms", "simulated annealing", "metaheuristics", "search heuristics", "evolutionary algorithms", "ant colony optimization", "tabu search", "swarm intelligence", "local search", "hill climbing", "beam search"],
+    "internal_method_refs": ["LP formulation", "Integer Programming", "Decision Analysis (EMV/EVPI)", "Dynamic Programming"],
+    "internal_topic_refs": ["mban5540_lp", "mban5540_ip", "mban5540_dp", "mban5540_decision"],
+    "bridging_explanation": "These heuristic techniques aren't directly covered in the MBAN toolkit, but the optimization and decision-analysis concepts you learned provide the academic foundation. LP and IP give exact optimal solutions for linear problems; when problems are too complex for exact methods (NP-hard, combinatorial), heuristics like genetic algorithms approximate solutions using the same objective-function logic you know from formulation.",
+    "review_next": ["LP formulation", "dynamic programming", "sensitivity analysis", "integer programming"]
+  },
+  {
+    "id": "dimensionality_reduction",
+    "label": "Dimensionality reduction",
+    "description": "Methods for reducing high-dimensional feature spaces to fewer dimensions while preserving structure.",
+    "related_terms": ["PCA", "principal component analysis", "t-SNE", "UMAP", "feature selection", "feature extraction", "dimensionality reduction", "manifold learning", "autoencoder", "latent space"],
+    "internal_method_refs": ["kNN", "Random Forest", "Logistic Regression"],
+    "internal_topic_refs": ["mban5560_knn", "mban5560_rf", "mban5560_logistic"],
+    "bridging_explanation": "PCA and t-SNE are dimensionality reduction techniques not directly covered, but the curse of dimensionality you studied in kNN directly motivates them: as features increase, distance metrics break down and models overfit. Random forest feature importance (which you used) is a form of supervised feature selection. PCA is the unsupervised counterpart — it finds the axes of maximum variance in the data.",
+    "review_next": ["k-Nearest Neighbors", "bias-variance tradeoff", "clustering", "random forest"]
+  },
+  {
+    "id": "causal_inference",
+    "label": "Causal inference",
+    "description": "Methods for identifying causal effects rather than correlations — moving from association to causation.",
+    "related_terms": ["causal inference", "A/B testing", "randomized controlled trial", "RCT", "instrumental variables", "difference-in-differences", "DiD", "propensity score matching", "counterfactual", "treatment effect", "LATE", "regression discontinuity"],
+    "internal_method_refs": ["multiple linear regression", "logistic regression"],
+    "internal_topic_refs": ["mban5520_regression", "mban5520_train_test", "mban5560_logistic"],
+    "bridging_explanation": "Causal inference is a critical extension beyond what MBAN 5520 teaches. In regression you learned how to estimate associations and interpret coefficients — causal inference asks when those coefficients represent true causal effects. RCTs (randomization) are the gold standard; instrumental variables and DiD are econometric approaches when randomization isn't possible. The prediction-vs-causation distinction is central to MBAN 5510's evaluation of AI outputs.",
+    "review_next": ["multiple linear regression", "standardized coefficients", "prediction intervals"]
+  },
+  {
+    "id": "time_series_advanced",
+    "label": "Advanced time series methods",
+    "description": "Statistical and ML methods specifically designed for temporal data with autocorrelation and seasonality.",
+    "related_terms": ["ARIMA", "SARIMA", "Prophet", "exponential smoothing", "ETS", "state space models", "Holt-Winters", "seasonal decomposition", "STL", "VAR", "Granger causality", "time series forecasting", "autoregressive models"],
+    "internal_method_refs": ["LSTM", "Sequential Forecasting", "Neural Networks"],
+    "internal_topic_refs": ["mban5560_nn", "mban5560_nlp"],
+    "bridging_explanation": "ARIMA and Prophet are classical time series methods not explicitly covered in the MBAN toolkit. However, you studied LSTM and sequential forecasting (Wk 9-10 of MBAN 5560) which are the deep learning counterpart to ARIMA — both model temporal dependencies, but LSTMs learn them from data rather than specifying the AR/MA order. Understanding sequential structure from LSTM gives you the intuition to understand ARIMA's autoregressive and moving-average components.",
+    "review_next": ["neural networks", "NLP and transformers", "bias-variance tradeoff"]
+  },
+  {
+    "id": "reinforcement_learning",
+    "label": "Reinforcement learning",
+    "description": "Learning through reward signals rather than labeled data — agents take actions to maximize cumulative reward.",
+    "related_terms": ["reinforcement learning", "RL", "Q-learning", "policy gradient", "actor-critic", "reward function", "Markov decision process", "MDP", "multi-armed bandit", "exploration exploitation", "RLHF", "PPO", "DQN"],
+    "internal_method_refs": ["ReAct Architecture", "Agent Loop", "Dynamic Programming"],
+    "internal_topic_refs": ["mban5510_react", "mban5510_langgraph", "mban5540_dp"],
+    "bridging_explanation": "Reinforcement learning is not directly covered in the MBAN toolkit, but the agentic AI systems from MBAN 5510 share key ideas: both involve an agent taking actions, observing outcomes, and updating behavior. The ReAct loop (reason-act-observe) mirrors the RL perception-action cycle. Markov chains and dynamic programming from MBAN 5540 are the mathematical foundations of Markov Decision Processes (MDPs) that underpin Q-learning and policy gradient methods.",
+    "review_next": ["ReAct architecture", "LangGraph workflows", "dynamic programming"]
+  },
+  {
+    "id": "recommendation_systems",
+    "label": "Recommendation systems",
+    "description": "Systems that suggest relevant items to users based on behavior patterns and item similarities.",
+    "related_terms": ["collaborative filtering", "content-based filtering", "matrix factorization", "recommendation system", "recommender", "user-item matrix", "cosine similarity", "embedding similarity", "ALS", "SVD recommendation"],
+    "internal_method_refs": ["kNN", "K-means Clustering", "Logistic Regression"],
+    "internal_topic_refs": ["mban5560_knn", "mban5560_clustering", "mban5560_nlp"],
+    "bridging_explanation": "Recommendation systems use similarity concepts you learned in kNN (distance-based neighbors) and clustering (grouping similar users/items). Collaborative filtering is essentially kNN applied to user-item rating matrices. Content-based filtering uses feature similarity — the same cosine similarity logic as word2vec/NLP embeddings you covered in MBAN 5560 (Wk 10-11). Matrix factorization (the core of Netflix-style recommenders) is a linear algebra decomposition related to the dimensionality concepts in your toolkit.",
+    "review_next": ["k-Nearest Neighbors", "clustering", "NLP and transformers"]
+  },
+  {
+    "id": "graph_methods",
+    "label": "Graph and network methods",
+    "description": "Methods that represent data as nodes and edges — social networks, knowledge graphs, molecular graphs.",
+    "related_terms": ["graph neural networks", "GNN", "knowledge graph", "graph database", "graph traversal", "node embedding", "link prediction", "community detection", "PageRank", "network analysis"],
+    "internal_method_refs": ["LangGraph", "Multi-agent Systems", "K-means Clustering"],
+    "internal_topic_refs": ["mban5510_langgraph", "mban5510_multiagent"],
+    "bridging_explanation": "Graph neural networks and knowledge graphs are not directly covered in the MBAN toolkit, but you built stateful directed graphs in LangGraph (MBAN 5510) — nodes represent functions and edges represent control flow. This is the same graph abstraction used in GNNs and knowledge graphs. Community detection in social networks uses the same clustering intuition from K-means and DBSCAN. PageRank (the algorithm that made Google) uses iterative graph traversal similar to Markov chains from MBAN 5540.",
+    "review_next": ["LangGraph workflows", "multi-agent systems", "clustering"]
+  },
+  {
+    "id": "bayesian_methods",
+    "label": "Bayesian methods",
+    "description": "Probabilistic methods that update beliefs based on evidence using Bayes' theorem.",
+    "related_terms": ["Bayesian inference", "Bayesian network", "MCMC", "Markov chain Monte Carlo", "posterior distribution", "prior", "likelihood", "Gibbs sampling", "variational inference", "Bayesian optimization", "credible interval", "hierarchical model"],
+    "internal_method_refs": ["Monte Carlo Simulation", "Decision Analysis (EMV/EVPI)", "Bayesian Sampling"],
+    "internal_topic_refs": ["mban5570_montecarlo", "mban5540_decision"],
+    "bridging_explanation": "MCMC and Bayesian networks are extensions you haven't covered directly, but they build directly on what you've studied. Monte Carlo simulation (MBAN 5570 with @RISK) is a frequentist cousin of MCMC — both sample repeatedly to estimate distributions. Bayesian sampling in decision analysis (MBAN 5540) is the prior-to-posterior update you studied for EVPI calculations. Bayesian networks generalize decision trees by allowing probabilistic dependencies between variables.",
+    "review_next": ["Monte Carlo simulation", "decision analysis (EMV/EVPI)", "LP formulation"]
+  },
+  {
+    "id": "computer_vision_advanced",
+    "label": "Advanced computer vision",
+    "description": "Deep learning methods for image understanding beyond basic classification.",
+    "related_terms": ["object detection", "image segmentation", "YOLO", "R-CNN", "semantic segmentation", "instance segmentation", "pose estimation", "depth estimation", "generative adversarial network", "GAN", "diffusion model", "image generation"],
+    "internal_method_refs": ["CNN", "Neural Networks"],
+    "internal_topic_refs": ["mban5560_nn"],
+    "bridging_explanation": "Object detection and image segmentation are advanced computer vision tasks that build directly on the CNNs you covered in MBAN 5560 (Wk 9). YOLO and R-CNN add spatial localization heads on top of a CNN feature extractor — the same convolutional architecture you learned. GANs and diffusion models (used for image generation) use the same gradient-based training, but with an adversarial or denoising objective rather than cross-entropy classification.",
+    "review_next": ["neural networks", "NLP and transformers", "bias-variance tradeoff"]
+  },
+  {
+    "id": "nlp_advanced",
+    "label": "Advanced NLP methods",
+    "description": "NLP techniques for structured information extraction, summarization, and language generation.",
+    "related_terms": ["named entity recognition", "NER", "text summarization", "question answering", "information extraction", "relation extraction", "coreference resolution", "semantic parsing", "RAG", "retrieval augmented generation", "few-shot prompting", "chain of thought"],
+    "internal_method_refs": ["Transformers", "Word2Vec", "NLP Sentiment Analysis", "LangChain"],
+    "internal_topic_refs": ["mban5560_nlp", "mban5510_langchain", "mban5570_nlp_finance"],
+    "bridging_explanation": "Named entity recognition, text summarization, and RAG are advanced NLP applications that sit on top of the transformer architecture you studied in MBAN 5560 (Wk 10-11). BERT-based NER uses the same fine-tuning pipeline you learned with Hugging Face. RAG (Retrieval Augmented Generation) extends LangChain agents with vector database retrieval — the same LangChain abstractions from MBAN 5510. Financial NLP (MBAN 5570) applied sentiment analysis to earnings calls, which is the same sequence classification task.",
+    "review_next": ["NLP and transformers", "LangChain agents", "NLP in finance"]
+  }
+]

@@ -20,7 +20,8 @@
     "source_status": "partial_artifacts_only",
     "overlaps": ["MBAN 5540 (Python for Gurobi)", "MBAN 5570 (Python for finance)", "MBAN 5510 (Python for LangChain)"],
     "learning_summary": "Built Python scripting and OOP fundamentals, applying data wrangling with pandas and linear regression inside Jupyter notebooks.",
-    "review_questions": ["What is the difference between a class and an instance in OOP?", "How do you use pandas to clean and reshape a dataset?", "When would you choose a Jupyter notebook over a Python script?", "What is experimental replication methodology in a research context?"]
+    "review_questions": ["What is the difference between a class and an instance in OOP?", "How do you use pandas to clean and reshape a dataset?", "When would you choose a Jupyter notebook over a Python script?", "What is experimental replication methodology in a research context?"],
+    "topic_refs": ["mban5502_oop", "mban5502_pandas", "mban5502_jupyter", "mban5502_flask"]
   },
   {
     "course_code": "MBAN 5510",
@@ -55,7 +56,8 @@
     "dual_pillar": true,
     "dual_pillar_description": "Two parallel tracks: (1) Agentic AI Systems — LangChain/LangGraph pipeline design; (2) Open Data White Paper — NS Health data public utility research",
     "learning_summary": "Designed and deployed LLM-powered AI agents using LangChain and LangGraph, with governance frameworks and human-in-the-loop control for safe agentic systems.",
-    "review_questions": ["What is the ReAct agent architecture?", "How do LangGraph interrupts work?", "What is the difference between an agent and a workflow?", "What does HITL control mean in agentic AI?", "How does LangSmith support agent observability?"]
+    "review_questions": ["What is the ReAct agent architecture?", "How do LangGraph interrupts work?", "What is the difference between an agent and a workflow?", "What does HITL control mean in agentic AI?", "How does LangSmith support agent observability?"],
+    "topic_refs": ["mban5510_react", "mban5510_langchain", "mban5510_langgraph", "mban5510_interrupts", "mban5510_middleware", "mban5510_multiagent", "mban5510_langsmith", "mban5510_deep_agents"]
   },
   {
     "course_code": "MBAN 5520",
@@ -78,7 +80,8 @@
     "source_status": "partial_artifacts_only",
     "overlaps": ["MBAN 5560 (kNN, RF extend regression)", "MBAN 5570 (financial prediction)"],
     "learning_summary": "Applied multiple linear regression and statistical inference for business prediction, including train-test splits, F-tests, and prediction intervals in R.",
-    "review_questions": ["What is the difference between a prediction interval and a confidence interval?", "How do you interpret a standardized coefficient?", "When does an F-test fail to detect model significance?", "What does it mean for a model to generalize well to new data?"]
+    "review_questions": ["What is the difference between a prediction interval and a confidence interval?", "How do you interpret a standardized coefficient?", "When does an F-test fail to detect model significance?", "What does it mean for a model to generalize well to new data?"],
+    "topic_refs": ["mban5520_regression", "mban5520_prediction_intervals", "mban5520_standardized", "mban5520_train_test"]
   },
   {
     "course_code": "MBAN 5540",
@@ -104,7 +107,8 @@
     "provisional_note": "User-Confirmed Reconstruction — no uploaded course outline. Evidence: exam prep + assignment briefs.",
     "provisional_topics": ["Prescriptive Analytics", "LP formulation", "Integer Programming", "Duality", "Sensitivity Analysis", "Decision Analysis (EMV/EVPI)", "Multi-objective optimization", "Gurobi", "Excel Solver"],
     "learning_summary": "Formulated and solved LP and IP problems using Excel Solver and Gurobi, including duality, shadow prices, sensitivity analysis, and decision analysis under uncertainty.",
-    "review_questions": ["How do I formulate an LP problem from a word problem?", "What does a shadow price mean, and when is it zero?", "When should I use integer programming instead of LP?", "How does EVPI relate to decision tree analysis?", "What is the primal-dual relationship in LP?"]
+    "review_questions": ["How do I formulate an LP problem from a word problem?", "What does a shadow price mean, and when is it zero?", "When should I use integer programming instead of LP?", "How does EVPI relate to decision tree analysis?", "What is the primal-dual relationship in LP?"],
+    "topic_refs": ["mban5540_lp", "mban5540_duality", "mban5540_ip", "mban5540_decision", "mban5540_dp", "mban5540_sensitivity"]
   },
   {
     "course_code": "MBAN 5550",
@@ -131,7 +135,8 @@
     "source_status": "partial_artifacts_only",
     "overlaps": ["MBAN 5570 (WRDS data access)"],
     "learning_summary": "Designed relational databases using ER diagrams and normalization, then queried them with SQL to compute KPIs and produce business intelligence.",
-    "review_questions": ["What is the difference between 2NF and 3NF normalization?", "How does an ER diagram translate to a relational schema?", "When would you use a JOIN vs a subquery?", "What makes a KPI computationally efficient to query at scale?"]
+    "review_questions": ["What is the difference between 2NF and 3NF normalization?", "How does an ER diagram translate to a relational schema?", "When would you use a JOIN vs a subquery?", "What makes a KPI computationally efficient to query at scale?"],
+    "topic_refs": ["mban5550_erd", "mban5550_normalization", "mban5550_sql", "mban5550_keys", "mban5550_schema", "mban5550_kpi"]
   },
   {
     "course_code": "MBAN 5560",
@@ -170,7 +175,8 @@
       {"title": "An Introduction to Statistical Learning", "author": "James, Witten, Hastie, Tibshirani", "type": "recommended"}
     ],
     "learning_summary": "Applied machine learning from regression through deep learning and NLP, with rigorous validation using cross-validation and bootstrap across the full supervised and unsupervised toolkit.",
-    "review_questions": ["What is the bias-variance tradeoff?", "How does random forest differ from boosting?", "When should I use kNN vs logistic regression?", "What is feature leakage and why does it invalidate a model?", "How do you choose k in k-fold cross-validation?"]
+    "review_questions": ["What is the bias-variance tradeoff?", "How does random forest differ from boosting?", "When should I use kNN vs logistic regression?", "What is feature leakage and why does it invalidate a model?", "How do you choose k in k-fold cross-validation?"],
+    "topic_refs": ["mban5560_bias_variance", "mban5560_overfitting", "mban5560_cv", "mban5560_bootstrap", "mban5560_knn", "mban5560_logistic", "mban5560_rf", "mban5560_boosting", "mban5560_svm", "mban5560_nn", "mban5560_nlp", "mban5560_clustering"]
   },
   {
     "course_code": "MBAN 5570",
@@ -198,7 +204,8 @@
     "source_status": "full_outline_confirmed",
     "overlaps": ["MBAN 5540 (optimization/NPV)", "MBAN 5560 (ML/NLP methods)", "MBAN 5510 (AI evaluation framework)"],
     "learning_summary": "Applied Monte Carlo simulation, decision trees, and ML forecasting to financial analytics including pro forma valuation, event studies, and equity research white papers.",
-    "review_questions": ["When would you use Monte Carlo simulation instead of a single point estimate?", "How does sensitivity analysis differ from scenario analysis?", "What makes an equity research methodology academically defensible?", "How do you apply NLP sentiment analysis to capital market data?"]
+    "review_questions": ["When would you use Monte Carlo simulation instead of a single point estimate?", "How does sensitivity analysis differ from scenario analysis?", "What makes an equity research methodology academically defensible?", "How do you apply NLP sentiment analysis to capital market data?"],
+    "topic_refs": ["mban5570_montecarlo", "mban5570_financial", "mban5570_valuation", "mban5570_nlp_finance", "mban5570_equity"]
   },
   {
     "course_code": "MBAN 5800",
@@ -221,7 +228,8 @@
     "source_status": "partial_artifacts_only",
     "overlaps": ["MBAN 5510 (agent governance)", "MBAN 5570 (AI evaluation framework)"],
     "learning_summary": "Analysed ethical frameworks (Aristotelian, Kantian, social contract) and applied them to AI governance, corporate compliance, and motivated reasoning in analytics decisions.",
-    "review_questions": ["What is the difference between virtue ethics and deontological ethics?", "How does motivated reasoning create bias in analytics decisions?", "What governance frameworks apply to predictive policing or healthcare AI?", "What does Sarbanes-Oxley require of analytics professionals?"]
+    "review_questions": ["What is the difference between virtue ethics and deontological ethics?", "How does motivated reasoning create bias in analytics decisions?", "What governance frameworks apply to predictive policing or healthcare AI?", "What does Sarbanes-Oxley require of analytics professionals?"],
+    "topic_refs": ["mban5800_ethics", "mban5800_ai_bias", "mban5800_motivated", "mban5800_bnpl"]
   },
   {
     "course_code": "MBAN 5891",
@@ -244,6 +252,7 @@
     "source_status": "unresolved",
     "overlaps": [],
     "learning_summary": "Course content is currently unresolved — verify with program records or course outline.",
-    "review_questions": ["What does MBAN 5891 cover?"]
+    "review_questions": ["What does MBAN 5891 cover?"],
+    "topic_refs": ["mban5891_unknown"]
   }
 ]

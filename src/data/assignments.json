@@ -1,0 +1,269 @@
+[
+  {
+    "id": "mban5550_assignment_1",
+    "course_code": "MBAN_5550",
+    "title": "Database Design Assignment",
+    "short_description": "Translate business requirements into an ER model and relational schema with keys and constraints.",
+    "topics": ["ER diagram construction", "database schema design", "normalization", "relational keys and constraints"],
+    "methods": ["ER modelling", "normalization", "database schema design"],
+    "examples": ["business-rule to schema mapping", "entity identification from requirements"],
+    "prompt_type": "design"
+  },
+  {
+    "id": "mban5550_sql_kpi",
+    "course_code": "MBAN_5550",
+    "title": "SQL KPI Queries",
+    "short_description": "Write SQL queries using GROUP BY, JOINs, and aggregate functions to compute business KPIs from a multi-table relational database.",
+    "topics": ["SQL query writing", "KPI computation via SQL", "relational keys and constraints"],
+    "methods": ["SQL query writing", "KPI computation via SQL"],
+    "examples": ["revenue by segment", "customer retention rate", "occupancy metrics"],
+    "prompt_type": "query"
+  },
+  {
+    "id": "mban5550_cruise_line",
+    "course_code": "MBAN_5550",
+    "title": "Cruise Line Database Group Project",
+    "short_description": "Design and implement a multi-table relational database for a cruise line, including Power Query ETL and Power BI dashboard for managerial insights.",
+    "topics": ["ER diagram construction", "database schema design", "SQL query writing", "KPI computation via SQL"],
+    "methods": ["ER modelling", "normalization", "SQL query writing", "KPI computation via SQL"],
+    "examples": ["reservation analytics", "capacity planning queries", "KPI dashboard"],
+    "prompt_type": "project"
+  },
+
+  {
+    "id": "mban5560_assign2_knn",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 2 — kNN and Clustering (Ames Housing + Telco)",
+    "short_description": "Apply kNN regression to Ames Housing data and kNN classification to Telco churn data. Includes grid search with cross-validation for k selection and K-means clustering.",
+    "topics": ["k-Nearest Neighbors", "k-fold cross-validation", "clustering", "bias-variance tradeoff"],
+    "methods": ["kNN", "grid search", "cross-validation", "K-means clustering"],
+    "examples": ["housing price prediction with kNN", "churn classification", "customer segmentation"],
+    "prompt_type": "application"
+  },
+  {
+    "id": "mban5560_assign3_ensemble",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 3 — Tree and Ensemble Methods",
+    "short_description": "Compare CART, bagging, random forest, and boosting (GBM, XGBoost) on classification and regression tasks. Evaluate using bootstrap OOB and k-fold CV.",
+    "topics": ["random forest", "boosting and XGBoost", "bootstrap resampling", "k-fold cross-validation"],
+    "methods": ["CART", "bagging", "random forest", "boosting (GBM, AdaBoost.M5, XGBoost)"],
+    "examples": ["random forest vs XGBoost comparison", "OOB error estimation", "feature importance analysis"],
+    "prompt_type": "comparison"
+  },
+  {
+    "id": "mban5560_assign4_deeplearning",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 4 — Deep Learning (CNN, RNN, LSTM)",
+    "short_description": "Build and train neural networks for sequential and image data using Keras/PyTorch. Includes CNNs, RNNs, and LSTMs with gradient descent variants.",
+    "topics": ["neural networks", "NLP and transformers"],
+    "methods": ["neural networks", "gradient descent variants", "CNN", "RNN", "LSTM"],
+    "examples": ["time series forecasting with LSTM", "image classification with CNN", "sequential forecasting"],
+    "prompt_type": "implementation"
+  },
+  {
+    "id": "mban5560_assign5_nlp",
+    "course_code": "MBAN_5560",
+    "title": "Assignment 5 — NLP and Transformers",
+    "short_description": "Apply word2vec embeddings and fine-tune a Hugging Face transformer model for text classification or sentiment analysis.",
+    "topics": ["NLP and transformers", "neural networks"],
+    "methods": ["NLP with word2vec", "attention/transformers", "Hugging Face fine-tuning"],
+    "examples": ["sentiment classification with BERT", "word embedding visualization", "transformer fine-tuning"],
+    "prompt_type": "implementation"
+  },
+  {
+    "id": "mban5560_final_project",
+    "course_code": "MBAN_5560",
+    "title": "MBAN 5560 Final Project",
+    "short_description": "End-to-end ML project applying the full toolkit: EDA, model selection, validation, and business interpretation.",
+    "topics": ["bias-variance tradeoff", "k-fold cross-validation", "random forest", "boosting and XGBoost"],
+    "methods": ["random forest", "boosting (GBM, AdaBoost.M5, XGBoost)", "k-fold cross-validation"],
+    "examples": ["complete ML pipeline", "model comparison report"],
+    "prompt_type": "project"
+  },
+
+  {
+    "id": "mban5540_assign2_lp",
+    "course_code": "MBAN_5540",
+    "title": "Assignment 2 — LP Formulation (RRB Watercraft)",
+    "short_description": "Formulate and solve a linear programming problem for watercraft production planning. Includes sensitivity analysis and shadow price interpretation.",
+    "topics": ["LP formulation", "duality and shadow prices", "sensitivity analysis"],
+    "methods": ["LP formulation", "primal-dual conversion"],
+    "examples": ["production planning LP", "shadow price interpretation", "binding constraint analysis"],
+    "prompt_type": "formulation"
+  },
+  {
+    "id": "mban5540_assign3_ip",
+    "course_code": "MBAN_5540",
+    "title": "Assignment 3 — Integer Programming",
+    "short_description": "Formulate and solve IP models for knapsack, assignment, and transshipment problems using Gurobi and Excel Solver.",
+    "topics": ["integer programming", "LP formulation"],
+    "methods": ["binary IP", "multiple knapsack", "assignment/transportation problem", "transshipment problem"],
+    "examples": ["capital budgeting knapsack", "facility-worker assignment", "supply chain transshipment"],
+    "prompt_type": "formulation"
+  },
+  {
+    "id": "mban5540_assign5_decision",
+    "course_code": "MBAN_5540",
+    "title": "Assignment 5 — Decision Analysis",
+    "short_description": "Solve decision problems under uncertainty using EMV, EVPI, and utility theory. Build decision trees and evaluate Bayesian information updates.",
+    "topics": ["decision analysis (EMV/EVPI)", "LP formulation"],
+    "methods": ["EMV", "EOL", "EVwPI", "EVPI", "utility theory", "Bayesian sampling"],
+    "examples": ["medical trial decision tree", "EVPI calculation", "risk-averse utility analysis"],
+    "prompt_type": "analysis"
+  },
+  {
+    "id": "mban5540_looms",
+    "course_code": "MBAN_5540",
+    "title": "Looms of Ladakh Optimization",
+    "short_description": "Multi-objective LP optimization for a textile manufacturer balancing production volume, resource constraints, and fairness considerations.",
+    "topics": ["LP formulation", "sensitivity analysis", "integer programming"],
+    "methods": ["LP formulation", "weighted multi-objective optimization"],
+    "examples": ["textile production LP", "multi-objective optimization with fairness constraints"],
+    "prompt_type": "project"
+  },
+
+  {
+    "id": "mban5570_empirical1",
+    "course_code": "MBAN_5570",
+    "title": "Empirical Analytics Assignment 1 — Monte Carlo and Financial Statements",
+    "short_description": "Build an @RISK Monte Carlo simulation of a financial scenario and a dynamic 3-statement financial model in Excel.",
+    "topics": ["Monte Carlo simulation", "financial statement analytics"],
+    "methods": ["@RISK Monte Carlo simulation", "pro forma financial statement forecasting"],
+    "examples": ["revenue distribution simulation", "income statement projection"],
+    "prompt_type": "application"
+  },
+  {
+    "id": "mban5570_empirical2",
+    "course_code": "MBAN_5570",
+    "title": "Empirical Analytics Assignment 2 — Valuation and Decision Trees",
+    "short_description": "Build a DCF valuation model and use Precision Tree for decision modelling under uncertainty.",
+    "topics": ["valuation models", "Monte Carlo simulation"],
+    "methods": ["valuation models", "NPV modelling", "Precision Tree decision modelling"],
+    "examples": ["DCF valuation", "real option decision tree"],
+    "prompt_type": "application"
+  },
+  {
+    "id": "mban5570_empirical3",
+    "course_code": "MBAN_5570",
+    "title": "Empirical Analytics Assignment 3 — NLP and ML on Financial Data",
+    "short_description": "Apply NLP sentiment analysis to financial text and ML forecasting to time series data using Python on WRDS data.",
+    "topics": ["NLP in finance", "financial statement analytics"],
+    "methods": ["NLP sentiment analysis on capital market data", "ML time series forecasting"],
+    "examples": ["earnings call sentiment", "stock return prediction"],
+    "prompt_type": "application"
+  },
+  {
+    "id": "mban5570_empirical4",
+    "course_code": "MBAN_5570",
+    "title": "Empirical Analytics Assignment 4 — Event Study",
+    "short_description": "Conduct a capital market event study to measure abnormal returns around a corporate event.",
+    "topics": ["financial statement analytics", "equity research methodology"],
+    "methods": ["event study analytics"],
+    "examples": ["abnormal return estimation", "cumulative abnormal return analysis"],
+    "prompt_type": "analysis"
+  },
+  {
+    "id": "mban5570_equity_research",
+    "course_code": "MBAN_5570",
+    "title": "Equity Research White Paper",
+    "short_description": "Produce a professional equity research report with buy/hold/sell recommendation using traditional analysis, AI-assisted tools, and critical evaluation of AI outputs.",
+    "topics": ["equity research methodology", "valuation models", "NLP in finance"],
+    "methods": ["equity research methodology", "AI-assisted analysis with critical evaluation"],
+    "examples": ["Palantir equity research", "investment thesis construction"],
+    "prompt_type": "project"
+  },
+
+  {
+    "id": "mban5510_agentic_component",
+    "course_code": "MBAN_5510",
+    "title": "Agentic AI Component",
+    "short_description": "Design and implement an LLM-powered agent using LangChain and LangGraph with HITL control, middleware, and LangSmith monitoring.",
+    "topics": ["ReAct architecture", "LangChain agents", "LangGraph workflows", "interrupts and super-steps", "middleware", "LangSmith monitoring"],
+    "methods": ["LLM chaining", "stateful graph orchestration", "interrupt functions", "HITL control"],
+    "examples": ["multi-step research agent", "human-approval checkpoint agent"],
+    "prompt_type": "implementation"
+  },
+  {
+    "id": "mban5510_ns_health",
+    "course_code": "MBAN_5510",
+    "title": "NS Health White Paper (Open Data)",
+    "short_description": "Research white paper on Nova Scotia Health open data — research question formulation, data cleaning, methodology, peer evaluation, and public utility framing.",
+    "topics": ["multi-agent systems", "LangSmith monitoring"],
+    "methods": ["research question formulation", "data cleaning and merging", "white paper methodology"],
+    "examples": ["Nova Scotia health data analysis", "open data research pipeline"],
+    "prompt_type": "project"
+  },
+  {
+    "id": "mban5510_halifax_tides",
+    "course_code": "MBAN_5510",
+    "title": "Halifax Tides Live Case",
+    "short_description": "Live case applying agentic AI and analytics to a real-world problem in the Halifax context.",
+    "topics": ["LangGraph workflows", "multi-agent systems"],
+    "methods": ["agent workflow design"],
+    "examples": ["live case agent deployment"],
+    "prompt_type": "project"
+  },
+
+  {
+    "id": "mban5520_regression_project",
+    "course_code": "MBAN_5520",
+    "title": "Regression Analysis Project",
+    "short_description": "Build and evaluate a multiple linear regression model for a business prediction problem. Includes significance testing, train-test split, and prediction intervals.",
+    "topics": ["multiple linear regression", "prediction intervals", "standardized coefficients", "train-test split"],
+    "methods": ["multiple linear regression", "train-test split", "prediction intervals"],
+    "examples": ["housing price regression", "insurance prediction", "demand forecasting model"],
+    "prompt_type": "analysis"
+  },
+  {
+    "id": "mban5520_lingras_quizzes",
+    "course_code": "MBAN_5520",
+    "title": "Lingras Quizzes",
+    "short_description": "Four periodic quizzes covering regression theory, statistical inference, and model evaluation.",
+    "topics": ["multiple linear regression", "prediction intervals", "standardized coefficients"],
+    "methods": ["multiple linear regression", "hypothesis testing", "F-test"],
+    "examples": ["quiz questions on F-test interpretation", "coefficient significance"],
+    "prompt_type": "assessment"
+  },
+
+  {
+    "id": "mban5800_bias_essay",
+    "course_code": "MBAN_5800",
+    "title": "Addressing Bias Essay and Video Reflection",
+    "short_description": "Essay + video reflection defending an uncomfortable position, then analyzing own motivated reasoning. Applies ethics frameworks to AI bias scenarios.",
+    "topics": ["AI bias identification", "motivated reasoning", "morality vs ethics", "BNPL case study"],
+    "methods": ["bias identification in AI systems", "motivated reasoning self-analysis", "defend-then-critique argumentation"],
+    "examples": ["BNPL ethics analysis", "predictive policing bias argument", "motivated reasoning audit"],
+    "prompt_type": "reflection"
+  },
+
+  {
+    "id": "mban5502_labs",
+    "course_code": "MBAN_5502",
+    "title": "Hands-on Labs",
+    "short_description": "Weekly hands-on labs covering Python scripting, OOP, pandas data wrangling, and linear regression in Python.",
+    "topics": ["Python OOP", "pandas data wrangling", "Jupyter notebooks"],
+    "methods": ["Python scripting", "OOP class design", "data wrangling with pandas"],
+    "examples": ["pandas DataFrame operations", "class and instance exercises"],
+    "prompt_type": "lab"
+  },
+  {
+    "id": "mban5502_forecasting_experiment",
+    "course_code": "MBAN_5502",
+    "title": "Forecasting Web Experiment",
+    "short_description": "Build a Flask-based web experiment system for collecting forecasting decisions and analyzing demand for operational management research.",
+    "topics": ["Flask experimental systems", "Python OOP", "pandas data wrangling"],
+    "methods": ["experimental system design", "linear regression in Python"],
+    "examples": ["Flask web experiment deployment", "time series forecasting experiment"],
+    "prompt_type": "project"
+  },
+  {
+    "id": "mban5502_group_project",
+    "course_code": "MBAN_5502",
+    "title": "Group Project — Kremer Replication",
+    "short_description": "Replicate Kremer's operational management experiment in Python, demonstrating experimental replication methodology and supply chain analytics.",
+    "topics": ["Python OOP", "pandas data wrangling", "Flask experimental systems"],
+    "methods": ["Python scripting", "experimental system design", "data wrangling with pandas"],
+    "examples": ["Kremer experiment replication", "newsvendor problem simulation"],
+    "prompt_type": "project"
+  }
+]

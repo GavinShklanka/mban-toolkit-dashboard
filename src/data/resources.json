@@ -1,0 +1,167 @@
+[
+  {
+    "id": "resource_statquest_cv",
+    "title": "Cross Validation, Clearly Explained",
+    "type": "video",
+    "provider": "StatQuest (YouTube)",
+    "url": "https://www.youtube.com/watch?v=fSytzGwwBVw",
+    "summary": "Josh Starmer explains k-fold cross-validation with visual examples, including why we rotate the test fold and how to estimate generalization error.",
+    "concept_tags": ["cross-validation", "k-fold CV", "model validation", "generalization"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "6 min"
+  },
+  {
+    "id": "resource_statquest_bias_variance",
+    "title": "Bias and Variance, Clearly Explained",
+    "type": "curated_placeholder",
+    "provider": "StatQuest (YouTube)",
+    "url": "",
+    "summary": "StatQuest explanation of the bias-variance tradeoff using visual decomposition of prediction error.",
+    "concept_tags": ["bias-variance tradeoff", "overfitting", "underfitting", "model complexity"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "6 min"
+  },
+  {
+    "id": "resource_statquest_rf",
+    "title": "Random Forests, Clearly Explained",
+    "type": "curated_placeholder",
+    "provider": "StatQuest (YouTube)",
+    "url": "",
+    "summary": "StatQuest explanation of random forests — how bagging and random feature selection reduce variance compared to single decision trees.",
+    "concept_tags": ["random forest", "bagging", "ensemble methods", "feature importance"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "10 min"
+  },
+  {
+    "id": "resource_statquest_gradient_boost",
+    "title": "Gradient Boost, Clearly Explained",
+    "type": "curated_placeholder",
+    "provider": "StatQuest (YouTube)",
+    "url": "",
+    "summary": "StatQuest visual explanation of gradient boosting — sequential error correction and how residuals drive each new tree.",
+    "concept_tags": ["boosting", "gradient boosting", "GBM", "XGBoost", "ensemble methods"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "15 min"
+  },
+  {
+    "id": "resource_statquest_logistic",
+    "title": "Logistic Regression, Clearly Explained",
+    "type": "curated_placeholder",
+    "provider": "StatQuest (YouTube)",
+    "url": "",
+    "summary": "StatQuest explains logistic regression from log-odds to probability, including how the sigmoid function works and coefficient interpretation.",
+    "concept_tags": ["logistic regression", "log-odds", "classification", "sigmoid"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "8 min"
+  },
+  {
+    "id": "resource_statquest_decision_trees",
+    "title": "Decision Trees, Clearly Explained (CART)",
+    "type": "curated_placeholder",
+    "provider": "StatQuest (YouTube)",
+    "url": "",
+    "summary": "StatQuest walkthrough of CART decision trees — Gini impurity, information gain, and how splits are chosen.",
+    "concept_tags": ["decision trees", "CART", "Gini impurity", "classification"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "12 min"
+  },
+  {
+    "id": "resource_statquest_roc_auc",
+    "title": "ROC and AUC, Clearly Explained",
+    "type": "curated_placeholder",
+    "provider": "StatQuest (YouTube)",
+    "url": "",
+    "summary": "StatQuest visual explanation of ROC curves and AUC for evaluating binary classifiers across different probability thresholds.",
+    "concept_tags": ["ROC curve", "AUC", "classification evaluation", "confusion matrix"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "9 min"
+  },
+  {
+    "id": "resource_statquest_knn",
+    "title": "k-Nearest Neighbors, Clearly Explained",
+    "type": "curated_placeholder",
+    "provider": "StatQuest (YouTube)",
+    "url": "",
+    "summary": "StatQuest explains kNN for classification and regression — how distance determines predictions and how k controls the bias-variance tradeoff.",
+    "concept_tags": ["kNN", "k-nearest neighbors", "classification", "bias-variance tradeoff"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "5 min"
+  },
+  {
+    "id": "resource_3b1b_nn",
+    "title": "Neural Networks (3Blue1Brown Series)",
+    "type": "video",
+    "provider": "3Blue1Brown (YouTube)",
+    "url": "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi",
+    "summary": "Grant Sanderson's visual series on neural networks — how neurons connect, what gradient descent does geometrically, and what backpropagation computes.",
+    "concept_tags": ["neural networks", "backpropagation", "gradient descent", "deep learning"],
+    "visual_weight": "high",
+    "duration_or_format_optional": "4-part series"
+  },
+  {
+    "id": "resource_khan_stats",
+    "title": "Khan Academy Statistics and Probability",
+    "type": "course",
+    "provider": "Khan Academy",
+    "url": "https://www.khanacademy.org/math/statistics-probability",
+    "summary": "Comprehensive statistics course covering probability, hypothesis testing, regression, and confidence intervals — useful foundation for all MBAN courses.",
+    "concept_tags": ["statistics", "probability", "hypothesis testing", "confidence intervals", "regression"],
+    "visual_weight": "medium",
+    "duration_or_format_optional": "Self-paced"
+  },
+  {
+    "id": "resource_khan_linear_algebra",
+    "title": "Khan Academy Linear Algebra",
+    "type": "course",
+    "provider": "Khan Academy",
+    "url": "https://www.khanacademy.org/math/linear-algebra",
+    "summary": "Linear algebra concepts — vectors, matrices, eigenvalues — that underpin PCA, SVMs, neural networks, and most ML algorithms.",
+    "concept_tags": ["linear algebra", "matrices", "vectors", "eigenvalues", "machine learning foundations"],
+    "visual_weight": "medium",
+    "duration_or_format_optional": "Self-paced"
+  },
+  {
+    "id": "resource_optimization_placeholder",
+    "title": "Introduction to Linear Programming",
+    "type": "curated_placeholder",
+    "provider": "MIT OpenCourseWare",
+    "url": "",
+    "summary": "MIT OCW optimization course covering LP formulation, simplex method, duality, and integer programming.",
+    "concept_tags": ["linear programming", "LP formulation", "duality", "shadow prices", "optimization"],
+    "visual_weight": "medium",
+    "duration_or_format_optional": "Course notes"
+  },
+  {
+    "id": "resource_langchain_docs",
+    "title": "LangChain Documentation",
+    "type": "curated_placeholder",
+    "provider": "LangChain",
+    "url": "",
+    "summary": "Official LangChain documentation covering agents, tools, chains, memory, and LangGraph integration.",
+    "concept_tags": ["LangChain", "LangGraph", "agents", "HITL", "ReAct", "agentic AI"],
+    "visual_weight": "low",
+    "duration_or_format_optional": "Documentation"
+  },
+  {
+    "id": "resource_sql_placeholder",
+    "title": "SQL Fundamentals",
+    "type": "curated_placeholder",
+    "provider": "Khan Academy / Mode Analytics",
+    "url": "",
+    "summary": "SQL query writing fundamentals: SELECT, WHERE, GROUP BY, JOINs, subqueries, and window functions.",
+    "concept_tags": ["SQL", "database", "JOIN", "GROUP BY", "KPI", "query writing"],
+    "visual_weight": "low",
+    "duration_or_format_optional": "Self-paced"
+  },
+  {
+    "id": "resource_sklearn_user_guide",
+    "title": "scikit-learn User Guide",
+    "type": "curated_placeholder",
+    "provider": "scikit-learn (Python)",
+    "url": "",
+    "summary": "Official scikit-learn documentation for kNN, random forest, gradient boosting, SVM, and model selection/cross-validation.",
+    "concept_tags": ["scikit-learn", "kNN", "random forest", "cross-validation", "SVM", "ensemble methods"],
+    "visual_weight": "low",
+    "duration_or_format_optional": "Documentation"
+  }
+]
