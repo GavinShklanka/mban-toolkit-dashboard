@@ -7,6 +7,7 @@ const navItems = [
   { path: '/methods', label: 'Methods', icon: '🔬', short: 'Methods' },
   { path: '/ask', label: 'Ask MBAN', icon: '🔍', short: 'Ask' },
   { path: '/router', label: 'Router', icon: '🗺️', short: 'Router' },
+  { path: '/refresh', label: 'Refresh', icon: '💡', short: 'Refresh' },
   { path: '/governance', label: 'Governance', icon: '🛡️', short: 'Gov' },
   { path: '/evidence', label: 'Evidence', icon: '📋', short: 'Audit' },
 ]
