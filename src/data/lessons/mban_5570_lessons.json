@@ -1,0 +1,97 @@
+[
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Risk & Uncertainty in Financial Modelling",
+    "summary": "This part of the course was really about replacing false precision in financial models with honest quantification of uncertainty. @RISK Monte Carlo simulation and Precision Tree turned point-estimate Excel models into distributions — forcing you to think about the range of possible outcomes, not just the expected one.",
+    "keyIdeas": [
+      "@RISK replaces static inputs with probability distributions and runs thousands of simulations to generate a distribution of outputs",
+      "Distribution selection carries real meaning: triangular for bounded estimates, normal for symmetric outcomes, lognormal for positive-skewed metrics like revenue",
+      "NPV under uncertainty becomes a distribution — the probability that NPV > 0 is your go/no-go confidence metric",
+      "Precision Tree structures sequential financial decisions explicitly with probabilities at each branch — same decision tree logic as MBAN 5540, applied to financial models",
+      "Risk scalping: iterating inputs across their uncertainty ranges to identify which assumptions drive the most output variance"
+    ],
+    "methodsTools": ["@RISK", "Monte Carlo simulation", "Precision Tree", "NPV modelling", "Excel", "sensitivity tornado charts"],
+    "practicalIntuition": "Every financial model is built on assumptions. Monte Carlo doesn't eliminate uncertainty — it makes the uncertainty visible and quantifiable. Investment committees want distributions, not single numbers.",
+    "commonConfusion": "Treating Monte Carlo output as the answer rather than a better description of uncertainty. The distribution shape and tail risks matter as much as the mean — a 10% chance of total loss can kill a project that looks good on average.",
+    "assignmentAnchor": "Empirical Analytics Assignment 1 (@RISK and Precision Tree applications)",
+    "businessMeaning": "Investment committees, venture capital, M&A analysis, and project finance all require probabilistic thinking. Single-point NPV estimates are no longer considered rigorous in professional settings.",
+    "reviewNext": "Financial Statement Analytics",
+    "sourceDeck": "MBAN5570 course outline Topics 1-3"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Financial Statement Analytics",
+    "summary": "This part of the course was about building and reading financial models that actually link together. Pro forma forecasting, the 3-statement dynamic model, and valuation techniques (DCF, comps, bond pricing) are the common language of every finance professional.",
+    "keyIdeas": [
+      "Pro forma forecasting: project income statement, balance sheet, and cash flow forward using explicit assumptions about growth, margins, and capital structure",
+      "The 3-statement dynamic model (3SDDM) links all three statements — a change in revenue flows through income, then retained earnings, then the balance sheet, then cash flow",
+      "Valuation methods differ by asset: DCF for stocks/projects (discount free cash flows), yield-to-maturity for bonds, comparable company analysis for M&A",
+      "MACD (Moving Average Convergence Divergence): a technical indicator tracking the difference between short and long-term moving averages — signals trend changes in trading",
+      "ROIC vs WACC: a business creates value only when return on invested capital exceeds the weighted average cost of capital"
+    ],
+    "methodsTools": ["pro forma forecasting", "DCF valuation", "comparable company analysis", "3SDDM", "MACD", "Excel financial modelling"],
+    "practicalIntuition": "Financial statements are the common language between analysts, executives, and investors. You can't participate in investment decisions, strategic planning, or M&A without being able to read and build these models.",
+    "commonConfusion": "Building technically correct models that produce economically impossible outputs — like revenue growing faster than the market, or margins exceeding what any competitor has ever achieved. Always benchmark your model outputs against industry data.",
+    "assignmentAnchor": "Empirical Analytics Assignments 2-3 (financial modelling and valuation spreadsheets)",
+    "businessMeaning": "Equity research, investment banking, corporate development, FP&A, and strategic consulting all center on financial statement analysis. This is foundational to finance-adjacent analytics roles.",
+    "reviewNext": "Python for Financial Data Analytics",
+    "sourceDeck": "MBAN5570 course outline Topics 2-3"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Python for Financial Data Analytics",
+    "summary": "This part of the course applied Python to financial data at a scale where Excel breaks down — large datasets, automated analysis pipelines, and financial visualization. The WRDS database gave access to real institutional-grade financial data.",
+    "keyIdeas": [
+      "Pandas for financial data: time-series indexing, rolling calculations, cross-sectional merges across thousands of securities",
+      "Diagnostic analytics in finance: decomposing why a metric changed — volume effect, price effect, mix effect",
+      "Predictive analytics: using historical financial patterns to forecast future metrics (revenue, margins, returns)",
+      "WRDS (Wharton Research Data Services): the institutional database for financial research — Compustat, CRSP, I/B/E/S",
+      "Financial visualization standards: axis labels, data-ink ratio, avoiding chartjunk — finance audiences have specific conventions"
+    ],
+    "methodsTools": ["Python", "pandas", "matplotlib", "WRDS", "time-series analysis", "R", "STATA"],
+    "practicalIntuition": "Python is replacing Excel as the primary tool for financial analysis at scale. A firm analyzing 5,000 securities can't do it in spreadsheets. Python proficiency is increasingly expected even in non-technical finance roles.",
+    "commonConfusion": "Using default Python visualization settings for financial outputs — financial audiences expect specific formatting: no grid clutter, clear axis labels, consistent color conventions for positive/negative values.",
+    "assignmentAnchor": "Empirical Analytics Assignments (Python data analysis components)",
+    "businessMeaning": "Quantitative finance, equity research automation, risk analytics, and large-scale financial data processing all require Python. This bridges the gap between Excel finance and engineering-grade data work.",
+    "reviewNext": "NLP & Machine Learning in Finance",
+    "sourceDeck": "MBAN5570 course outline Topics 4-6"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "NLP & Machine Learning in Finance",
+    "summary": "This part of the course was about extracting signal from unstructured financial text — earnings calls, news, SEC filings — and applying ML to time series that traditional econometric models struggle with. The frontier of quantitative finance is increasingly in text.",
+    "keyIdeas": [
+      "NLP applied to earnings call transcripts: extract sentiment, identify tone shifts, detect hedging language before it shows up in reported numbers",
+      "Sentiment analysis on capital market data: text-derived sentiment can predict abnormal returns in the days after earnings releases",
+      "Event study methodology: measure abnormal returns around a specific event (earnings, merger, regulation) by separating event impact from market-wide noise using CAPM residuals",
+      "ML time series forecasting: gradient boosting and neural networks capture nonlinear patterns in financial series that ARIMA/regression models miss",
+      "Financial NLP requires domain adaptation — financial language is deliberately vague, uses industry jargon, and includes forward-looking statements with specific legal conventions"
+    ],
+    "methodsTools": ["NLP", "sentiment analysis", "event study analytics", "ML time series forecasting", "Python", "Hugging Face transformers"],
+    "practicalIntuition": "Earnings call transcripts and SEC filings contain information that isn't yet in price — analyst tone, management hedging, and topic shifts all precede price moves. Firms that can process this at scale have an information advantage.",
+    "commonConfusion": "Assuming off-the-shelf sentiment models work well on financial text. General NLP models trained on social media or news articles don't understand financial language — 'challenging environment' means something different in a 10-K than in a tweet.",
+    "assignmentAnchor": "Empirical Analytics Assignment 4 (NLP and event study application)",
+    "businessMeaning": "Hedge funds, asset managers, and fintech firms increasingly use NLP on financial text at scale. This is an area where ML genuinely adds value over traditional analysis in capital markets.",
+    "reviewNext": "Equity Research: Traditional vs AI-Assisted Analysis",
+    "sourceDeck": "MBAN5570 course outline Topics 7-8"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Equity Research: Traditional vs AI-Assisted Analysis",
+    "summary": "The capstone of 5570: conduct a full equity research workflow — traditional fundamental analysis, then AI-augmented, then critically evaluate what the AI got right and wrong. This project-backed lesson is as much about analytical judgment as about methodology.",
+    "keyIdeas": [
+      "Traditional equity research framework: business model → industry analysis → management quality → financial statements → valuation → catalysts → investment thesis",
+      "AI augmentation use cases: earnings summarization, risk factor extraction, comparable company screening, scenario generation, NLP sentiment aggregation",
+      "The critical evaluation layer is mandatory: document what AI produced, what you accepted, what you discarded, and why — this is the professional differentiator",
+      "AI hallucination risk in finance is high: AI systems will confidently cite revenue figures, growth rates, or analyst estimates that are incorrect — always verify against source documents",
+      "The tradeoffs are real: AI offers speed and pattern recognition; analysts offer economic reasoning, context, and accountability. Neither alone is sufficient"
+    ],
+    "methodsTools": ["equity research methodology", "DCF valuation", "comparable company analysis", "AI-assisted research", "critical evaluation framework", "financial statement analysis"],
+    "practicalIntuition": "This lesson teaches a framework that applies far beyond equities — whenever you use AI to analyze anything, you need a structured approach to evaluating its outputs. The habit of documenting what you accepted vs. discarded is the professional standard.",
+    "commonConfusion": "Treating AI-generated analysis as a draft to be lightly edited rather than a claim to be verified. AI hallucinates financial data at meaningful rates. Accepting AI outputs without cross-checking against SEC filings and earnings transcripts is analytical malpractice.",
+    "assignmentAnchor": "Equity Research White Paper + 10-minute presentation (25% of course grade)",
+    "businessMeaning": "The ability to integrate AI tools into professional workflows — using them where they add value, overriding them where they don't — is the defining skill of the next generation of analysts. This is true in finance, consulting, and analytics broadly.",
+    "reviewNext": "Course overview for MBAN 5570",
+    "sourceDeck": "MBAN5570 course outline, Equity Research project brief"
+  }
+]

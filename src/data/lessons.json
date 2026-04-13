@@ -1,376 +1,629 @@
 [
   {
-    "course": "5510",
-    "lesson_number": 1,
-    "title": "What is an AI Agent?",
-    "deck_label": "What's AI Agent",
-    "slide_count": 17,
-    "summary": "Traces the history of AI agents from early academic definitions to the 2023 ReAct breakthrough that changed everything. Establishes what \"agentic AI\" actually means versus older AI concepts.",
-    "teaching_points": [
-      "AI agents are autonomous systems that perceive their environments, pursue goals over time, and adapt to change — a definition from Russell & Norvig (1995) that still holds.",
-      "The field divides into Pre-ReAct and ReAct eras. The 2023 ReAct paper (Shunyu Yao, Princeton/Google) unified reasoning and acting in a single loop, making practical agents buildable.",
-      "ReAct architecture requires LLMs to output tool messages in a specific format — Thought → Action → Observation — enabling structured agent behavior.",
-      "Scale matters: Craig Reynolds' 1986 'boids' showed that simple agent rules produce emergent behavior greater than the sum of their parts. Multi-agent systems follow the same principle.",
-      "After 2023, a wave of platforms (LangChain, LangGraph, CrewAI, AutoGen) emerged all building on ReAct fundamentals — so understanding ReAct means understanding all of them."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "What is an AI Agent?",
+    "summary": "Introduces AI agents as systems capable of reasoning, planning, and autonomous action using LLMs. Distinguishes agents from simple chatbots by their ability to use tools and make multi-step decisions.",
+    "keyIdeas": [
+      "An AI agent perceives its environment, reasons about goals, and takes actions autonomously",
+      "The ReAct pattern combines reasoning and acting in an interleaved loop",
+      "Agents differ from LLMs: agents have tool access, memory, and goal-directed behavior",
+      "Post-training enables tool use through function calling and structured outputs",
+      "The agent loop: observe → think → act → observe results → repeat"
     ],
-    "related_methods": ["ReAct Architecture", "Agent Loop", "Multi-Agent Systems"],
-    "common_confusion": "ReAct is not a framework — it's an architecture pattern. LangChain and LangGraph implement it. Learning ReAct means you can reason about any agent platform."
+    "methodsTools": ["ReAct architecture", "LLM function calling", "agent loop"],
+    "practicalIntuition": "Understanding agent architecture is essential because enterprise AI is moving from single-query chatbots to multi-step autonomous systems that can actually execute business workflows.",
+    "commonConfusion": "Confusing an LLM with an agent — an LLM generates text, an agent uses an LLM as its reasoning engine while also taking actions through tools.",
+    "assignmentAnchor": "Agentic AI component (30% of course grade)",
+    "businessMeaning": "Enables building AI systems that can autonomously complete business tasks like research, analysis, and decision support.",
+    "reviewNext": "LLM Foundations",
+    "sourceDeck": "Presentation 1 What's AI Agent.pptx"
   },
   {
-    "course": "5510",
-    "lesson_number": 2,
-    "title": "LLM Foundations for Agent Builders",
-    "deck_label": "Good-to-Know Foundations",
-    "slide_count": 19,
-    "summary": "What you need to know about how LLMs work before building agents — training stages, reasoning vs acting, and why token prediction gives rise to apparently intelligent behavior.",
-    "teaching_points": [
-      "LLMs go through pre-training (learning language patterns from massive text corpora) and post-training (fine-tuning via RLHF/DPO to be helpful and aligned). You interact with post-trained models.",
-      "Reasoning in an LLM emerges from training — it is not explicit logic. When an LLM 'reasons', it is generating likely next tokens based on patterns, not running a theorem prover.",
-      "Acting (the 'Act' in ReAct) means outputting structured tool calls. The LLM knows when to call a tool because its output format is constrained: Thought → Action → Observation → repeat.",
-      "The ReAct loop: the LLM produces a Thought (reasoning step), then an Action (tool call), receives an Observation (tool result), and repeats until it produces a final Answer.",
-      "Knowing this helps you debug agents: if an agent loops infinitely, the LLM's reasoning chain is not converging; if it fails to call tools, the output format is wrong."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "LLM Foundations for Agent Building",
+    "summary": "Covers the technical foundations needed to build agents: how LLMs process tokens, manage context windows, and generate structured outputs. Introduces uv as a Python project manager.",
+    "keyIdeas": [
+      "LLMs process text as tokens with limited context windows",
+      "Temperature and sampling parameters control output randomness",
+      "Structured output schemas let agents produce machine-readable responses",
+      "uv is a fast Python package manager used for AI project setup",
+      "Embeddings represent text as vectors for similarity and retrieval"
     ],
-    "related_methods": ["ReAct Architecture", "Agent Loop", "LLM Chaining"],
-    "common_confusion": "Post-training alignment doesn't mean the model 'understands' — it means its outputs are shaped to be useful and safe. The underlying mechanism is still next-token prediction."
+    "methodsTools": ["tokenization", "embeddings", "structured outputs", "uv"],
+    "practicalIntuition": "You need to understand LLM mechanics to debug agent failures — most issues trace back to context window limits, poor prompting, or unstructured outputs.",
+    "commonConfusion": "Assuming LLMs understand meaning — they predict token sequences statistically, which is powerful but not comprehension.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Managers need to understand LLM capabilities and limits to make realistic AI adoption decisions.",
+    "reviewNext": "Building with LangChain",
+    "sourceDeck": "Presentation 2 Some Good-to-Know Foundations.pptx"
   },
   {
-    "course": "5510",
-    "lesson_number": 3,
-    "title": "Building with LangChain",
-    "deck_label": "Intro to LangChain",
-    "slide_count": 32,
-    "summary": "Practical introduction to LangChain's ecosystem: how Python packages, virtual environments, API keys, and the LCEL (LangChain Expression Language) fit together to build agent pipelines.",
-    "teaching_points": [
-      "LangChain is a Python package that wraps LLM providers (OpenAI, Anthropic, etc.) with a unified interface for building chains, tools, and agents. Install via pip in a virtual environment.",
-      "API keys are credentials passed as environment variables (never hardcoded). LangChain reads them via os.getenv() or a .env file. Always rotate exposed keys.",
-      "LCEL (LangChain Expression Language) uses the pipe operator | to chain components: prompt | model | output_parser. This is the core composition pattern.",
-      "RAG (Retrieval-Augmented Generation) is the most common LangChain pattern: load documents → chunk → embed → store in vector DB → retrieve on query → pass to LLM as context.",
-      "The three main components to know: Prompts (templates), Models (LLM wrappers), and Tools (functions the agent can call). Everything else builds on these."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Building Agents with LangChain",
+    "summary": "Introduces the LangChain framework for building LLM-powered agents with chains, prompts, and tool integration. Covers single-agent application design.",
+    "keyIdeas": [
+      "LangChain orchestrates LLMs into multi-step chains",
+      "Prompts template reusable instructions for consistent agent behavior",
+      "Tools let agents interact with external APIs, databases, and services",
+      "Output parsers convert LLM text into structured data",
+      "Single-agent apps combine prompts, tools, and memory into coherent workflows"
     ],
-    "related_methods": ["LLM Chaining", "RAG Patterns", "Agent Workflow Design"],
-    "common_confusion": "LangChain's RAG implementations all follow the same core pattern: retrieve then augment. The various 'RAG variants' (HyDE, Hybrid RAG, etc.) are optimizations of retrieval quality, not different architectures."
+    "methodsTools": ["LangChain", "prompt templates", "tool integration", "output parsers"],
+    "practicalIntuition": "LangChain is the most widely adopted framework for building production AI agents — learning it is directly applicable to enterprise AI roles.",
+    "commonConfusion": "Building overly complex chains when a simple prompt would suffice — start simple, add complexity only when needed.",
+    "assignmentAnchor": "Travel planning agent assignment",
+    "businessMeaning": "Enables rapid prototyping of AI-powered business tools like automated research assistants, data analysts, and decision support systems.",
+    "reviewNext": "Middleware & Tool Integration",
+    "sourceDeck": "Presentation 3 Intro to LangChain.pptx"
   },
   {
-    "course": "5510",
-    "lesson_number": 4,
-    "title": "Middleware & Tool Integration",
-    "deck_label": "Middleware",
-    "slide_count": 11,
-    "summary": "Middleware is a LangChain-specific mechanism (not part of ReAct) that lets you intercept and modify agent behavior at each step. Key for control, logging, and safety guardrails.",
-    "teaching_points": [
-      "Middleware is a LangChain abstraction (not in the original ReAct paper) that sits between steps in an agent's execution, allowing interception and modification of inputs/outputs.",
-      "Built-in middleware handles common cases (rate limiting, retry logic, tracing). Custom middleware lets you implement any control logic: content filtering, logging, human approval gates.",
-      "Execution order matters: middleware is applied in the order it is passed. This resembles middleware stacks in web frameworks (Express, Django).",
-      "Middleware is only available in LangChain and Microsoft's agent framework — not CrewAI or AutoGen. It's a LangChain-specific design pattern.",
-      "Use middleware for observability: wrapping agent calls with logging middleware is how you build a trace of every step for debugging or governance."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Middleware & Tool Integration",
+    "summary": "Covers how middleware layers modify and extend agent behavior, including built-in and custom middleware for logging, validation, and error handling.",
+    "keyIdeas": [
+      "Middleware intercepts and transforms messages between components",
+      "Built-in middleware handles common patterns like retry and logging",
+      "Custom middleware lets you add business-specific validation and guardrails",
+      "Tools with structured output schemas enable type-safe agent actions",
+      "Short-term memory allows agents to maintain context within a conversation"
     ],
-    "related_methods": ["Middleware (Built-in and Custom)", "HITL Control", "Agent Evaluation"],
-    "common_confusion": "Middleware is not the same as tools. Tools are what the agent calls to act on the world. Middleware wraps the agent's execution pipeline itself."
+    "methodsTools": ["middleware patterns", "custom middleware", "structured output schemas", "short-term memory"],
+    "practicalIntuition": "Middleware is how you make agents production-ready — raw LLM chains break in unpredictable ways, middleware adds the safety nets.",
+    "commonConfusion": "Skipping middleware in prototypes then wondering why production agents are unreliable.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Enterprise AI requires robust error handling, logging, and validation — middleware is the engineering layer that makes this possible.",
+    "reviewNext": "Advanced LangChain Patterns",
+    "sourceDeck": "Presentation 4 Middleware.pptx"
   },
   {
-    "course": "5510",
-    "lesson_number": 5,
-    "title": "Advanced LangChain: RAG & Memory",
-    "deck_label": "Advanced LangChain",
-    "slide_count": 26,
-    "summary": "Deep dive into RAG patterns, short-term and long-term memory, and HITL control in single-agent systems. Also covers structured output schemas for tools.",
-    "teaching_points": [
-      "Advanced RAG: the core pattern (retrieve → augment → generate) stays constant across all variants. Hybrid RAG combines vector search with keyword search (BM25) for better recall.",
-      "Short-term memory = the conversation window the LLM can see. Long-term memory = persisted storage retrieved by similarity search. In 2026, long-term memory techniques are still maturing.",
-      "HITL (Human-in-the-Loop) in LangChain: interrupt the agent chain at a checkpointed step, surface the agent's proposed action to a human, and resume only after approval.",
-      "Structured output schemas force the LLM to return JSON matching a Pydantic model. This is how you build reliable tool integrations — instead of parsing free text, you validate structured data.",
-      "Multimodality: passing images, audio, or documents to the LLM as context alongside text. The agent can then reason about non-text inputs. Supported in GPT-4o and Claude."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Advanced LangChain Patterns",
+    "summary": "Explores complex chain architectures including routing, memory management, and multi-step reasoning patterns for production agent systems.",
+    "keyIdeas": [
+      "Complex chains can route between different processing paths based on input",
+      "Memory management strategies determine what agents remember across interactions",
+      "Advanced prompting techniques improve agent reasoning quality",
+      "Chain composition allows building modular, reusable agent components",
+      "Error recovery patterns handle graceful degradation when tools fail"
     ],
-    "related_methods": ["RAG Patterns", "Short-Term Memory", "Long-Term Memory", "HITL Control"],
-    "common_confusion": "RAG is often described as 'dead' in favor of long-context models. But long-context models still benefit from RAG for cost efficiency and retrieval precision — the two approaches complement each other."
+    "methodsTools": ["chain routing", "memory management", "advanced prompting", "chain composition"],
+    "practicalIntuition": "Moving from demo agents to production agents requires mastering these patterns — this is where most enterprise AI projects stall.",
+    "commonConfusion": "Over-engineering agent memory — most business tasks need only short-term context, not persistent memory.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Production-grade AI systems require sophisticated orchestration beyond basic chatbot patterns.",
+    "reviewNext": "LangGraph Fundamentals",
+    "sourceDeck": "Presentation 5 Some Advanced Topics of LangChain2.pptx"
   },
   {
-    "course": "5510",
-    "lesson_number": 6,
-    "title": "Intro to LangGraph",
-    "deck_label": "Intro to LangGraph",
-    "slide_count": 17,
-    "summary": "LangGraph extends LangChain with graph-based orchestration: nodes (agent steps), edges (transitions), and stateful state objects that persist across the entire workflow.",
-    "teaching_points": [
-      "LangGraph models agent workflows as a directed graph: nodes are processing steps (LLM calls, tool calls, conditions), edges define transitions between nodes.",
-      "The key insight: graphs let you represent branching, looping, and parallel execution explicitly — things that are awkward to express as a linear chain.",
-      "Workflow → Agentic Workflow → Agent: a Workflow is a fixed sequence; an Agentic Workflow uses an LLM to decide transitions; an Agent fully controls its own execution path.",
-      "SubGraphs as Nodes: you can nest a compiled graph inside a node of a parent graph. This is how you build modular multi-agent systems — each agent is a subgraph.",
-      "The Graph API has three parts: Nodes (define), Edges (connect), Compilation (build). Compile the graph once, then invoke it with a state object."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "LangGraph Fundamentals",
+    "summary": "Introduces LangGraph for building stateful, graph-based agent workflows with conditional routing and checkpoint management.",
+    "keyIdeas": [
+      "LangGraph models agent workflows as directed graphs with nodes and edges",
+      "State is explicitly managed and passed between graph nodes",
+      "Conditional edges enable dynamic routing based on agent state",
+      "Checkpoints allow saving and restoring workflow state",
+      "Workflows vs agents vs agentic workflows represent different levels of autonomy"
     ],
-    "related_methods": ["Stateful Graph Orchestration", "Agent Workflow Design", "Multi-Agent Systems"],
-    "common_confusion": "LangGraph is not a replacement for LangChain — it extends it. LangGraph handles the orchestration layer (when to call what); LangChain handles the component layer (how to call it)."
+    "methodsTools": ["LangGraph", "stateful graphs", "conditional routing", "checkpoints"],
+    "practicalIntuition": "LangGraph solves the biggest limitation of simple chains — when you need agents that can branch, loop, and recover from failures.",
+    "commonConfusion": "Confusing LangChain chains with LangGraph graphs — chains are linear sequences, graphs support branching and cycles.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Complex business processes (loan approval, compliance review, multi-step analysis) require graph-based orchestration, not linear chains.",
+    "reviewNext": "Advanced LangGraph",
+    "sourceDeck": "Presentation 6 Intro to LangGraph_updated.pptx"
   },
   {
-    "course": "5510",
-    "lesson_number": 7,
-    "title": "Advanced LangGraph",
-    "deck_label": "Advanced LangGraph",
-    "slide_count": 9,
-    "summary": "Production-grade LangGraph: app structure for local deployment, interrupt functions for fine-grained human control, and integrating LangGraph with a chat UI.",
-    "teaching_points": [
-      "LangGraph app structure for local deployment: a compiled graph + a FastAPI server + a LangGraph Studio UI. The studio lets you visualize graph execution in real time.",
-      "Interrupts are more flexible than HITL: instead of a binary pause/resume, interrupts let you inject values, modify state, or choose a different execution path at any node.",
-      "Super-steps: in LangGraph, nodes in the same super-step execute in parallel. This is how you build fan-out/fan-in patterns for concurrent agent execution.",
-      "Persistence: LangGraph checkpointers save state between steps. This enables long-running agents that can be paused and resumed, even across process restarts.",
-      "Agent Chat UI: LangGraph integrates with streaming front-ends. The agent streams tokens as it generates, giving the user real-time feedback rather than waiting for the full response."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Advanced LangGraph: Interrupts & Multi-Agent Systems",
+    "summary": "Covers super-steps, interrupt functions, multi-agent coordination, local deployment, and LangSmith monitoring for production agent systems.",
+    "keyIdeas": [
+      "Super-steps are the execution units between interrupt points in a graph",
+      "Interrupt functions pause execution for human review at critical decision points",
+      "Multi-agent systems coordinate specialized agents to solve complex problems",
+      "Local deployment uses LangGraph-specific and Linux command-line tools",
+      "LangSmith Studio provides monitoring, debugging, and performance tracking for agent systems"
     ],
-    "related_methods": ["Stateful Graph Orchestration", "Super-Steps", "Interrupt Functions", "HITL Control"],
-    "common_confusion": "Interrupts and HITL are related but different: HITL is a design pattern (human reviews agent output); interrupts are the LangGraph mechanism that implements it — and more."
+    "methodsTools": ["super-steps", "interrupt functions", "multi-agent coordination", "LangSmith Studio", "local deployment", "Linux CLI"],
+    "practicalIntuition": "Interrupts are the governance mechanism for agentic AI — without them, autonomous agents can take irreversible actions based on hallucinated reasoning.",
+    "commonConfusion": "Placing interrupts too late in the workflow — by the time you pause, the agent may have already acted.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Enterprise AI deployment requires human-in-the-loop control, observability, and the ability to halt autonomous systems at critical decision points.",
+    "reviewNext": "Deep Agents & Frontier Topics",
+    "sourceDeck": "Presentation 7 Some Advanced Topics of LangGraph.pptx"
   },
   {
-    "course": "5510",
-    "lesson_number": 8,
-    "title": "Deep Agents & Frontier Topics",
-    "deck_label": "Deep Agents & Misc",
-    "slide_count": 13,
-    "summary": "Frontier architectures: Deep Agent systems with subagents, agent skills, multi-modal agents, and the open research problems in long-term memory and agent reliability.",
-    "teaching_points": [
-      "Deep Agent architecture: a main agent delegates to specialized subagents. The main agent handles high-level planning and routing; subagents handle domain-specific tasks. This is how production systems scale.",
-      "Agent Skills (Anthropic's term): the agent calls a tool to load a 'skill' — a bundle of instructions and capabilities — dynamically. Enables agents to acquire new capabilities at runtime.",
-      "Multi-modal agents: agents that can receive images, audio, and documents, not just text. The agent reasons across modalities to plan and act — e.g., screenshot → identify UI element → click.",
-      "Long-term memory research frontier: current approaches use vector DBs for semantic retrieval, but temporal ordering, memory consolidation, and forgetting are still unsolved.",
-      "The hardest open problems: agents that reliably know when to stop, agents that catch their own errors, and agents that can be trusted with high-stakes decisions without supervision."
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Deep Agents & Frontier Topics",
+    "summary": "Explores next-generation agent architectures including Deep Agents, multimodal capabilities, and long-term memory systems.",
+    "keyIdeas": [
+      "Deep Agents differ structurally from ReAct agents in how they plan and execute",
+      "Multimodal agents can process images, audio, and text simultaneously",
+      "Long-term memory allows agents to learn and improve across sessions",
+      "Agent evaluation frameworks measure reliability, accuracy, and safety",
+      "Governance and risk management are critical for enterprise agent adoption"
     ],
-    "related_methods": ["Multi-Agent Systems", "Deep Agents", "Long-Term Memory", "Agent Evaluation"],
-    "common_confusion": "Multi-agent ≠ better. Adding more agents increases complexity and failure modes. Use the minimal agent design that solves the problem reliably."
+    "methodsTools": ["Deep Agents", "multimodality", "long-term memory", "agent evaluation"],
+    "practicalIntuition": "This is where the field is heading — understanding frontier architectures helps you evaluate and adopt emerging AI capabilities.",
+    "commonConfusion": "Assuming Deep Agents are always better than ReAct — each architecture has different strengths depending on the task.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Staying current with AI agent architectures is a career differentiator in business analytics and enterprise AI roles.",
+    "reviewNext": "Course overview for MBAN 5510",
+    "sourceDeck": "Presentation 8 Intro to Deep Agents and Miscellaneous Item.pptx"
   },
   {
-    "course": "5520",
-    "lesson_number": 1,
-    "title": "Data Understanding & Storytelling",
-    "deck_label": "Day 2 — Regression Foundations",
-    "slide_count": 92,
-    "summary": "Why good analytics starts with good data visualization. Covers EDA, choosing the right chart, and how data presentation choices affect the conclusions your audience draws.",
-    "teaching_points": [
-      "Good data analytics is good storytelling. Before running any model, ask: what question am I answering, and for whom?",
-      "A simple picture can tell a powerful story. Complexity in a chart is often a sign of unclear thinking, not rigorous analysis.",
-      "With smaller populations, rates are more volatile — don't confuse variance with signal. Always contextualize metrics by population size.",
-      "Pre-attentive attributes (color, size, position) guide the reader's eye. Use them deliberately to highlight what matters, not to decorate.",
-      "EDA is not optional. Models built without exploratory analysis routinely fail in predictable ways — outliers, data entry errors, and distribution skew that should have been caught first."
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Introduction to MBAN Analytics",
+    "summary": "Sets the foundation for the MBAN by introducing what analytics means in business context — moving from data to decisions through descriptive, predictive, and prescriptive approaches.",
+    "keyIdeas": [
+      "Analytics transforms raw data into business decisions",
+      "Descriptive analytics answers what happened, predictive answers what will happen",
+      "The MBAN integrates technical methods with business judgment",
+      "Data quality and preparation are prerequisites for reliable analytics",
+      "Statistical thinking is the foundation for all analytics work"
     ],
-    "related_methods": ["Multiple Linear Regression", "Hypothesis Testing"],
-    "common_confusion": "EDA ≠ descriptive statistics. Summary stats (mean, std) collapse distribution shape. Always plot your data before summarizing it numerically."
+    "methodsTools": ["descriptive statistics", "data profiling", "EDA"],
+    "practicalIntuition": "Every analytics project starts with understanding the business question before touching data — method selection follows problem framing.",
+    "commonConfusion": "Jumping to complex models before understanding the data — EDA should always come first.",
+    "assignmentAnchor": "Regression analysis project",
+    "businessMeaning": "Analytics literacy is the baseline skill for every business analytics role.",
+    "reviewNext": "Statistical Foundations for Prediction",
+    "sourceDeck": "Day 2 MBAN 5520 Fall 2025.pptx"
   },
   {
-    "course": "5520",
-    "lesson_number": 2,
-    "title": "Regression Analysis in Practice",
-    "deck_label": "Day 3 — Regression Analysis",
-    "slide_count": 113,
-    "summary": "Hands-on regression: building models in R, interpreting coefficients, testing significance, evaluating fit, and understanding when regression predictions are reliable.",
-    "teaching_points": [
-      "Multiple linear regression: y = β₀ + β₁x₁ + ... + βₙxₙ + ε. Each βᵢ is the expected change in y for a one-unit increase in xᵢ, holding other variables constant.",
-      "Significance testing via t-tests and F-test: the t-test evaluates each coefficient; the F-test evaluates the model as a whole. Both are needed for a complete picture.",
-      "Standardized coefficients (beta weights) let you compare the relative importance of predictors measured on different scales.",
-      "Prediction intervals vs confidence intervals: CI estimates where the mean response falls; PI estimates where a single new observation falls. PIs are always wider.",
-      "Train-test split: always evaluate prediction performance on held-out data you did not use for fitting. In-sample R² is flattering; out-of-sample RMSE is honest."
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Statistical Foundations for Prediction",
+    "summary": "Reviews core statistical concepts needed for predictive modeling: distributions, hypothesis testing, confidence intervals, and the logic of statistical inference.",
+    "keyIdeas": [
+      "Hypothesis testing determines whether observed patterns are statistically significant",
+      "Confidence intervals quantify uncertainty around estimates",
+      "P-values measure evidence against null hypotheses",
+      "Statistical significance does not imply practical significance",
+      "Multiple regression identifies which factors drive outcomes while controlling for others"
     ],
-    "related_methods": ["Multiple Linear Regression", "Hypothesis Testing", "Train-Test Split"],
-    "common_confusion": "R² measures how well the model fits training data, not how well it predicts. A high R² with poor out-of-sample predictions means you overfit."
+    "methodsTools": ["hypothesis testing", "confidence intervals", "multiple regression", "R lm()"],
+    "practicalIntuition": "Understanding statistical inference prevents you from making decisions based on noise that looks like signal.",
+    "commonConfusion": "Confusing confidence intervals with prediction intervals — confidence intervals are about the mean, prediction intervals are about individual observations.",
+    "assignmentAnchor": "Regression analysis project (Ames Housing)",
+    "businessMeaning": "Every business claim based on data needs statistical validation — this prevents costly decisions based on spurious patterns.",
+    "reviewNext": "Prediction Techniques for Business",
+    "sourceDeck": "Day 3 MBAN Fall 2025.pptx"
   },
   {
-    "course": "5560",
-    "lesson_number": 1,
-    "title": "Supervised Learning Foundations",
-    "deck_label": "Supervised Learning I",
-    "slide_count": 8,
-    "summary": "The conceptual backbone of MBAN 5560: bias-variance tradeoff, parametric vs nonparametric models, and systematic model selection via grid search and cross-validation.",
-    "teaching_points": [
-      "Bias-variance tradeoff: simple models underfit (high bias), complex models overfit (high variance). The goal is finding the sweet spot on the complexity axis for your data.",
-      "Parametric models (linear regression, logistic regression) assume a functional form; nonparametric models (kNN, trees) let the data define the shape. Parametric models are more interpretable but less flexible.",
-      "Grid search: systematically evaluate all combinations of hyperparameter values on a validation set. Computationally expensive but exhaustive.",
-      "Cross-validation: split data into k folds, train on k-1 folds, validate on the held-out fold, rotate k times. Averages performance across folds for a more robust estimate than a single split.",
-      "The overfitting diagnostic: training error keeps dropping as complexity increases; validation error eventually rises. The minimum of the validation curve is your target complexity."
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Prediction Techniques for Business",
+    "summary": "Covers the core supervised learning techniques used in business prediction: regression, classification, and their evaluation metrics.",
+    "keyIdeas": [
+      "Linear regression provides interpretable predictions for continuous outcomes",
+      "Neural networks capture nonlinear patterns but sacrifice interpretability",
+      "SVMs optimize decision boundaries for classification tasks",
+      "Random forests combine multiple trees for robust prediction",
+      "Model accuracy is measured by MAPE, MSE, and RMSE — lower error means higher predictive power"
     ],
-    "related_methods": ["Grid Search + Cross-Validation", "Bootstrap Resampling", "kNN"],
-    "common_confusion": "Cross-validation selects hyperparameters (model selection); the test set evaluates the final model (model assessment). Never use the test set for selection — that is data leakage."
+    "methodsTools": ["linear regression", "neural networks", "SVM", "random forest", "MAPE", "MSE", "RMSE"],
+    "practicalIntuition": "The best model depends on the tradeoff between accuracy and interpretability — regulators and executives often need explanations, not just predictions.",
+    "commonConfusion": "Optimizing only for accuracy without considering whether the model can be explained to stakeholders.",
+    "assignmentAnchor": "Prediction presentations and Lingras quizzes",
+    "businessMeaning": "Demand forecasting, churn prediction, credit scoring, and financial planning all depend on choosing the right prediction technique.",
+    "reviewNext": "Communicating Predictions",
+    "sourceDeck": "Prediction_in_Business_Applications.pptx"
   },
   {
-    "course": "5560",
-    "lesson_number": 2,
-    "title": "kNN, Clustering & Resampling",
-    "deck_label": "Supervised Learning II",
-    "slide_count": 23,
-    "summary": "k-Nearest Neighbors for classification and regression, K-means and DBSCAN for clustering, and bootstrap resampling for uncertainty quantification.",
-    "teaching_points": [
-      "kNN classifies a new point by finding the k nearest training points (by distance) and taking a majority vote. For regression, it averages their values.",
-      "Choosing k: small k = low bias, high variance (memorizes noise); large k = high bias, low variance (over-smooths). Use cross-validation to select k.",
-      "K-means clustering: assign points to the nearest centroid, recompute centroids, repeat until convergence. Results depend on initialization — run multiple times with different seeds.",
-      "Bootstrap: resample with replacement from your training data B times, fit a model each time, aggregate results. Gives you an estimate of model variance without needing more data.",
-      "DBSCAN identifies clusters as dense regions, automatically detects outliers as noise points, and doesn't require you to pre-specify the number of clusters."
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Communicating Predictions to Decision-Makers",
+    "summary": "Focuses on how to present analytical results to non-technical audiences through effective visualization and business-oriented interpretation.",
+    "keyIdeas": [
+      "Visualizations should tell a story, not just display data",
+      "Choose chart types based on the comparison being made",
+      "Predictions must be presented with uncertainty ranges, not just point estimates",
+      "Business context determines which metrics matter most",
+      "The audience determines the level of technical detail in your presentation"
     ],
-    "related_methods": ["k-Nearest Neighbors (kNN)", "K-Means Clustering", "DBSCAN", "Bootstrap Resampling"],
-    "common_confusion": "kNN's weakness is scale sensitivity — features on larger scales dominate the distance calculation. Always normalize features before running kNN."
+    "methodsTools": ["data visualization", "business reporting", "presentation design"],
+    "practicalIntuition": "A prediction that decision-makers can't understand or trust will never be acted upon — communication is as important as modeling.",
+    "commonConfusion": "Showing too much technical detail to executives — they need the so-what, not the methodology.",
+    "assignmentAnchor": "Prediction presentations",
+    "businessMeaning": "The ability to translate analytical results into business recommendations is the most valued skill in analytics roles.",
+    "reviewNext": "Course overview for MBAN 5520",
+    "sourceDeck": "Business_Prediction_Visuals.pptx"
   },
   {
-    "course": "5560",
-    "lesson_number": 3,
-    "title": "Decision Trees & Ensemble Methods",
-    "deck_label": "Decision Trees",
-    "slide_count": 21,
-    "summary": "CART trees, the Gini impurity criterion, and how bagging and boosting turn weak trees into powerful ensemble models (Random Forest, GBM, XGBoost).",
-    "teaching_points": [
-      "CART splits each node by finding the variable and threshold that minimizes Gini impurity (classification) or MSE (regression) in the resulting child nodes.",
-      "Gini impurity G ≈ 0 means a node is pure (all one class); G = 0.5 means perfectly mixed. At each split, CART finds the split that minimizes the weighted average Gini of children.",
-      "Single trees overfit badly. The fix: ensembles. Bagging (Random Forest) trains many trees on bootstrap samples and averages. Boosting (GBM, XGBoost) trains trees sequentially to correct prior errors.",
-      "Random Forest adds feature randomness: each tree only sees a random subset of features at each split. This de-correlates the trees, reducing ensemble variance.",
-      "XGBoost is gradient boosting with regularization, parallelization, and missing-value handling built in. It dominates tabular data competitions for a reason."
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Statistical Learning Foundations",
+    "summary": "Establishes the theoretical framework for machine learning: parametric vs nonparametric methods, the bias-variance tradeoff, and why models overfit.",
+    "keyIdeas": [
+      "Parametric methods assume a fixed functional form; nonparametric methods let data determine the shape",
+      "The bias-variance tradeoff is the central tension in all ML: simple models underfit, complex models overfit",
+      "Training error always decreases with complexity but test error has a U-shape",
+      "Cross-validation provides honest estimates of how models perform on unseen data",
+      "Overfitting means the model memorized noise instead of learning patterns"
     ],
-    "related_methods": ["CART", "Random Forest", "GBM (Gradient Boosting Machine)", "XGBoost", "Bagging"],
-    "common_confusion": "Random Forest and Gradient Boosting both use trees, but differently: RF trains trees independently and averages; GBM trains trees sequentially where each corrects the last."
+    "methodsTools": ["linear probability models", "logistic regression", "kernel regression", "regression splines", "Naive Bayes", "R", "Python"],
+    "practicalIntuition": "Every ML model you ever build will face the bias-variance tradeoff — understanding it prevents you from shipping models that fail in production.",
+    "commonConfusion": "Thinking a model with 99% training accuracy is good — it might be massively overfitting.",
+    "assignmentAnchor": "Assignment 1 (statistical learning fundamentals)",
+    "businessMeaning": "Choosing between simple interpretable models and complex accurate ones is a daily decision in business analytics.",
+    "reviewNext": "Supervised Learning Methods",
+    "sourceDeck": "SL1.pptx"
   },
   {
-    "course": "5560",
-    "lesson_number": 4,
-    "title": "Neural Networks & Deep Learning",
-    "deck_label": "ANN Basics",
-    "slide_count": 22,
-    "summary": "From single-layer perceptrons to deep networks: how ANNs approximate arbitrary functions, the role of activation functions, and backpropagation as the learning algorithm.",
-    "teaching_points": [
-      "An ANN is a layered function: input layer → hidden layers → output layer. Each neuron applies a weighted sum of its inputs followed by a nonlinear activation function.",
-      "Activation functions introduce nonlinearity that lets the network approximate complex functions. ReLU (max(0,x)) is the standard choice for hidden layers; softmax for multi-class output.",
-      "Backpropagation computes the gradient of the loss with respect to every weight by applying the chain rule backward through the network. Gradient descent then updates weights.",
-      "Architecture choices drive performance: depth (more layers = more abstract features), width (more neurons = more capacity), and regularization (dropout, L2) control overfitting.",
-      "Deep learning (CNNs for images, RNNs/LSTMs for sequences, Transformers for text) applies the same ANN principle with architectures matched to the data's structure."
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Supervised Learning & Model Validation",
+    "summary": "Covers the practical toolkit of supervised learning: kNN, classification tuning, and rigorous model validation through cross-validation, bootstrap, and grid search.",
+    "keyIdeas": [
+      "kNN classifies by majority vote of the k nearest training points — simple but effective",
+      "Grid search systematically evaluates hyperparameter combinations",
+      "k-fold cross-validation partitions data into k folds and rotates the test set",
+      "Bootstrap resampling estimates model stability with ~36.8% out-of-bag rate",
+      "Unsupervised methods (K-means, DBSCAN, hierarchical) discover structure without labels"
     ],
-    "related_methods": ["Neural Networks", "Gradient Descent Variants", "CNN", "RNN", "LSTM"],
-    "common_confusion": "More layers ≠ better. Very deep networks suffer from vanishing gradients (signals shrink to zero during backprop). Residual connections (ResNets) solve this."
+    "methodsTools": ["kNN", "grid search", "k-fold CV", "bootstrap", "K-means", "DBSCAN", "hierarchical clustering", "R caret"],
+    "practicalIntuition": "Model validation is where most real-world ML projects succeed or fail — a model that isn't properly validated is a liability, not an asset.",
+    "commonConfusion": "Confusing bootstrap with cross-validation: bootstrap samples WITH replacement (~36.8% OOB), k-fold partitions WITHOUT replacement into non-overlapping folds.",
+    "assignmentAnchor": "Assignment 2: kNN for Regression and Classification (Ames Housing + Telco Churn)",
+    "businessMeaning": "Proper validation prevents deploying models that look good in development but fail on real customers.",
+    "reviewNext": "Tree-Based & Ensemble Methods",
+    "sourceDeck": "SL2.pptx"
   },
   {
-    "course": "5800",
-    "lesson_number": 1,
-    "title": "Bias, Reasoning & Motivated Cognition",
-    "deck_label": "Thacker Deck 2 — Responsible AI",
-    "slide_count": 51,
-    "summary": "Why humans make biased decisions — and why AI inherits and amplifies those biases. Covers Kahneman's System 1/2 thinking, motivated reasoning, and cognitive bias taxonomy.",
-    "teaching_points": [
-      "Kahneman's System 1/2: System 1 is fast, automatic, associative — handles routine decisions. System 2 is slow, deliberate, logical — handles novel problems. Most of the time, System 1 runs.",
-      "Motivated reasoning: we construct justifications for conclusions we already want to reach. This is particularly dangerous when evaluating AI outputs that confirm our priors.",
-      "AI systems encode the biases of their training data. Data bias, algorithmic bias, and deployment bias are distinct failure modes that require different interventions.",
-      "Anchoring bias: the first piece of information encountered disproportionately influences all subsequent judgments. AI recommendations become anchors that human reviewers may not sufficiently adjust.",
-      "The defend-then-critique framework: force yourself to defend a position you disagree with before critiquing it. This is the course's primary methodology for building intellectual flexibility."
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Tree-Based & Ensemble Methods",
+    "summary": "Covers decision trees, and the ensemble methods that make them powerful: bagging reduces variance, random forest decorrelates trees, and boosting sequentially corrects errors.",
+    "keyIdeas": [
+      "CART splits data recursively using Gini impurity or information gain",
+      "Single trees overfit easily — ensembles fix this",
+      "Bagging trains trees on bootstrap samples and averages predictions (variance reduction)",
+      "Random forest adds feature randomization to decorrelate trees beyond bagging",
+      "Boosting (GBM, AdaBoost.M5, XGBoost) fits sequential models to residuals, reducing bias"
     ],
-    "related_methods": ["Bias Identification in AI Systems", "Motivated Reasoning Self-Analysis"],
-    "common_confusion": "Bias in AI is not just a 'fairness' problem — it is a reliability problem. A biased model is an inaccurate model for the populations that are underrepresented in training data."
+    "methodsTools": ["CART", "bagging", "random forest", "GBM", "AdaBoost.M5", "XGBoost", "R", "Python"],
+    "practicalIntuition": "Tree ensembles (especially XGBoost) win most tabular data competitions and are the workhorse of industry ML — if you learn one method family deeply, make it this one.",
+    "commonConfusion": "Confusing bagging and boosting: bagging trains trees independently in parallel (variance reduction), boosting trains trees sequentially on previous errors (bias reduction).",
+    "assignmentAnchor": "Assignment 3 (tree and ensemble methods)",
+    "businessMeaning": "Random forest and XGBoost are the default choices for credit scoring, fraud detection, churn prediction, and most business classification problems.",
+    "reviewNext": "Neural Networks & Deep Learning",
+    "sourceDeck": "tree.pptx"
   },
   {
-    "course": "5800",
-    "lesson_number": 2,
-    "title": "Ethics Frameworks & Governance",
-    "deck_label": "Week 4 — Governance & Ethics",
-    "slide_count": 2,
-    "summary": "Classical ethics frameworks applied to AI governance: Aristotelian virtue ethics, Kantian deontology, and social contract theory, plus professional codes and regulatory frameworks.",
-    "teaching_points": [
-      "Virtue ethics asks: what would a person of good character do? Applied to AI: what values should be embedded in system design, not just compliance rules?",
-      "Kantian ethics (deontology): act only according to rules you could will to be universal laws. Applied to AI: never treat people merely as means to an end, even for greater aggregate benefit.",
-      "Social contract theory: legitimate authority derives from agreements among those it governs. AI governance requires consent and accountability to those affected by AI decisions.",
-      "Professional codes (like Sarbanes-Oxley, EU CSR directives) translate ethical principles into legal obligations. Knowing the law matters but does not substitute for ethical judgment.",
-      "The governance overlay in this toolkit: 8 risk dimensions (interpretability, validation, fairness, privacy, traceability, HITL need, deployment risk, misuse risk) operationalize ethics into checkable criteria."
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Neural Networks & Deep Learning Fundamentals",
+    "summary": "Introduces artificial neural networks, gradient descent optimization, and the deep learning architectures (CNN, RNN, LSTM) that power modern AI.",
+    "keyIdeas": [
+      "Neural networks learn by adjusting weights through backpropagation and gradient descent",
+      "Batch, stochastic, and mini-batch gradient descent trade off computation speed vs stability",
+      "CNNs extract spatial features from images using convolutional filters",
+      "RNNs and LSTMs process sequential data by maintaining hidden state across time steps",
+      "Transformers use attention mechanisms to process sequences without recurrence — enabling LLMs"
     ],
-    "related_methods": ["Bias Identification in AI Systems", "HITL Control"],
-    "common_confusion": "Compliance ≠ ethics. An action can be legal but unethical, and organizations that conflate them create governance gaps that eventually produce failures."
+    "methodsTools": ["neural networks", "gradient descent", "CNN", "RNN", "LSTM", "transformers", "word2vec", "Keras", "PyTorch", "Hugging Face"],
+    "practicalIntuition": "Deep learning powers the AI revolution but requires large data and compute — know when traditional ML is sufficient and when deep learning adds real value.",
+    "commonConfusion": "Thinking you always need deep learning — for tabular business data, XGBoost often outperforms neural networks.",
+    "assignmentAnchor": "Assignments 4-5 (deep learning + NLP), Final Project",
+    "businessMeaning": "Image recognition, NLP, recommendation systems, and language models all rely on deep learning — understanding the fundamentals is essential for AI strategy roles.",
+    "reviewNext": "Course overview for MBAN 5560",
+    "sourceDeck": "ANN_Basics.pptx"
   },
   {
-    "course": "5502",
-    "lesson_number": 1,
-    "title": "Python Programming for Analytics",
-    "deck_label": null,
-    "slide_count": null,
-    "summary": "Building Python proficiency from the ground up: scripting, OOP, pandas data manipulation, and applying Python to run and replicate operations management experiments.",
-    "teaching_points": [
-      "Python scripting basics: variables, loops, functions, file I/O. Jupyter Notebooks are the primary medium for analytical Python work — mix code, output, and explanation in one document.",
-      "Object-oriented programming (OOP): classes bundle data (attributes) and behavior (methods). In analytics, you typically consume OOP designs (pandas DataFrames, sklearn models) more than build your own.",
-      "Pandas is the core tool for data manipulation: loading CSVs, filtering rows, grouping, aggregating, merging. The DataFrame is the central data structure.",
-      "Linear regression in Python via scikit-learn or statsmodels. The course used Python to replicate operations management experiments from academic papers.",
-      "Experimental replication methodology: reproduce a published result using the same data and method, then verify your code produces the same output. Builds rigor and catches implementation errors."
+    "courseCode": "MBAN 5800",
+    "lessonTitle": "Ethics vs Morality in Analytics",
+    "summary": "Explores the historical philosophical distinction between individual morality and collective professional ethics, and how this shapes modern business analytics governance.",
+    "keyIdeas": [
+      "Ethics derives from Greek ethos (character/habit); morality from Latin mores (customs)",
+      "Aristotle saw ethics as cultivating virtue through community practice (eudaimonia)",
+      "Kant grounded morality in universal rational duty, separating it from consequences",
+      "Professional codes of ethics emerged in the 19th-20th century as institutional standards",
+      "In business, ethics became a language of risk management and internal control (Sarbanes-Oxley, EU CSR)"
     ],
-    "related_methods": ["Python Scripting", "Linear Regression in Python"],
-    "common_confusion": "No lecture slides extracted — content derived from project artifacts and assignment briefs."
+    "methodsTools": ["philosophical ethics frameworks", "professional codes analysis"],
+    "practicalIntuition": "Understanding the ethics-morality distinction matters because analytics professionals face situations where personal moral intuition conflicts with institutional ethical codes.",
+    "commonConfusion": "Treating ethics and morality as interchangeable — in professional contexts, ethics refers to codified institutional standards, not personal moral feelings.",
+    "assignmentAnchor": "Ethics prereading analysis",
+    "businessMeaning": "Compliance programs, professional licensing, and corporate governance all rest on this distinction between personal moral judgment and institutional ethical standards.",
+    "reviewNext": "AI Bias & Motivated Reasoning",
+    "sourceDeck": "Thacker Week 4.pptx"
   },
   {
-    "course": "5540",
-    "lesson_number": 1,
-    "title": "Linear Programming & Optimization",
-    "deck_label": null,
-    "slide_count": null,
-    "summary": "Prescriptive analytics: formulating LP problems, solving with Excel Solver and Gurobi, interpreting shadow prices, and understanding duality theory.",
-    "teaching_points": [
-      "LP formulation process: (1) define decision variables, (2) write the objective function, (3) write constraints, (4) add non-negativity. This sequence is the same for every problem.",
-      "Excel Solver and Gurobi both solve LPs, but Gurobi (Python) scales to large problems and supports integer programming out of the box. Excel Solver is for learning and small-scale use.",
-      "Shadow price (dual variable): the change in objective value per unit relaxation of a constraint. If the shadow price on a labor constraint is $5, adding one hour of labor increases profit by $5.",
-      "Sensitivity analysis: how much can a coefficient change before the optimal solution changes? The allowable range gives you the stability window for your recommendation.",
-      "Duality: every LP has a 'mirror' problem (the dual). Primal solution and dual solution give you the same optimal value. The dual variables are the shadow prices."
+    "courseCode": "MBAN 5800",
+    "lessonTitle": "AI Bias & Motivated Reasoning",
+    "summary": "Teaches how to identify bias in AI systems and recognize motivated reasoning in your own analytical arguments through a structured defend-then-critique exercise.",
+    "keyIdeas": [
+      "Six AI bias scenarios: investment AI, predictive policing, healthcare allocation, deepfakes, climate models, autonomous vehicles",
+      "Motivated reasoning means unconsciously shaping arguments to support preferred conclusions",
+      "The defend-then-critique method forces you to argue a position you disagree with, then analyze your own biases",
+      "Cherry-picking, in-group loyalty, and language of inevitability are common reasoning failures",
+      "Self-awareness of reasoning biases is a prerequisite for responsible AI development"
     ],
-    "related_methods": ["Linear Programming", "Sensitivity Analysis", "Duality (Primal-Dual)"],
-    "common_confusion": "No lecture slides extracted — content derived from exam prep materials and assignment briefs (provisional reconstruction)."
+    "methodsTools": ["bias identification", "motivated reasoning analysis", "defend-then-critique methodology"],
+    "practicalIntuition": "Every data scientist will face pressure to present results that support a preferred narrative — recognizing this pressure is the first defense against analytical malpractice.",
+    "commonConfusion": "Thinking bias is only in the data or algorithm — motivated reasoning bias comes from the analyst, not the model.",
+    "assignmentAnchor": "Addressing Bias homework (essay + video reflection)",
+    "businessMeaning": "Regulators, auditors, and stakeholders increasingly demand evidence that analytical conclusions weren't shaped by organizational bias.",
+    "reviewNext": "Ethics in Practice",
+    "sourceDeck": "MBAN5800_Thacker2.pptx"
   },
   {
-    "course": "5540",
-    "lesson_number": 2,
-    "title": "Integer Programming & Decision Analysis",
-    "deck_label": null,
-    "slide_count": null,
-    "summary": "When LP is not enough: binary and mixed-integer programming for yes/no decisions, plus decision analysis under uncertainty using expected monetary value and EVPI.",
-    "teaching_points": [
-      "Integer programming adds integrality constraints: decision variables must be integers (or binary). This makes problems NP-hard but models real binary decisions (build/don't build, hire/don't hire).",
-      "Binary IP applications: the knapsack problem (what to pack given weight limit), assignment problem (who does which task), transportation problem (how to route shipments).",
-      "Decision analysis under uncertainty: use a decision tree. Expected Monetary Value (EMV) = Σ(probability × payoff). Choose the branch with the highest EMV.",
-      "EVPI (Expected Value of Perfect Information) = EMV with perfect info − EMV without. It is the maximum you should pay for a forecast or study.",
-      "Multi-objective optimization: when you have two objectives (cost and quality), trace the Pareto frontier — no solution is strictly better on both dimensions. Decision-makers choose a point on the frontier."
+    "courseCode": "MBAN 5800",
+    "lessonTitle": "Ethics in Practice: The BNPL Case",
+    "summary": "Applies ethical frameworks to a real-world case: Buy Now Pay Later (BNPL) products and the ethical implications of AI-driven financial product recommendations.",
+    "keyIdeas": [
+      "BNPL products use AI to assess creditworthiness and target users",
+      "Algorithmic targeting can exploit vulnerable consumers who don't understand debt implications",
+      "Engagement-optimized recommendation algorithms may prioritize company revenue over consumer welfare",
+      "The editor's dilemma: corrections get less engagement than outrage in AI-driven news feeds",
+      "Ethical AI deployment requires weighing innovation benefits against potential consumer harm"
     ],
-    "related_methods": ["Binary Integer Programming", "Decision Analysis (EMV/EVPI)", "Multi-Objective Optimization"],
-    "common_confusion": "EMV maximization assumes risk neutrality. If the decision-maker is risk-averse, use utility theory — the utility of a payoff is not proportional to its dollar value."
+    "methodsTools": ["case study analysis", "ethical framework application", "stakeholder impact assessment"],
+    "practicalIntuition": "This case shows how AI ethics isn't abstract philosophy — it directly affects whether products help or harm real people.",
+    "commonConfusion": "Assuming that if something is legal, it's ethical — many AI applications are legally permissible but ethically questionable.",
+    "assignmentAnchor": "BNPL ethics presentation",
+    "businessMeaning": "Financial services firms face increasing regulatory scrutiny over AI-driven product recommendations — ethical design is becoming a compliance requirement.",
+    "reviewNext": "Course overview for MBAN 5800",
+    "sourceDeck": "BNPL_Ethics_Presentation.pptx"
   },
   {
-    "course": "5550",
-    "lesson_number": 1,
-    "title": "Relational Database Design",
-    "deck_label": null,
-    "slide_count": null,
-    "summary": "Building relational databases from scratch: ER modelling, normalization, schema design, and writing SQL queries to extract business intelligence from operational data.",
-    "teaching_points": [
-      "ER diagrams model business entities (Customer, Reservation, Ship) and the relationships between them (Customer MAKES Reservation) before any SQL is written.",
-      "Normalization removes redundancy: 1NF (no repeating groups), 2NF (no partial dependencies), 3NF (no transitive dependencies). Normalized schemas reduce update anomalies.",
-      "SQL query writing: SELECT, FROM, WHERE, JOIN, GROUP BY, HAVING, ORDER BY. Joins connect tables via foreign keys — understanding join types (INNER, LEFT, OUTER) is essential.",
-      "KPI computation via SQL: aggregate functions (COUNT, SUM, AVG, MAX) with GROUP BY. The Cruise Line project required computing occupancy rates, revenue per booking, and fleet utilization.",
-      "Schema design decisions have long-term consequences: a poorly designed schema makes queries harder, slower, and more error-prone. Getting the ER diagram right before building saves significant rework."
+    "courseCode": "MBAN 5550",
+    "lessonTitle": "Database Design Thinking",
+    "summary": "Teaches relational database design through ER modelling, normalization, and schema construction — the foundation for all structured data analytics.",
+    "keyIdeas": [
+      "Entity-Relationship diagrams map real-world objects to database tables",
+      "Normalization eliminates data redundancy and prevents update anomalies",
+      "Primary and foreign keys enforce referential integrity across tables",
+      "Schema design decisions affect query performance and data quality downstream",
+      "Good database design separates concerns: entities, relationships, and attributes"
     ],
-    "related_methods": ["SQL Relational DB Design", "ER Diagram Construction", "KPI Computation via SQL"],
-    "common_confusion": "No lecture slides extracted — content derived from the Cruise Line Database Project and SQL assignment artifacts."
+    "methodsTools": ["ER modelling", "normalization", "SQL", "SQL Server"],
+    "practicalIntuition": "Every analytics project depends on well-structured data — bad schema design creates problems that no amount of ML can fix.",
+    "commonConfusion": "Designing tables based on how you want to query them rather than how the data naturally relates — normalize first, optimize queries second.",
+    "assignmentAnchor": "EDBM Assignment 1 (SQL fundamentals)",
+    "businessMeaning": "Database design is the invisible infrastructure behind every dashboard, report, and ML pipeline in an organization.",
+    "reviewNext": "SQL for Business Intelligence",
+    "sourceDeck": "Database course materials"
   },
   {
-    "course": "5570",
-    "lesson_number": 1,
-    "title": "Financial Risk & Monte Carlo Simulation",
-    "deck_label": null,
-    "slide_count": null,
-    "summary": "Quantifying uncertainty in financial decisions using @RISK Monte Carlo simulation, scenario analysis, and pro forma forecasting under uncertain assumptions.",
-    "teaching_points": [
-      "@RISK Monte Carlo: replace point estimates in Excel models with probability distributions. Run thousands of simulations to get a distribution of outcomes, not a single number.",
-      "Pro forma financial statements: income statement, balance sheet, and cash flow statement projected forward using assumptions. The 3-statement dynamic model links all three.",
-      "NPV under uncertainty: run Monte Carlo on the discount rate and cash flow assumptions to get a distribution of NPVs. The probability that NPV > 0 is your go/no-go confidence.",
-      "Decision trees (Precision Tree): model sequential decisions under uncertainty. At each node, choose the branch that maximizes expected utility — same logic as EMV in MBAN 5540.",
-      "Risk communication: a distribution of outcomes is harder to communicate than a single number. Translate to managerial language: 'there is a 20% chance of losing more than $1M'."
+    "courseCode": "MBAN 5550",
+    "lessonTitle": "SQL for Business Intelligence",
+    "summary": "Covers SQL query construction from basic selects through complex joins, aggregations, and KPI computation for business decision-making.",
+    "keyIdeas": [
+      "SELECT-FROM-WHERE is the foundation of all SQL queries",
+      "JOINs combine data across tables using key relationships",
+      "GROUP BY with aggregate functions (COUNT, SUM, AVG) compute business KPIs",
+      "Subqueries and CTEs enable multi-step analytical queries",
+      "Query results must be interpreted in business context, not just presented as tables"
     ],
-    "related_methods": ["Monte Carlo Simulation", "Decision Analysis (EMV/EVPI)", "Pro Forma Forecasting"],
-    "common_confusion": "No lecture slides extracted — content derived from course outline and assignment briefs."
+    "methodsTools": ["SQL", "JOINs", "GROUP BY", "aggregate functions", "subqueries", "SQL Server"],
+    "practicalIntuition": "SQL is the most universally demanded technical skill in analytics — every data role requires it regardless of industry or seniority.",
+    "commonConfusion": "Writing overly complex queries when simpler joins would suffice — start with the simplest query that answers the business question.",
+    "assignmentAnchor": "KPI computation assignments (KPI_Step3.sql, ExpandData_Step4.sql)",
+    "businessMeaning": "Business intelligence, reporting, and operational analytics all run on SQL — this is the skill you'll use most frequently in industry.",
+    "reviewNext": "Cruise Line Database Project",
+    "sourceDeck": "SQL course materials"
   },
   {
-    "course": "5570",
-    "lesson_number": 2,
-    "title": "Equity Research & AI-Assisted Analysis",
-    "deck_label": null,
-    "slide_count": null,
-    "summary": "Equity research methodology: fundamental analysis, AI-assisted financial analysis, and the critical evaluation framework for knowing when to trust (and when to override) AI outputs.",
-    "teaching_points": [
-      "Equity research process: company overview → industry analysis → financial statement analysis → valuation → investment recommendation. Each step informs the next.",
-      "Valuation models: DCF (discounted cash flow), comparable company analysis (comps), and precedent transaction analysis. DCF requires forecasting free cash flows and a discount rate.",
-      "AI-assisted analysis: use LLMs to accelerate literature review, earnings call summarization, and sentiment analysis. But AI pattern recognition can miss structural breaks and economic reasoning.",
-      "The AI evaluation framework (from course): (1) verify AI-generated claims against source data, (2) stress-test AI recommendations with opposing scenarios, (3) retain human judgment for non-routine decisions.",
-      "Event study methodology: measure the abnormal return around a corporate event (earnings announcement, M&A). Separates event impact from market-wide noise using the CAPM residual."
+    "courseCode": "MBAN 5550",
+    "lessonTitle": "The Cruise Line Database Project",
+    "summary": "End-to-end database analytics project: design a relational database for cruise line reservations, build it in SQL, query for business insights, and present managerial recommendations.",
+    "keyIdeas": [
+      "Real database projects start with understanding the business domain before writing any SQL",
+      "ER diagram design requires mapping business entities (ships, passengers, reservations) to tables",
+      "KPI queries answer specific business questions like occupancy rates and revenue per voyage",
+      "Scenario extensions test how the database handles new business requirements",
+      "Managerial insights translate query results into actionable business recommendations"
     ],
-    "related_methods": ["Equity Research Methodology", "NLP Sentiment Analysis", "ML Time Series Forecasting"],
-    "common_confusion": "AI-assisted analysis does not replace judgment — it accelerates research on routine tasks. The value-add is in the critical evaluation layer on top, not the AI output itself."
+    "methodsTools": ["ER modelling", "SQL", "database design", "KPI computation", "managerial insight derivation"],
+    "practicalIntuition": "This project mirrors real analytics work: understand the business, design the data structure, query for insights, and communicate recommendations.",
+    "commonConfusion": "Focusing only on getting queries to run without interpreting what the results mean for business decisions.",
+    "assignmentAnchor": "Group Projects 1 & 2 (Cruise Line Database, with Hai Wang)",
+    "businessMeaning": "Database analytics projects like this are the bread and butter of business intelligence and data analytics roles.",
+    "reviewNext": "Course overview for MBAN 5550",
+    "sourceDeck": "CruiseReserveBuild.sql and project materials"
+  },
+  {
+    "courseCode": "MBAN 5502",
+    "lessonTitle": "Python Programming Foundations",
+    "summary": "Builds core Python skills: command line navigation, Jupyter notebooks, OOP principles, and data manipulation with pandas — the technical foundation for the entire MBAN.",
+    "keyIdeas": [
+      "Command line proficiency (cd, ls, python) is essential for all technical analytics work",
+      "Jupyter notebooks combine code, output, and documentation for reproducible analysis",
+      "Object-oriented programming organizes code into reusable classes and methods",
+      "Pandas DataFrames are the primary data structure for analytics in Python",
+      "Google Colab provides cloud-based Python execution without local installation"
+    ],
+    "methodsTools": ["Python", "Jupyter", "pandas", "OOP", "command line", "Google Colab", "VS Code"],
+    "practicalIntuition": "Python is the lingua franca of data science — the skills from this course are used in every subsequent MBAN course.",
+    "commonConfusion": "Writing long scripts without functions or classes — good Python code is modular and reusable.",
+    "assignmentAnchor": "Hands-on labs 1-10, Demo notebooks",
+    "businessMeaning": "Python proficiency is a non-negotiable requirement for modern analytics and AI roles.",
+    "reviewNext": "Building Experimental Systems",
+    "sourceDeck": "MBAN 5502 demo notebooks"
+  },
+  {
+    "courseCode": "MBAN 5502",
+    "lessonTitle": "Building Experimental Systems in Python",
+    "summary": "Applies Python to build a complete experimental research platform: Flask web app for data collection, experimental design, participant management, and replication methodology.",
+    "keyIdeas": [
+      "Experimental replication requires understanding the original paper's methodology deeply",
+      "Python Flask enables building interactive web-based experiment interfaces",
+      "Participant data collection must be structured, timestamped, and reproducible",
+      "The partner group evaluation model teaches code review and collaborative research",
+      "Management Science replication projects bridge academic methods and practical implementation"
+    ],
+    "methodsTools": ["Python", "Flask", "experimental design", "data collection", "replication methodology"],
+    "practicalIntuition": "Building complete systems — not just scripts — is what separates analysts from engineers. This project taught full-stack experimental thinking.",
+    "commonConfusion": "Treating the experiment as just a coding exercise rather than a research replication that must faithfully reproduce the original methodology.",
+    "assignmentAnchor": "Group Project: Python Implementation for Operational Management Experiments (Kremer et al. 2011)",
+    "businessMeaning": "The ability to build data collection systems and replicate research is valuable in R&D, product analytics, and consulting roles.",
+    "reviewNext": "Course overview for MBAN 5502",
+    "sourceDeck": "MBAN5502 group project materials"
+  },
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Linear Programming Formulation",
+    "summary": "Teaches the 4-step LP formulation process: define decision variables, write the objective function, specify constraints, and state non-negativity. The foundation of all prescriptive analytics.",
+    "keyIdeas": [
+      "The 4-step process: variables → objective → constraints → non-negativity",
+      "Objective functions maximize profit/return or minimize cost/time",
+      "Constraint types: resource limits (≤), minimum requirements (≥), exact balance (=)",
+      "Shadow prices show the marginal value of relaxing a binding constraint",
+      "Sensitivity analysis reveals how much parameters can change before the solution changes"
+    ],
+    "methodsTools": ["linear programming", "Excel Solver", "Gurobi", "sensitivity analysis", "shadow prices"],
+    "practicalIntuition": "LP is the most widely used optimization technique in industry — production planning, supply chain, workforce scheduling, and portfolio allocation all use it daily.",
+    "commonConfusion": "Getting constraint directions wrong — resource limits use ≤, minimum requirements use ≥. Multiplying by -1 to convert for standard form.",
+    "assignmentAnchor": "Assignment 2: RRB Watercraft LP formulation",
+    "businessMeaning": "Every business faces resource allocation decisions — LP provides the mathematical framework to find optimal solutions.",
+    "reviewNext": "Integer Programming & Facility Location",
+    "sourceDeck": "MBAN 5540 exam prep materials"
+  },
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Integer Programming & Facility Location",
+    "summary": "Extends LP to discrete decisions: binary variables for yes/no choices, project selection, and facility location problems with linking constraints.",
+    "keyIdeas": [
+      "Binary variables (0/1) model go/no-go decisions",
+      "The knapsack problem allocates items to capacity-limited containers",
+      "Assignment problems match agents to tasks optimally",
+      "Facility location uses linking constraints: x_ij ≤ y_j (assign only if facility is open)",
+      "IP is NP-hard — solver time can be unpredictable for large problems"
+    ],
+    "methodsTools": ["integer programming", "binary programming", "facility location", "knapsack", "assignment problem", "Excel Solver", "Gurobi"],
+    "practicalIntuition": "Most real business decisions are discrete (open this warehouse or not, fund this project or not) — IP handles what LP cannot.",
+    "commonConfusion": "Forgetting linking constraints in facility location — without x_ij ≤ y_j, the model assigns customers to facilities that aren't open.",
+    "assignmentAnchor": "Assignment 3: Multiple Knapsack, Assignment Problem, Transshipment",
+    "businessMeaning": "Project portfolio selection, warehouse network design, and capital budgeting all require integer programming.",
+    "reviewNext": "Decision Analysis Under Uncertainty",
+    "sourceDeck": "MBAN 5540 exam prep materials"
+  },
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Decision Analysis Under Uncertainty",
+    "summary": "Covers decision trees, expected monetary value, value of information, and Bayesian updating for making optimal decisions when outcomes are uncertain.",
+    "keyIdeas": [
+      "EMV (Expected Monetary Value) weights outcomes by their probabilities",
+      "EVPI = EVwPI - EMV* = maximum you should pay for perfect information",
+      "Decision trees fold back right-to-left: chance nodes take expected values, decision nodes take max/min",
+      "Bayes update: Posterior = (Prior × Likelihood) / Marginal — posteriors must sum to 1.0",
+      "EVSI measures the value of imperfect information like market research"
+    ],
+    "methodsTools": ["decision trees", "EMV", "EVPI", "EVSI", "Bayesian updating", "Precision Tree"],
+    "practicalIntuition": "Every business decision under uncertainty can be framed as a decision tree — this framework prevents both paralysis and recklessness.",
+    "commonConfusion": "Forgetting that EVPI is the CEILING on information spending — if EVPI is $50K, never pay more than $50K for any research.",
+    "assignmentAnchor": "Assignment 5: Decision analysis with Bayes updating",
+    "businessMeaning": "Investment decisions, product launches, clinical trials, and strategic planning all benefit from formal decision analysis.",
+    "reviewNext": "Dynamic Programming & Markov Chains",
+    "sourceDeck": "MBAN 5540 exam prep materials"
+  },
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Dynamic Programming & Markov Chains",
+    "summary": "Introduces sequential optimization through dynamic programming (Bellman equation) and stochastic processes through discrete-time and continuous-time Markov chains.",
+    "keyIdeas": [
+      "Dynamic programming solves multi-stage problems by working backwards from the final stage",
+      "The Bellman equation: f*(s) = max/min{immediate reward + f*(next state)}",
+      "DTMC steady-state: solve πP = π with Σπ = 1, where P is the transition matrix",
+      "CTMC uses generator matrix Q where rows sum to 0 instead of 1",
+      "Steady-state probabilities reveal long-run system behavior for capacity planning"
+    ],
+    "methodsTools": ["dynamic programming", "Bellman equation", "DTMC", "CTMC", "steady-state analysis"],
+    "practicalIntuition": "Markov chains model systems that evolve randomly over time — queuing systems, customer behavior, and machine reliability all follow Markov patterns.",
+    "commonConfusion": "Confusing DTMC and CTMC: DTMC rows of P sum to 1, CTMC rows of Q sum to 0. Different matrix types, different solution approaches.",
+    "assignmentAnchor": "Exam preparation (Nuclear War Manual Q6-Q8)",
+    "businessMeaning": "Queue management, inventory systems, customer lifecycle modeling, and reliability engineering all use Markov chain analysis.",
+    "reviewNext": "Course overview for MBAN 5540",
+    "sourceDeck": "MBAN 5540 Nuclear War Manual"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Risk & Uncertainty in Financial Modelling",
+    "summary": "Introduces Excel-based risk analysis using @RISK for Monte Carlo simulation and Precision Tree for decision modelling under uncertainty.",
+    "keyIdeas": [
+      "@RISK runs Monte Carlo simulations by sampling from probability distributions thousands of times",
+      "Distribution selection matters: triangular for bounded estimates, normal for symmetric, lognormal for positive-skewed",
+      "NPV under uncertainty produces a distribution of outcomes, not a single number",
+      "Precision Tree structures financial decisions as explicit decision trees with probabilities",
+      "Risk scalping quantifies how uncertainty affects valuation model outputs"
+    ],
+    "methodsTools": ["@RISK", "Monte Carlo simulation", "Precision Tree", "NPV modelling", "Excel"],
+    "practicalIntuition": "Every financial model contains assumptions — Monte Carlo simulation makes those assumptions explicit and quantifies their impact.",
+    "commonConfusion": "Treating Monte Carlo output as precise — it quantifies uncertainty, it doesn't eliminate it. The distribution shape matters as much as the mean.",
+    "assignmentAnchor": "Empirical Analytics Assignment 1",
+    "businessMeaning": "Investment committees and risk managers need probability distributions of outcomes, not single-point estimates.",
+    "reviewNext": "Financial Statement Analytics",
+    "sourceDeck": "MBAN5570 course outline Topics 1-3"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Financial Statement Analytics",
+    "summary": "Covers pro forma financial statement forecasting, valuation models for loans, bonds, stocks, and M&A, and the 3-statement dynamic financial model.",
+    "keyIdeas": [
+      "Pro forma forecasting projects income statement, balance sheet, and cash flow into the future",
+      "Valuation models differ by asset type: DCF for stocks, yield-to-maturity for bonds, NPV for projects",
+      "The 3-statement dynamic model (3SDDM) links income, balance sheet, and cash flow dynamically",
+      "MACD (Moving Average Convergence Divergence) is a technical analysis indicator for trading signals",
+      "Capital allocation efficiency is measured by ROIC compared to cost of capital"
+    ],
+    "methodsTools": ["pro forma forecasting", "valuation models", "3SDDM", "MACD", "Excel", "financial modelling"],
+    "practicalIntuition": "Financial statement analysis is the common language between analysts, executives, and investors — mastering it opens every finance door.",
+    "commonConfusion": "Building models that are technically correct but economically meaningless — always sanity-check outputs against industry benchmarks.",
+    "assignmentAnchor": "Empirical Analytics Assignments 2-3, Financial modelling spreadsheets",
+    "businessMeaning": "Equity research, investment banking, corporate finance, and strategic planning all depend on financial statement analysis and forecasting.",
+    "reviewNext": "Python for Financial Data",
+    "sourceDeck": "MBAN5570 course outline Topics 2-3"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Python for Financial Data Analytics",
+    "summary": "Applies Python (pandas, visualization libraries) to accounting and financial data analysis, covering diagnostic, predictive, and prescriptive analytics with big data tools.",
+    "keyIdeas": [
+      "Pandas enables rapid financial data manipulation: filtering, grouping, merging, and time-series operations",
+      "Financial data visualization must be clear, honest, and audience-appropriate",
+      "Diagnostic analytics identifies why financial metrics changed",
+      "Predictive analytics forecasts financial outcomes using historical patterns",
+      "Big data tools (R/STATA/Python) enable analysis of large-scale financial datasets from WRDS"
+    ],
+    "methodsTools": ["Python", "pandas", "data visualization", "WRDS", "diagnostic analytics", "predictive analytics"],
+    "practicalIntuition": "Python is increasingly replacing Excel for financial analysis at scale — firms that process thousands of securities can't do it in spreadsheets.",
+    "commonConfusion": "Using Python visualization defaults without customization — financial audiences expect specific formatting conventions.",
+    "assignmentAnchor": "Empirical Analytics Assignments (Python components)",
+    "businessMeaning": "Quantitative finance, algorithmic trading, and large-scale financial research all require Python proficiency.",
+    "reviewNext": "NLP & ML in Finance",
+    "sourceDeck": "MBAN5570 course outline Topics 4-6"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "NLP & Machine Learning in Finance",
+    "summary": "Applies NLP to extract sentiment from financial text and ML to forecast financial time series — bridging unstructured data analysis with quantitative finance.",
+    "keyIdeas": [
+      "NLP extracts sentiment, entities, and themes from earnings calls, news, and SEC filings",
+      "Sentiment analysis on capital market data can signal market movements before they appear in prices",
+      "ML time series models capture nonlinear patterns that traditional econometric models miss",
+      "Event study methodology measures the impact of specific events on stock prices",
+      "Financial NLP requires domain-specific vocabulary and context that general NLP models lack"
+    ],
+    "methodsTools": ["NLP", "sentiment analysis", "ML time series forecasting", "event study analytics", "Python"],
+    "practicalIntuition": "The frontier of finance is in unstructured data — earnings call transcripts, news sentiment, and social media signals contain alpha that structured data misses.",
+    "commonConfusion": "Assuming general-purpose NLP models work well on financial text — financial language is specialized and often deliberately ambiguous.",
+    "assignmentAnchor": "Empirical Analytics Assignment 4",
+    "businessMeaning": "Hedge funds, asset managers, and fintech companies increasingly use NLP to process financial text at scale.",
+    "reviewNext": "Equity Research Methodology",
+    "sourceDeck": "MBAN5570 course outline Topics 7-8"
+  },
+  {
+    "courseCode": "MBAN 5570",
+    "lessonTitle": "Equity Research: Traditional vs AI-Assisted Analysis",
+    "summary": "Teaches the full equity research workflow: traditional fundamental analysis, AI-assisted augmentation, and critical evaluation of AI outputs — the capstone integration of the course.",
+    "keyIdeas": [
+      "Traditional equity research covers: business model, governance, competitive advantage, financials, valuation, forward guidance",
+      "AI can assist with summarizing financials, identifying risks, generating scenarios, and extracting patterns",
+      "Critical evaluation is mandatory: what AI got right, what it got wrong, what you accepted, what you discarded and why",
+      "AI is an analytical assistant, NOT a decision-maker — human judgment remains the final authority",
+      "Speed vs judgment, pattern recognition vs economic reasoning, automation vs accountability are key tradeoffs"
+    ],
+    "methodsTools": ["equity research methodology", "AI-assisted analysis", "critical evaluation framework", "financial statement analysis", "valuation"],
+    "practicalIntuition": "This framework for evaluating AI outputs applies far beyond finance — any professional using AI tools needs to know when to trust and when to override.",
+    "commonConfusion": "Over-relying on AI-generated analysis without cross-checking against traditional fundamentals — AI hallucinates financial data too.",
+    "assignmentAnchor": "Equity Research White Paper + 10-minute presentation (25% of grade)",
+    "businessMeaning": "The ability to critically integrate AI tools into professional analysis workflows is the defining skill of the next generation of analysts.",
+    "reviewNext": "Course overview for MBAN 5570",
+    "sourceDeck": "MBAN5570 course outline, Equity Research project brief"
   }
 ]

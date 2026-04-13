@@ -385,7 +385,7 @@ export default function AskMBAN() {
       <div className="mb-8 text-center">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Ask MBAN</h1>
         <p className="text-gray-400 text-sm">
-          Search across {methods.length} methods, {courses.length} courses, {projects.length} projects, and {totalSlides} slides
+          Search your MBAN knowledge base — {methods.length} methods, {courses.length} courses, {projects.length} projects, {totalSlides} slides
         </p>
       </div>
 

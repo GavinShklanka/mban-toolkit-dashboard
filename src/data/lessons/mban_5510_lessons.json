@@ -1,0 +1,154 @@
+[
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "What is an AI Agent?",
+    "summary": "Introduces AI agents as systems capable of reasoning, planning, and autonomous action using LLMs. Distinguishes agents from simple chatbots by their ability to use tools and make multi-step decisions.",
+    "keyIdeas": [
+      "An AI agent perceives its environment, reasons about goals, and takes actions autonomously",
+      "The ReAct pattern combines reasoning and acting in an interleaved loop",
+      "Agents differ from LLMs: agents have tool access, memory, and goal-directed behavior",
+      "Post-training enables tool use through function calling and structured outputs",
+      "The agent loop: observe → think → act → observe results → repeat"
+    ],
+    "methodsTools": ["ReAct architecture", "LLM function calling", "agent loop"],
+    "practicalIntuition": "Understanding agent architecture is essential because enterprise AI is moving from single-query chatbots to multi-step autonomous systems that can actually execute business workflows.",
+    "commonConfusion": "Confusing an LLM with an agent — an LLM generates text, an agent uses an LLM as its reasoning engine while also taking actions through tools.",
+    "assignmentAnchor": "Agentic AI component (30% of course grade)",
+    "businessMeaning": "Enables building AI systems that can autonomously complete business tasks like research, analysis, and decision support.",
+    "reviewNext": "LLM Foundations for Agent Building",
+    "sourceDeck": "Presentation 1 What's AI Agent.pptx"
+  },
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "LLM Foundations for Agent Building",
+    "summary": "Covers the technical foundations needed to build agents: how LLMs process tokens, manage context windows, and generate structured outputs. Introduces uv as a Python project manager.",
+    "keyIdeas": [
+      "LLMs process text as tokens with limited context windows",
+      "Temperature and sampling parameters control output randomness",
+      "Structured output schemas let agents produce machine-readable responses",
+      "uv is a fast Python package manager used for AI project setup",
+      "Embeddings represent text as vectors for similarity and retrieval"
+    ],
+    "methodsTools": ["tokenization", "embeddings", "structured outputs", "uv"],
+    "practicalIntuition": "You need to understand LLM mechanics to debug agent failures — most issues trace back to context window limits, poor prompting, or unstructured outputs.",
+    "commonConfusion": "Assuming LLMs understand meaning — they predict token sequences statistically, which is powerful but not comprehension.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Managers need to understand LLM capabilities and limits to make realistic AI adoption decisions.",
+    "reviewNext": "Building Agents with LangChain",
+    "sourceDeck": "Presentation 2 Some Good-to-Know Foundations.pptx"
+  },
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Building Agents with LangChain",
+    "summary": "Introduces the LangChain framework for building LLM-powered agents with chains, prompts, and tool integration. Covers single-agent application design.",
+    "keyIdeas": [
+      "LangChain orchestrates LLMs into multi-step chains",
+      "Prompts template reusable instructions for consistent agent behavior",
+      "Tools let agents interact with external APIs, databases, and services",
+      "Output parsers convert LLM text into structured data",
+      "Single-agent apps combine prompts, tools, and memory into coherent workflows"
+    ],
+    "methodsTools": ["LangChain", "prompt templates", "tool integration", "output parsers"],
+    "practicalIntuition": "LangChain is the most widely adopted framework for building production AI agents — learning it is directly applicable to enterprise AI roles.",
+    "commonConfusion": "Building overly complex chains when a simple prompt would suffice — start simple, add complexity only when needed.",
+    "assignmentAnchor": "Travel planning agent assignment",
+    "businessMeaning": "Enables rapid prototyping of AI-powered business tools like automated research assistants, data analysts, and decision support systems.",
+    "reviewNext": "Middleware & Tool Integration",
+    "sourceDeck": "Presentation 3 Intro to LangChain.pptx"
+  },
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Middleware & Tool Integration",
+    "summary": "Covers how middleware layers modify and extend agent behavior, including built-in and custom middleware for logging, validation, and error handling.",
+    "keyIdeas": [
+      "Middleware intercepts and transforms messages between components",
+      "Built-in middleware handles common patterns like retry and logging",
+      "Custom middleware lets you add business-specific validation and guardrails",
+      "Tools with structured output schemas enable type-safe agent actions",
+      "Short-term memory allows agents to maintain context within a conversation"
+    ],
+    "methodsTools": ["middleware patterns", "custom middleware", "structured output schemas", "short-term memory"],
+    "practicalIntuition": "Middleware is how you make agents production-ready — raw LLM chains break in unpredictable ways, middleware adds the safety nets.",
+    "commonConfusion": "Skipping middleware in prototypes then wondering why production agents are unreliable.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Enterprise AI requires robust error handling, logging, and validation — middleware is the engineering layer that makes this possible.",
+    "reviewNext": "Advanced LangChain Patterns",
+    "sourceDeck": "Presentation 4 Middleware.pptx"
+  },
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Advanced LangChain Patterns",
+    "summary": "Explores complex chain architectures including routing, memory management, and multi-step reasoning patterns for production agent systems.",
+    "keyIdeas": [
+      "Complex chains can route between different processing paths based on input",
+      "Memory management strategies determine what agents remember across interactions",
+      "Advanced prompting techniques improve agent reasoning quality",
+      "Chain composition allows building modular, reusable agent components",
+      "Error recovery patterns handle graceful degradation when tools fail"
+    ],
+    "methodsTools": ["chain routing", "memory management", "advanced prompting", "chain composition"],
+    "practicalIntuition": "Moving from demo agents to production agents requires mastering these patterns — this is where most enterprise AI projects stall.",
+    "commonConfusion": "Over-engineering agent memory — most business tasks need only short-term context, not persistent memory.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Production-grade AI systems require sophisticated orchestration beyond basic chatbot patterns.",
+    "reviewNext": "LangGraph Fundamentals",
+    "sourceDeck": "Presentation 5 Some Advanced Topics of LangChain2.pptx"
+  },
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "LangGraph Fundamentals",
+    "summary": "Introduces LangGraph for building stateful, graph-based agent workflows with conditional routing and checkpoint management.",
+    "keyIdeas": [
+      "LangGraph models agent workflows as directed graphs with nodes and edges",
+      "State is explicitly managed and passed between graph nodes",
+      "Conditional edges enable dynamic routing based on agent state",
+      "Checkpoints allow saving and restoring workflow state",
+      "Workflows vs agents vs agentic workflows represent different levels of autonomy"
+    ],
+    "methodsTools": ["LangGraph", "stateful graphs", "conditional routing", "checkpoints"],
+    "practicalIntuition": "LangGraph solves the biggest limitation of simple chains — when you need agents that can branch, loop, and recover from failures.",
+    "commonConfusion": "Confusing LangChain chains with LangGraph graphs — chains are linear sequences, graphs support branching and cycles.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Complex business processes (loan approval, compliance review, multi-step analysis) require graph-based orchestration, not linear chains.",
+    "reviewNext": "Advanced LangGraph: Interrupts & Multi-Agent Systems",
+    "sourceDeck": "Presentation 6 Intro to LangGraph_updated.pptx"
+  },
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Advanced LangGraph: Interrupts & Multi-Agent Systems",
+    "summary": "Covers super-steps, interrupt functions, multi-agent coordination, local deployment, and LangSmith monitoring for production agent systems.",
+    "keyIdeas": [
+      "Super-steps are the execution units between interrupt points in a graph",
+      "Interrupt functions pause execution for human review at critical decision points",
+      "Multi-agent systems coordinate specialized agents to solve complex problems",
+      "Local deployment uses LangGraph-specific and Linux command-line tools",
+      "LangSmith Studio provides monitoring, debugging, and performance tracking for agent systems"
+    ],
+    "methodsTools": ["super-steps", "interrupt functions", "multi-agent coordination", "LangSmith Studio", "local deployment", "Linux CLI"],
+    "practicalIntuition": "Interrupts are the governance mechanism for agentic AI — without them, autonomous agents can take irreversible actions based on hallucinated reasoning.",
+    "commonConfusion": "Placing interrupts too late in the workflow — by the time you pause, the agent may have already acted.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Enterprise AI deployment requires human-in-the-loop control, observability, and the ability to halt autonomous systems at critical decision points.",
+    "reviewNext": "Deep Agents & Frontier Topics",
+    "sourceDeck": "Presentation 7 Some Advanced Topics of LangGraph.pptx"
+  },
+  {
+    "courseCode": "MBAN 5510",
+    "lessonTitle": "Deep Agents & Frontier Topics",
+    "summary": "Explores next-generation agent architectures including Deep Agents, multimodal capabilities, and long-term memory systems.",
+    "keyIdeas": [
+      "Deep Agents differ structurally from ReAct agents in how they plan and execute",
+      "Multimodal agents can process images, audio, and text simultaneously",
+      "Long-term memory allows agents to learn and improve across sessions",
+      "Agent evaluation frameworks measure reliability, accuracy, and safety",
+      "Governance and risk management are critical for enterprise agent adoption"
+    ],
+    "methodsTools": ["Deep Agents", "multimodality", "long-term memory", "agent evaluation"],
+    "practicalIntuition": "This is where the field is heading — understanding frontier architectures helps you evaluate and adopt emerging AI capabilities.",
+    "commonConfusion": "Assuming Deep Agents are always better than ReAct — each architecture has different strengths depending on the task.",
+    "assignmentAnchor": "Agentic AI component",
+    "businessMeaning": "Staying current with AI agent architectures is a career differentiator in business analytics and enterprise AI roles.",
+    "reviewNext": "Course overview for MBAN 5510",
+    "sourceDeck": "Presentation 8 Intro to Deep Agents and Miscellaneous Item.pptx"
+  }
+]

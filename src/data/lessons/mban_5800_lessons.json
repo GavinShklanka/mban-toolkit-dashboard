@@ -1,0 +1,59 @@
+[
+  {
+    "courseCode": "MBAN 5800",
+    "lessonTitle": "Ethics vs Morality in Analytics",
+    "summary": "Explores the historical philosophical distinction between individual morality and collective professional ethics, and how this shapes modern business analytics governance.",
+    "keyIdeas": [
+      "Ethics derives from Greek ethos (character/habit); morality from Latin mores (customs)",
+      "Aristotle saw ethics as cultivating virtue through community practice (eudaimonia)",
+      "Kant grounded morality in universal rational duty, separating it from consequences",
+      "Professional codes of ethics emerged in the 19th-20th century as institutional standards",
+      "In business, ethics became a language of risk management and internal control (Sarbanes-Oxley, EU CSR)"
+    ],
+    "methodsTools": ["philosophical ethics frameworks", "professional codes analysis"],
+    "practicalIntuition": "Understanding the ethics-morality distinction matters because analytics professionals face situations where personal moral intuition conflicts with institutional ethical codes.",
+    "commonConfusion": "Treating ethics and morality as interchangeable — in professional contexts, ethics refers to codified institutional standards, not personal moral feelings.",
+    "assignmentAnchor": "Ethics prereading analysis",
+    "businessMeaning": "Compliance programs, professional licensing, and corporate governance all rest on this distinction between personal moral judgment and institutional ethical standards.",
+    "reviewNext": "AI Bias & Motivated Reasoning",
+    "sourceDeck": "Thacker Week 4.pptx"
+  },
+  {
+    "courseCode": "MBAN 5800",
+    "lessonTitle": "AI Bias & Motivated Reasoning",
+    "summary": "Teaches how to identify bias in AI systems and recognize motivated reasoning in your own analytical arguments through a structured defend-then-critique exercise.",
+    "keyIdeas": [
+      "Six AI bias scenarios: investment AI, predictive policing, healthcare allocation, deepfakes, climate models, autonomous vehicles",
+      "Motivated reasoning means unconsciously shaping arguments to support preferred conclusions",
+      "The defend-then-critique method forces you to argue a position you disagree with, then analyze your own biases",
+      "Cherry-picking, in-group loyalty, and language of inevitability are common reasoning failures",
+      "Self-awareness of reasoning biases is a prerequisite for responsible AI development"
+    ],
+    "methodsTools": ["bias identification", "motivated reasoning analysis", "defend-then-critique methodology"],
+    "practicalIntuition": "Every data scientist will face pressure to present results that support a preferred narrative — recognizing this pressure is the first defense against analytical malpractice.",
+    "commonConfusion": "Thinking bias is only in the data or algorithm — motivated reasoning bias comes from the analyst, not the model.",
+    "assignmentAnchor": "Addressing Bias homework (essay + video reflection)",
+    "businessMeaning": "Regulators, auditors, and stakeholders increasingly demand evidence that analytical conclusions weren't shaped by organizational bias.",
+    "reviewNext": "Ethics in Practice: The BNPL Case",
+    "sourceDeck": "MBAN5800_Thacker2.pptx"
+  },
+  {
+    "courseCode": "MBAN 5800",
+    "lessonTitle": "Ethics in Practice: The BNPL Case",
+    "summary": "Applies ethical frameworks to a real-world case: Buy Now Pay Later (BNPL) products and the ethical implications of AI-driven financial product recommendations.",
+    "keyIdeas": [
+      "BNPL products use AI to assess creditworthiness and target users",
+      "Algorithmic targeting can exploit vulnerable consumers who don't understand debt implications",
+      "Engagement-optimized recommendation algorithms may prioritize company revenue over consumer welfare",
+      "The editor's dilemma: corrections get less engagement than outrage in AI-driven news feeds",
+      "Ethical AI deployment requires weighing innovation benefits against potential consumer harm"
+    ],
+    "methodsTools": ["case study analysis", "ethical framework application", "stakeholder impact assessment"],
+    "practicalIntuition": "This case shows how AI ethics isn't abstract philosophy — it directly affects whether products help or harm real people.",
+    "commonConfusion": "Assuming that if something is legal, it's ethical — many AI applications are legally permissible but ethically questionable.",
+    "assignmentAnchor": "BNPL ethics presentation",
+    "businessMeaning": "Financial services firms face increasing regulatory scrutiny over AI-driven product recommendations — ethical design is becoming a compliance requirement.",
+    "reviewNext": "Course overview for MBAN 5800",
+    "sourceDeck": "BNPL_Ethics_Presentation.pptx"
+  }
+]

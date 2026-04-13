@@ -1,0 +1,78 @@
+[
+  {
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Introduction to MBAN Analytics",
+    "summary": "Sets the foundation for the MBAN by introducing what analytics means in business context — moving from data to decisions through descriptive, predictive, and prescriptive approaches.",
+    "keyIdeas": [
+      "Analytics transforms raw data into business decisions",
+      "Descriptive analytics answers what happened, predictive answers what will happen",
+      "The MBAN integrates technical methods with business judgment",
+      "Data quality and preparation are prerequisites for reliable analytics",
+      "Statistical thinking is the foundation for all analytics work"
+    ],
+    "methodsTools": ["descriptive statistics", "data profiling", "EDA"],
+    "practicalIntuition": "Every analytics project starts with understanding the business question before touching data — method selection follows problem framing.",
+    "commonConfusion": "Jumping to complex models before understanding the data — EDA should always come first.",
+    "assignmentAnchor": "Regression analysis project",
+    "businessMeaning": "Analytics literacy is the baseline skill for every business analytics role.",
+    "reviewNext": "Statistical Foundations for Prediction",
+    "sourceDeck": "Day 2 MBAN 5520 Fall 2025.pptx"
+  },
+  {
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Statistical Foundations for Prediction",
+    "summary": "Reviews core statistical concepts needed for predictive modeling: distributions, hypothesis testing, confidence intervals, and the logic of statistical inference.",
+    "keyIdeas": [
+      "Hypothesis testing determines whether observed patterns are statistically significant",
+      "Confidence intervals quantify uncertainty around estimates",
+      "P-values measure evidence against null hypotheses",
+      "Statistical significance does not imply practical significance",
+      "Multiple regression identifies which factors drive outcomes while controlling for others"
+    ],
+    "methodsTools": ["hypothesis testing", "confidence intervals", "multiple regression", "R lm()"],
+    "practicalIntuition": "Understanding statistical inference prevents you from making decisions based on noise that looks like signal.",
+    "commonConfusion": "Confusing confidence intervals with prediction intervals — confidence intervals are about the mean, prediction intervals are about individual observations.",
+    "assignmentAnchor": "Regression analysis project (Ames Housing)",
+    "businessMeaning": "Every business claim based on data needs statistical validation — this prevents costly decisions based on spurious patterns.",
+    "reviewNext": "Prediction Techniques for Business",
+    "sourceDeck": "Day 3 MBAN Fall 2025.pptx"
+  },
+  {
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Prediction Techniques for Business",
+    "summary": "Covers the core supervised learning techniques used in business prediction: regression, classification, and their evaluation metrics.",
+    "keyIdeas": [
+      "Linear regression provides interpretable predictions for continuous outcomes",
+      "Neural networks capture nonlinear patterns but sacrifice interpretability",
+      "SVMs optimize decision boundaries for classification tasks",
+      "Random forests combine multiple trees for robust prediction",
+      "Model accuracy is measured by MAPE, MSE, and RMSE — lower error means higher predictive power"
+    ],
+    "methodsTools": ["linear regression", "neural networks", "SVM", "random forest", "MAPE", "MSE", "RMSE"],
+    "practicalIntuition": "The best model depends on the tradeoff between accuracy and interpretability — regulators and executives often need explanations, not just predictions.",
+    "commonConfusion": "Optimizing only for accuracy without considering whether the model can be explained to stakeholders.",
+    "assignmentAnchor": "Prediction presentations and Lingras quizzes",
+    "businessMeaning": "Demand forecasting, churn prediction, credit scoring, and financial planning all depend on choosing the right prediction technique.",
+    "reviewNext": "Communicating Predictions to Decision-Makers",
+    "sourceDeck": "Prediction_in_Business_Applications.pptx"
+  },
+  {
+    "courseCode": "MBAN 5520",
+    "lessonTitle": "Communicating Predictions to Decision-Makers",
+    "summary": "Focuses on how to present analytical results to non-technical audiences through effective visualization and business-oriented interpretation.",
+    "keyIdeas": [
+      "Visualizations should tell a story, not just display data",
+      "Choose chart types based on the comparison being made",
+      "Predictions must be presented with uncertainty ranges, not just point estimates",
+      "Business context determines which metrics matter most",
+      "The audience determines the level of technical detail in your presentation"
+    ],
+    "methodsTools": ["data visualization", "business reporting", "presentation design"],
+    "practicalIntuition": "A prediction that decision-makers can't understand or trust will never be acted upon — communication is as important as modeling.",
+    "commonConfusion": "Showing too much technical detail to executives — they need the so-what, not the methodology.",
+    "assignmentAnchor": "Prediction presentations",
+    "businessMeaning": "The ability to translate analytical results into business recommendations is the most valued skill in analytics roles.",
+    "reviewNext": "Course overview for MBAN 5520",
+    "sourceDeck": "Business_Prediction_Visuals.pptx"
+  }
+]

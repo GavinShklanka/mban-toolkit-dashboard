@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import courses from '../data/courses.json'
 import slides from '../data/slides.json'
@@ -6,7 +6,7 @@ import projects from '../data/projects.json'
 import lessonsData from '../data/lessons.json'
 
 type Course = typeof courses[0]
-type Tab = 'overview' | 'learn' | 'apply' | 'sources'
+type Tab = 'overview' | 'learn' | 'apply' | 'ask' | 'sources'
 
 // Pre-compute PPTX deck + slide counts per course code
 const decksByCourse: Record<string, { decks: number; slides: number; deckList: typeof slides }> = slides.reduce((acc, d) => {
@@ -39,9 +39,9 @@ const EVconfig: Record<EvidenceType, { dot: string; bg: string; text: string; bo
   gap:         { dot: 'bg-red-400',    bg: 'bg-red-900/30',    text: 'text-red-300',    border: 'border-red-700',    label: 'Unresolved' },
 }
 
-// Get lessons for a course
+// Get lessons for a course — new schema uses courseCode: "MBAN 5510"
 function getLessons(courseCode: string) {
-  return (lessonsData as any[]).filter(l => l.course === courseCode)
+  return (lessonsData as any[]).filter(l => l.courseCode === `MBAN ${courseCode}`)
 }
 
 // Get projects for a course
@@ -51,8 +51,9 @@ function getCourseProjects(courseCode: string) {
 
 // ─── Lesson Card ──────────────────────────────────────────────────────────────
 
-function LessonCard({ lesson }: { lesson: any }) {
+function LessonCard({ lesson, index }: { lesson: any; index: number }) {
   const [expanded, setExpanded] = useState(false)
+
   return (
     <div className="bg-gray-800/60 border border-gray-700 rounded-xl overflow-hidden">
       <button
@@ -61,13 +62,8 @@ function LessonCard({ lesson }: { lesson: any }) {
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-purple-400 text-xs font-mono font-bold">Lesson {lesson.lesson_number}</span>
-              {lesson.slide_count && (
-                <span className="text-gray-600 text-xs">{lesson.slide_count} slides</span>
-              )}
-            </div>
-            <h3 className="text-white font-semibold text-base leading-snug">{lesson.title}</h3>
+            <div className="text-purple-400 text-xs font-mono font-bold mb-1">Lesson {index + 1}</div>
+            <h3 className="text-white font-semibold text-base leading-snug">{lesson.lessonTitle}</h3>
             <p className="text-gray-400 text-sm mt-1 leading-relaxed">{lesson.summary}</p>
           </div>
           <span className="text-gray-500 text-lg mt-1 shrink-0">{expanded ? '▲' : '▼'}</span>
@@ -76,44 +72,71 @@ function LessonCard({ lesson }: { lesson: any }) {
 
       {expanded && (
         <div className="border-t border-gray-700 p-4 space-y-4 bg-gray-900/40">
-          {/* Teaching points */}
-          <div>
-            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Key Teaching Points</div>
-            <ul className="space-y-2">
-              {lesson.teaching_points.map((point: string, i: number) => (
-                <li key={i} className="flex items-start gap-2.5">
-                  <span className="text-purple-400 text-xs font-bold mt-0.5 shrink-0">{i + 1}.</span>
-                  <span className="text-gray-200 text-sm leading-relaxed">{point}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Common confusion */}
-          {lesson.common_confusion && (
-            <div className="bg-yellow-900/20 border border-yellow-800/40 rounded-lg p-3">
-              <div className="text-yellow-400 text-xs font-semibold mb-1">Common Confusion</div>
-              <p className="text-yellow-200/80 text-sm">{lesson.common_confusion}</p>
+          {/* Key Ideas */}
+          {lesson.keyIdeas && lesson.keyIdeas.length > 0 && (
+            <div>
+              <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Key Ideas</div>
+              <ul className="space-y-2">
+                {lesson.keyIdeas.map((idea: string, i: number) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <span className="text-purple-400 text-xs font-bold mt-0.5 shrink-0">{i + 1}.</span>
+                    <span className="text-gray-200 text-sm leading-relaxed">{idea}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
-          {/* Related methods */}
-          {lesson.related_methods && lesson.related_methods.length > 0 && (
+          {/* Practical Intuition */}
+          {lesson.practicalIntuition && (
+            <div className="bg-blue-900/20 border border-blue-800/40 rounded-lg p-3">
+              <div className="text-blue-400 text-xs font-semibold mb-1">Why this matters</div>
+              <p className="text-blue-100/80 text-sm">{lesson.practicalIntuition}</p>
+            </div>
+          )}
+
+          {/* Common Confusion */}
+          {lesson.commonConfusion && (
+            <div className="bg-yellow-900/20 border border-yellow-800/40 rounded-lg p-3">
+              <div className="text-yellow-400 text-xs font-semibold mb-1">Common confusion</div>
+              <p className="text-yellow-200/80 text-sm">{lesson.commonConfusion}</p>
+            </div>
+          )}
+
+          {/* Business Meaning */}
+          {lesson.businessMeaning && (
             <div>
-              <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Related Methods</div>
-              <div className="flex flex-wrap gap-1.5">
-                {lesson.related_methods.map((m: string) => (
+              <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Business value</div>
+              <p className="text-gray-300 text-sm">{lesson.businessMeaning}</p>
+            </div>
+          )}
+
+          {/* Footer: assignment, methods/tools, review next */}
+          <div className="pt-2 border-t border-gray-800 space-y-1.5">
+            {lesson.assignmentAnchor && (
+              <p className="text-gray-500 text-xs">
+                <span className="text-gray-600">Assignment: </span>{lesson.assignmentAnchor}
+              </p>
+            )}
+            {lesson.methodsTools && lesson.methodsTools.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {lesson.methodsTools.map((m: string) => (
                   <Link
                     key={m}
                     to="/methods"
-                    className="bg-purple-900/30 text-purple-300 text-xs px-2 py-1 rounded border border-purple-800/40 hover:bg-purple-900/50 transition-colors"
+                    className="bg-purple-900/30 text-purple-300 text-xs px-2 py-0.5 rounded border border-purple-800/40 hover:bg-purple-900/50 transition-colors"
                   >
                     {m}
                   </Link>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+            {lesson.reviewNext && (
+              <p className="text-gray-600 text-xs">
+                Review next: <span className="text-yellow-500">{lesson.reviewNext}</span>
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -124,6 +147,7 @@ function LessonCard({ lesson }: { lesson: any }) {
 
 function CourseDetail({ course, onClose }: { course: Course; onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('overview')
+  const [askQuery, setAskQuery] = useState('')
   const ev = getEvidenceType(course)
   const cfg = EVconfig[ev]
   const code = getCourseCode(course)
@@ -133,10 +157,25 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'overview', label: 'Overview' },
-    { id: 'learn', label: `Learn${lessons.length > 0 ? ` (${lessons.length})` : ''}` },
-    { id: 'apply', label: `Apply${courseProjects.length > 0 ? ` (${courseProjects.length})` : ''}` },
-    { id: 'sources', label: 'Sources' },
+    { id: 'learn',    label: `Learn${lessons.length > 0 ? ` (${lessons.length})` : ''}` },
+    { id: 'apply',    label: `Apply${courseProjects.length > 0 ? ` (${courseProjects.length})` : ''}` },
+    { id: 'ask',      label: 'Ask' },
+    { id: 'sources',  label: 'Sources' },
   ]
+
+  // Course-scoped lesson search
+  const filteredLessons = useMemo(() => {
+    if (!askQuery.trim()) return lessons
+    const q = askQuery.toLowerCase()
+    return lessons.filter((l: any) =>
+      (l.lessonTitle || '').toLowerCase().includes(q) ||
+      (l.summary || '').toLowerCase().includes(q) ||
+      (l.keyIdeas || []).some((k: string) => k.toLowerCase().includes(q)) ||
+      (l.methodsTools || []).some((m: string) => m.toLowerCase().includes(q)) ||
+      (l.practicalIntuition || '').toLowerCase().includes(q) ||
+      (l.businessMeaning || '').toLowerCase().includes(q)
+    )
+  }, [askQuery, lessons])
 
   return (
     <div className="fixed inset-0 bg-black/75 z-50 flex items-start justify-center p-4 overflow-y-auto">
@@ -163,12 +202,12 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-800 px-5 gap-0">
+        <div className="flex border-b border-gray-800 px-5 gap-0 overflow-x-auto">
           {tabs.map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`py-3 px-4 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              className={`py-3 px-3 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap ${
                 tab === t.id
                   ? 'border-purple-400 text-purple-300'
                   : 'border-transparent text-gray-500 hover:text-gray-300'
@@ -185,13 +224,10 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
           {/* ── OVERVIEW TAB ─────────────────────────────────────── */}
           {tab === 'overview' && (
             <div className="space-y-5">
-              {/* What this course was about */}
               <div>
-                <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">What this course was about</div>
                 <p className="text-gray-200 text-sm leading-relaxed">{course.business_framing}</p>
               </div>
 
-              {/* What it added to your toolkit */}
               {course.methods.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">What it added to your toolkit</div>
@@ -210,7 +246,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {/* Key info grid */}
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <div className="text-gray-500 text-xs mb-1">Format</div>
@@ -232,7 +267,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 )}
               </div>
 
-              {/* Tools */}
               {course.tools.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Tools</div>
@@ -244,10 +278,9 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {/* Governance */}
               {course.governance_elements.length > 0 && (
                 <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Governance Elements</div>
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Governance</div>
                   <div className="flex flex-wrap gap-1">
                     {course.governance_elements.map(g => (
                       <span key={g} className="bg-orange-900/20 text-orange-300 text-xs px-2 py-0.5 rounded border border-orange-900/30">⚠️ {g}</span>
@@ -256,7 +289,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {/* Dual pillar note */}
               {(course as any).dual_pillar && (
                 <div className="bg-purple-900/20 border border-purple-700/40 rounded-lg p-3">
                   <div className="text-purple-300 font-medium text-sm mb-1">Dual-Pillar Course</div>
@@ -264,7 +296,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {/* Provisional note */}
               {(course as any).provisional && (
                 <div className="bg-yellow-900/20 border border-yellow-700/40 rounded-lg p-3">
                   <div className="text-yellow-300 font-medium text-sm mb-1">Provisional Reconstruction</div>
@@ -285,8 +316,8 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                       : `${lessons.length} lessons derived from assignments and course materials.`
                     }
                   </p>
-                  {lessons.map((lesson: any) => (
-                    <LessonCard key={lesson.lesson_number} lesson={lesson} />
+                  {lessons.map((lesson: any, i: number) => (
+                    <LessonCard key={lesson.lessonTitle} lesson={lesson} index={i} />
                   ))}
                 </>
               ) : (
@@ -298,7 +329,7 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
               )}
               {!pptx && lessons.length > 0 && (
                 <p className="text-gray-600 text-xs mt-3 text-center">
-                  No lecture slides extracted — content derived from assignments and course materials.
+                  Content derived from assignments and course materials — no lecture slides extracted.
                 </p>
               )}
             </div>
@@ -310,7 +341,7 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
               {courseProjects.length > 0 ? (
                 <>
                   <p className="text-gray-400 text-sm mb-4">
-                    {courseProjects.length} project{courseProjects.length !== 1 ? 's' : ''} from this course — click to see the full detail.
+                    {courseProjects.length} project{courseProjects.length !== 1 ? 's' : ''} from this course.
                   </p>
                   {courseProjects.map((p: any) => (
                     <div key={p.id} className="bg-gray-800/60 border border-gray-700 rounded-xl p-4">
@@ -357,7 +388,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </>
               ) : (
                 <div>
-                  {/* Deliverables as learning summaries */}
                   {course.deliverables.length > 0 && (
                     <div className="mb-5">
                       <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">Lessons from Assignments</div>
@@ -377,10 +407,94 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
             </div>
           )}
 
+          {/* ── ASK TAB ───────────────────────────────────────────── */}
+          {tab === 'ask' && (
+            <div className="space-y-4">
+              <div>
+                <p className="text-gray-400 text-sm mb-1">Search this course's lessons, methods, and topics.</p>
+                <p className="text-gray-600 text-xs">Search-backed — results come from course lesson data.</p>
+              </div>
+
+              <input
+                type="text"
+                value={askQuery}
+                onChange={e => setAskQuery(e.target.value)}
+                placeholder={`Search ${course.course_code} lessons...`}
+                className="w-full bg-gray-800 border border-gray-700 focus:border-purple-500 rounded-xl px-4 py-3 text-sm text-gray-100 placeholder-gray-500 focus:outline-none transition-colors"
+                autoFocus
+              />
+
+              {askQuery.trim() && filteredLessons.length === 0 && (
+                <div className="text-center py-6">
+                  <p className="text-gray-500 text-sm">No lessons match "{askQuery}"</p>
+                  <Link
+                    to="/ask"
+                    onClick={onClose}
+                    className="text-xs text-purple-400 hover:text-purple-300 underline mt-2 inline-block"
+                  >
+                    Search all courses in Ask MBAN →
+                  </Link>
+                </div>
+              )}
+
+              {filteredLessons.length > 0 && (
+                <div className="space-y-2">
+                  {!askQuery.trim() && (
+                    <p className="text-gray-600 text-xs">{lessons.length} lessons in this course</p>
+                  )}
+                  {filteredLessons.map((l: any) => (
+                    <button
+                      key={l.lessonTitle}
+                      onClick={() => { setAskQuery(''); setTab('learn') }}
+                      className="w-full text-left bg-gray-800/60 border border-gray-700 hover:border-purple-700 rounded-xl p-3 transition-colors group"
+                    >
+                      <div className="text-white text-sm font-medium group-hover:text-purple-200">{l.lessonTitle}</div>
+                      <div className="text-gray-500 text-xs mt-0.5 line-clamp-1">{l.summary}</div>
+                      {l.methodsTools && l.methodsTools.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {l.methodsTools.slice(0, 3).map((m: string) => (
+                            <span key={m} className="text-xs bg-purple-900/20 text-purple-400 px-1.5 py-0.5 rounded">{m}</span>
+                          ))}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {course.methods.length > 0 && (
+                <div className="pt-3 border-t border-gray-800">
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Methods in this course</div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(course.methods as string[]).map(m => (
+                      <Link
+                        key={m}
+                        to="/methods"
+                        onClick={onClose}
+                        className="bg-gray-800 text-gray-300 hover:text-white text-xs px-2.5 py-1 rounded border border-gray-700 hover:border-gray-500 transition-colors"
+                      >
+                        {m}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-2 text-center">
+                <Link
+                  to="/ask"
+                  onClick={onClose}
+                  className="text-xs text-purple-400 hover:text-purple-300 underline"
+                >
+                  Open full Ask MBAN search →
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* ── SOURCES TAB ───────────────────────────────────────── */}
           {tab === 'sources' && (
             <div className="space-y-4">
-              {/* Evidence type */}
               <div className={`border rounded-xl p-4 ${cfg.bg} ${cfg.border}`}>
                 <div className="flex items-center gap-2 mb-2">
                   <span className={`w-2.5 h-2.5 rounded-full ${cfg.dot}`} />
@@ -390,7 +504,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 <p className="text-xs text-gray-400">{course.evidence_origin}</p>
               </div>
 
-              {/* PPTX decks */}
               {pptx && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">
@@ -410,7 +523,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {/* Deliverables as source artifacts */}
               {course.deliverables.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Deliverables</div>
@@ -425,7 +537,6 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                 </div>
               )}
 
-              {/* Outward links */}
               <div className="pt-2 border-t border-gray-800 flex flex-wrap gap-3">
                 <Link to="/methods" onClick={onClose} className="text-xs text-purple-400 hover:text-purple-300 underline">
                   Methods from this course →
@@ -447,40 +558,35 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
 function CourseCard({ course, onClick }: { course: Course; onClick: () => void }) {
   const ev = getEvidenceType(course)
   const cfg = EVconfig[ev]
-  const borderColor: Record<EvidenceType, string> = {
-    outline:     'border-green-700/50',
-    pptx:        'border-purple-700/50',
-    artifact:    'border-blue-700/50',
-    provisional: 'border-yellow-700/50',
-    gap:         'border-red-700/50',
-  }
+  const code = getCourseCode(course)
+  const lessonCount = getLessons(code).length
 
   return (
     <button
       onClick={onClick}
-      className={`bg-gray-800 border ${borderColor[ev]} rounded-xl p-4 text-left hover:brightness-110 transition-all group`}
+      className="bg-gray-800 border border-gray-700 hover:border-purple-600 rounded-xl p-4 text-left transition-all group"
     >
-      <div className="flex items-start justify-between mb-2">
-        <span className="font-mono text-purple-400 text-sm font-bold">{course.course_code}</span>
+      {/* Title first */}
+      <div className="mb-3">
+        <div className="font-mono text-purple-400 text-xs font-bold mb-1">{course.course_code}</div>
+        <div className="text-white text-sm font-semibold leading-snug group-hover:text-purple-100">
+          {course.title}
+        </div>
+        <div className="text-gray-500 text-xs mt-1">
+          {course.instructors.filter(i => i !== 'unknown').join(', ') || 'Instructor TBD'} · {course.semester}
+        </div>
+      </div>
+
+      {/* Footer: lesson count + evidence badge (small, secondary) */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-gray-600 text-xs">
+          {lessonCount > 0 ? `${lessonCount} lessons` : 'Open to explore'}
+        </span>
         <span className={`inline-flex items-center gap-1 border text-xs px-1.5 py-0.5 rounded ${cfg.bg} ${cfg.text} ${cfg.border}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
           {cfg.label}
         </span>
       </div>
-      <div className="text-white text-sm font-medium mb-1 leading-snug group-hover:text-purple-100">
-        {course.title}
-      </div>
-      <div className="text-gray-500 text-xs mb-3">
-        {course.instructors.filter(i => i !== 'unknown').join(', ') || 'Instructor TBD'} · {course.semester}
-      </div>
-      {course.tools.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {course.tools.slice(0, 3).map(t => (
-            <span key={t} className="bg-gray-700 text-gray-300 text-xs px-1.5 py-0.5 rounded">{t}</span>
-          ))}
-          {course.tools.length > 3 && <span className="text-gray-500 text-xs">+{course.tools.length - 3}</span>}
-        </div>
-      )}
     </button>
   )
 }
@@ -499,12 +605,12 @@ export default function Courses() {
         </p>
       </div>
 
-      {/* Legend */}
+      {/* Legend — compact, secondary */}
       <div className="flex flex-wrap gap-3 mb-6 text-xs">
         {(Object.entries(EVconfig) as [EvidenceType, typeof EVconfig[EvidenceType]][]).map(([k, v]) => (
           <div key={k} className="flex items-center gap-1.5">
             <span className={`w-2 h-2 rounded-full ${v.dot}`} />
-            <span className="text-gray-400">{v.label}</span>
+            <span className="text-gray-500">{v.label}</span>
           </div>
         ))}
       </div>

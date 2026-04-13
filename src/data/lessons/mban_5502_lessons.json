@@ -1,0 +1,40 @@
+[
+  {
+    "courseCode": "MBAN 5502",
+    "lessonTitle": "Python Programming Foundations",
+    "summary": "Builds core Python skills: command line navigation, Jupyter notebooks, OOP principles, and data manipulation with pandas — the technical foundation for the entire MBAN.",
+    "keyIdeas": [
+      "Command line proficiency (cd, ls, python) is essential for all technical analytics work",
+      "Jupyter notebooks combine code, output, and documentation for reproducible analysis",
+      "Object-oriented programming organizes code into reusable classes and methods",
+      "Pandas DataFrames are the primary data structure for analytics in Python",
+      "Google Colab provides cloud-based Python execution without local installation"
+    ],
+    "methodsTools": ["Python", "Jupyter", "pandas", "OOP", "command line", "Google Colab", "VS Code"],
+    "practicalIntuition": "Python is the lingua franca of data science — the skills from this course are used in every subsequent MBAN course.",
+    "commonConfusion": "Writing long scripts without functions or classes — good Python code is modular and reusable.",
+    "assignmentAnchor": "Hands-on labs 1-10, Demo notebooks",
+    "businessMeaning": "Python proficiency is a non-negotiable requirement for modern analytics and AI roles.",
+    "reviewNext": "Building Experimental Systems in Python",
+    "sourceDeck": "MBAN 5502 demo notebooks"
+  },
+  {
+    "courseCode": "MBAN 5502",
+    "lessonTitle": "Building Experimental Systems in Python",
+    "summary": "Applies Python to build a complete experimental research platform: Flask web app for data collection, experimental design, participant management, and replication methodology.",
+    "keyIdeas": [
+      "Experimental replication requires understanding the original paper's methodology deeply",
+      "Python Flask enables building interactive web-based experiment interfaces",
+      "Participant data collection must be structured, timestamped, and reproducible",
+      "The partner group evaluation model teaches code review and collaborative research",
+      "Management Science replication projects bridge academic methods and practical implementation"
+    ],
+    "methodsTools": ["Python", "Flask", "experimental design", "data collection", "replication methodology"],
+    "practicalIntuition": "Building complete systems — not just scripts — is what separates analysts from engineers. This project taught full-stack experimental thinking.",
+    "commonConfusion": "Treating the experiment as just a coding exercise rather than a research replication that must faithfully reproduce the original methodology.",
+    "assignmentAnchor": "Group Project: Python Implementation for Operational Management Experiments (Kremer et al. 2011)",
+    "businessMeaning": "The ability to build data collection systems and replicate research is valuable in R&D, product analytics, and consulting roles.",
+    "reviewNext": "Course overview for MBAN 5502",
+    "sourceDeck": "MBAN5502 group project materials"
+  }
+]

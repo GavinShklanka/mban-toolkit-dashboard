@@ -1,0 +1,78 @@
+[
+  {
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Statistical Learning Foundations",
+    "summary": "Establishes the theoretical framework for machine learning: parametric vs nonparametric methods, the bias-variance tradeoff, and why models overfit.",
+    "keyIdeas": [
+      "Parametric methods assume a fixed functional form; nonparametric methods let data determine the shape",
+      "The bias-variance tradeoff is the central tension in all ML: simple models underfit, complex models overfit",
+      "Training error always decreases with complexity but test error has a U-shape",
+      "Cross-validation provides honest estimates of how models perform on unseen data",
+      "Overfitting means the model memorized noise instead of learning patterns"
+    ],
+    "methodsTools": ["linear probability models", "logistic regression", "kernel regression", "regression splines", "Naive Bayes", "R", "Python"],
+    "practicalIntuition": "Every ML model you ever build will face the bias-variance tradeoff — understanding it prevents you from shipping models that fail in production.",
+    "commonConfusion": "Thinking a model with 99% training accuracy is good — it might be massively overfitting.",
+    "assignmentAnchor": "Assignment 1 (statistical learning fundamentals)",
+    "businessMeaning": "Choosing between simple interpretable models and complex accurate ones is a daily decision in business analytics.",
+    "reviewNext": "Supervised Learning & Model Validation",
+    "sourceDeck": "SL1.pptx"
+  },
+  {
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Supervised Learning & Model Validation",
+    "summary": "Covers the practical toolkit of supervised learning: kNN, classification tuning, and rigorous model validation through cross-validation, bootstrap, and grid search.",
+    "keyIdeas": [
+      "kNN classifies by majority vote of the k nearest training points — simple but effective",
+      "Grid search systematically evaluates hyperparameter combinations",
+      "k-fold cross-validation partitions data into k folds and rotates the test set",
+      "Bootstrap resampling estimates model stability with ~36.8% out-of-bag rate",
+      "Unsupervised methods (K-means, DBSCAN, hierarchical) discover structure without labels"
+    ],
+    "methodsTools": ["kNN", "grid search", "k-fold CV", "bootstrap", "K-means", "DBSCAN", "hierarchical clustering", "R caret"],
+    "practicalIntuition": "Model validation is where most real-world ML projects succeed or fail — a model that isn't properly validated is a liability, not an asset.",
+    "commonConfusion": "Confusing bootstrap with cross-validation: bootstrap samples WITH replacement (~36.8% OOB), k-fold partitions WITHOUT replacement into non-overlapping folds.",
+    "assignmentAnchor": "Assignment 2: kNN for Regression and Classification (Ames Housing + Telco Churn)",
+    "businessMeaning": "Proper validation prevents deploying models that look good in development but fail on real customers.",
+    "reviewNext": "Tree-Based & Ensemble Methods",
+    "sourceDeck": "SL2.pptx"
+  },
+  {
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Tree-Based & Ensemble Methods",
+    "summary": "Covers decision trees, and the ensemble methods that make them powerful: bagging reduces variance, random forest decorrelates trees, and boosting sequentially corrects errors.",
+    "keyIdeas": [
+      "CART splits data recursively using Gini impurity or information gain",
+      "Single trees overfit easily — ensembles fix this",
+      "Bagging trains trees on bootstrap samples and averages predictions (variance reduction)",
+      "Random forest adds feature randomization to decorrelate trees beyond bagging",
+      "Boosting (GBM, AdaBoost.M5, XGBoost) fits sequential models to residuals, reducing bias"
+    ],
+    "methodsTools": ["CART", "bagging", "random forest", "GBM", "AdaBoost.M5", "XGBoost", "R", "Python"],
+    "practicalIntuition": "Tree ensembles (especially XGBoost) win most tabular data competitions and are the workhorse of industry ML — if you learn one method family deeply, make it this one.",
+    "commonConfusion": "Confusing bagging and boosting: bagging trains trees independently in parallel (variance reduction), boosting trains trees sequentially on previous errors (bias reduction).",
+    "assignmentAnchor": "Assignment 3 (tree and ensemble methods)",
+    "businessMeaning": "Random forest and XGBoost are the default choices for credit scoring, fraud detection, churn prediction, and most business classification problems.",
+    "reviewNext": "Neural Networks & Deep Learning Fundamentals",
+    "sourceDeck": "tree.pptx"
+  },
+  {
+    "courseCode": "MBAN 5560",
+    "lessonTitle": "Neural Networks & Deep Learning Fundamentals",
+    "summary": "Introduces artificial neural networks, gradient descent optimization, and the deep learning architectures (CNN, RNN, LSTM) that power modern AI.",
+    "keyIdeas": [
+      "Neural networks learn by adjusting weights through backpropagation and gradient descent",
+      "Batch, stochastic, and mini-batch gradient descent trade off computation speed vs stability",
+      "CNNs extract spatial features from images using convolutional filters",
+      "RNNs and LSTMs process sequential data by maintaining hidden state across time steps",
+      "Transformers use attention mechanisms to process sequences without recurrence — enabling LLMs"
+    ],
+    "methodsTools": ["neural networks", "gradient descent", "CNN", "RNN", "LSTM", "transformers", "word2vec", "Keras", "PyTorch", "Hugging Face"],
+    "practicalIntuition": "Deep learning powers the AI revolution but requires large data and compute — know when traditional ML is sufficient and when deep learning adds real value.",
+    "commonConfusion": "Thinking you always need deep learning — for tabular business data, XGBoost often outperforms neural networks.",
+    "assignmentAnchor": "Assignments 4-5 (deep learning + NLP), Final Project",
+    "businessMeaning": "Image recognition, NLP, recommendation systems, and language models all rely on deep learning — understanding the fundamentals is essential for AI strategy roles.",
+    "reviewNext": "Course overview for MBAN 5560",
+    "sourceDeck": "ANN_Basics.pptx"
+  }
+]

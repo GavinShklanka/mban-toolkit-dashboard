@@ -1,0 +1,14 @@
+{
+  "description": "Master lesson index — lists per-course shard files. The app imports from src/data/lessons.json (aggregated) not from here directly.",
+  "totalLessons": 33,
+  "shards": [
+    { "courseCode": "MBAN 5510", "file": "mban_5510_lessons.json", "lessonCount": 8 },
+    { "courseCode": "MBAN 5520", "file": "mban_5520_lessons.json", "lessonCount": 4 },
+    { "courseCode": "MBAN 5560", "file": "mban_5560_lessons.json", "lessonCount": 4 },
+    { "courseCode": "MBAN 5800", "file": "mban_5800_lessons.json", "lessonCount": 3 },
+    { "courseCode": "MBAN 5550", "file": "mban_5550_lessons.json", "lessonCount": 3 },
+    { "courseCode": "MBAN 5502", "file": "mban_5502_lessons.json", "lessonCount": 2 },
+    { "courseCode": "MBAN 5540", "file": "mban_5540_lessons.json", "lessonCount": 4 },
+    { "courseCode": "MBAN 5570", "file": "mban_5570_lessons.json", "lessonCount": 5 }
+  ]
+}

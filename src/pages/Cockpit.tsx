@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import seed from '../data/seed.json'
 import courses from '../data/courses.json'
 import slides from '../data/slides.json'
+import lessonsData from '../data/lessons.json'
 
 // Coverage summary computation
 const decksByCourse: Record<string, number> = slides.reduce((acc, d) => {
@@ -68,7 +69,7 @@ export default function Cockpit() {
           Your MBAN Toolkit
         </h1>
         <p className="text-gray-300 text-lg leading-relaxed">
-          {courses.length} courses · {seed.system_metadata.total_methods} methods · {seed.system_metadata.total_business_problems > 0 ? `${seed.system_metadata.total_business_problems} business problems` : '476 slides'} · 6 projects.{' '}
+          {courses.length} courses · {seed.system_metadata.total_methods} methods · 6 projects · {lessonsData.length} guided lessons.{' '}
           <span className="text-gray-400">Pick up where you left off or start a refresher.</span>
         </p>
       </div>

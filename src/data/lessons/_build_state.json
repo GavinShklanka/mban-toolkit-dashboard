@@ -1,0 +1,15 @@
+{
+  "lastUpdated": "2026-04-13",
+  "totalLessonsExpected": 33,
+  "totalLessonsWritten": 33,
+  "courses": {
+    "MBAN 5510": { "file": "mban_5510_lessons.json", "expected": 8, "written": 8, "status": "done" },
+    "MBAN 5520": { "file": "mban_5520_lessons.json", "expected": 4, "written": 4, "status": "done" },
+    "MBAN 5560": { "file": "mban_5560_lessons.json", "expected": 4, "written": 4, "status": "done" },
+    "MBAN 5800": { "file": "mban_5800_lessons.json", "expected": 3, "written": 3, "status": "done" },
+    "MBAN 5550": { "file": "mban_5550_lessons.json", "expected": 3, "written": 3, "status": "done" },
+    "MBAN 5502": { "file": "mban_5502_lessons.json", "expected": 2, "written": 2, "status": "done" },
+    "MBAN 5540": { "file": "mban_5540_lessons.json", "expected": 4, "written": 4, "status": "done" },
+    "MBAN 5570": { "file": "mban_5570_lessons.json", "expected": 5, "written": 5, "status": "done" }
+  }
+}

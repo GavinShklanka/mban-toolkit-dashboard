@@ -1,0 +1,30 @@
+{
+  "$schema": "Lesson object shape for MBAN Toolkit Dashboard lessons.json shards",
+  "type": "object",
+  "required": [
+    "courseCode",
+    "lessonTitle",
+    "summary",
+    "keyIdeas",
+    "methodsTools",
+    "practicalIntuition",
+    "commonConfusion",
+    "assignmentAnchor",
+    "businessMeaning",
+    "reviewNext",
+    "sourceDeck"
+  ],
+  "properties": {
+    "courseCode":         { "type": "string", "example": "MBAN 5510" },
+    "lessonTitle":        { "type": "string", "description": "Lesson name" },
+    "summary":            { "type": "string", "description": "2-3 sentences" },
+    "keyIdeas":           { "type": "array",  "items": { "type": "string" }, "minItems": 3, "maxItems": 5, "description": "Teaching points in clear language" },
+    "methodsTools":       { "type": "array",  "items": { "type": "string" }, "description": "Methods and tools involved" },
+    "practicalIntuition": { "type": "string", "description": "Why this matters practically" },
+    "commonConfusion":    { "type": "string", "description": "Common mistake or misconception" },
+    "assignmentAnchor":   { "type": "string", "description": "Which assignment demonstrated this" },
+    "businessMeaning":    { "type": "string", "description": "Business value" },
+    "reviewNext":         { "type": "string", "description": "What to study after this" },
+    "sourceDeck":         { "type": "string", "description": "Source PPTX or material" }
+  }
+}

@@ -1,0 +1,59 @@
+[
+  {
+    "courseCode": "MBAN 5550",
+    "lessonTitle": "Database Design Thinking",
+    "summary": "Teaches relational database design through ER modelling, normalization, and schema construction — the foundation for all structured data analytics.",
+    "keyIdeas": [
+      "Entity-Relationship diagrams map real-world objects to database tables",
+      "Normalization eliminates data redundancy and prevents update anomalies",
+      "Primary and foreign keys enforce referential integrity across tables",
+      "Schema design decisions affect query performance and data quality downstream",
+      "Good database design separates concerns: entities, relationships, and attributes"
+    ],
+    "methodsTools": ["ER modelling", "normalization", "SQL", "SQL Server"],
+    "practicalIntuition": "Every analytics project depends on well-structured data — bad schema design creates problems that no amount of ML can fix.",
+    "commonConfusion": "Designing tables based on how you want to query them rather than how the data naturally relates — normalize first, optimize queries second.",
+    "assignmentAnchor": "EDBM Assignment 1 (SQL fundamentals)",
+    "businessMeaning": "Database design is the invisible infrastructure behind every dashboard, report, and ML pipeline in an organization.",
+    "reviewNext": "SQL for Business Intelligence",
+    "sourceDeck": "Database course materials"
+  },
+  {
+    "courseCode": "MBAN 5550",
+    "lessonTitle": "SQL for Business Intelligence",
+    "summary": "Covers SQL query construction from basic selects through complex joins, aggregations, and KPI computation for business decision-making.",
+    "keyIdeas": [
+      "SELECT-FROM-WHERE is the foundation of all SQL queries",
+      "JOINs combine data across tables using key relationships",
+      "GROUP BY with aggregate functions (COUNT, SUM, AVG) compute business KPIs",
+      "Subqueries and CTEs enable multi-step analytical queries",
+      "Query results must be interpreted in business context, not just presented as tables"
+    ],
+    "methodsTools": ["SQL", "JOINs", "GROUP BY", "aggregate functions", "subqueries", "SQL Server"],
+    "practicalIntuition": "SQL is the most universally demanded technical skill in analytics — every data role requires it regardless of industry or seniority.",
+    "commonConfusion": "Writing overly complex queries when simpler joins would suffice — start with the simplest query that answers the business question.",
+    "assignmentAnchor": "KPI computation assignments (KPI_Step3.sql, ExpandData_Step4.sql)",
+    "businessMeaning": "Business intelligence, reporting, and operational analytics all run on SQL — this is the skill you'll use most frequently in industry.",
+    "reviewNext": "The Cruise Line Database Project",
+    "sourceDeck": "SQL course materials"
+  },
+  {
+    "courseCode": "MBAN 5550",
+    "lessonTitle": "The Cruise Line Database Project",
+    "summary": "End-to-end database analytics project: design a relational database for cruise line reservations, build it in SQL, query for business insights, and present managerial recommendations.",
+    "keyIdeas": [
+      "Real database projects start with understanding the business domain before writing any SQL",
+      "ER diagram design requires mapping business entities (ships, passengers, reservations) to tables",
+      "KPI queries answer specific business questions like occupancy rates and revenue per voyage",
+      "Scenario extensions test how the database handles new business requirements",
+      "Managerial insights translate query results into actionable business recommendations"
+    ],
+    "methodsTools": ["ER modelling", "SQL", "database design", "KPI computation", "managerial insight derivation"],
+    "practicalIntuition": "This project mirrors real analytics work: understand the business, design the data structure, query for insights, and communicate recommendations.",
+    "commonConfusion": "Focusing only on getting queries to run without interpreting what the results mean for business decisions.",
+    "assignmentAnchor": "Group Projects 1 & 2 (Cruise Line Database, with Hai Wang)",
+    "businessMeaning": "Database analytics projects like this are the bread and butter of business intelligence and data analytics roles.",
+    "reviewNext": "Course overview for MBAN 5550",
+    "sourceDeck": "CruiseReserveBuild.sql and project materials"
+  }
+]

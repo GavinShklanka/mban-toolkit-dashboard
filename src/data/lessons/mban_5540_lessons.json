@@ -1,0 +1,78 @@
+[
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Linear Programming Formulation",
+    "summary": "This part of the course was really about learning one universal process for turning any resource-allocation problem into math. The 4-step LP formulation — variables, objective, constraints, non-negativity — is the same structure whether you're scheduling staff, planning production, or allocating a budget.",
+    "keyIdeas": [
+      "The 4-step process: define decision variables → write objective function → write constraints → add non-negativity",
+      "Objective functions maximize (profit, return) or minimize (cost, time) — direction matters",
+      "Constraint directions encode business meaning: resource limits use ≤, minimum requirements use ≥, exact balances use =",
+      "Shadow prices reveal the marginal value of relaxing a binding constraint — the price of flexibility",
+      "Sensitivity ranges tell you how much an input coefficient can change before the optimal solution itself changes"
+    ],
+    "methodsTools": ["linear programming", "Excel Solver", "Gurobi", "sensitivity analysis", "shadow prices"],
+    "practicalIntuition": "LP is the foundation of prescriptive analytics in industry — production planning, supply chain optimization, workforce scheduling, and portfolio allocation all use LP daily. Understanding formulation is what separates someone who runs a solver from someone who designs the model.",
+    "commonConfusion": "Getting constraint inequality directions backwards — resource limits use ≤ (you can't exceed capacity), but minimum requirements use ≥ (you must meet at least this much). Flipping them produces the wrong feasible region.",
+    "assignmentAnchor": "Assignment 2: RRB Watercraft LP formulation (from exam prep materials)",
+    "businessMeaning": "Every business faces constrained resource allocation. LP provides a mathematically rigorous way to find the optimal solution — not just a good one.",
+    "reviewNext": "Integer Programming & Facility Location",
+    "sourceDeck": "MBAN 5540 exam prep materials (provisional reconstruction — no slides extracted)"
+  },
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Integer Programming & Facility Location",
+    "summary": "This part of the course extended LP to real-world decisions that are inherently discrete. Binary variables let you model yes/no choices — open a warehouse or not, fund a project or not — and facility location added linking constraints that enforce logical consistency between what you build and what you use.",
+    "keyIdeas": [
+      "Binary variables (0 or 1) model go/no-go decisions — LP can't handle these, IP can",
+      "The knapsack problem: maximize value subject to capacity — foundational structure for project selection and capital budgeting",
+      "Assignment problems: match n agents to n tasks one-to-one at minimum cost — solved as IP or as transportation networks",
+      "Facility location requires linking constraints: x_ij ≤ y_j means you can only assign customer i to facility j if facility j is open (y_j = 1)",
+      "IP is NP-hard — as problem size grows, solver time can become unpredictable. Real-world IP requires knowing when to approximate"
+    ],
+    "methodsTools": ["integer programming", "binary programming", "facility location", "knapsack", "assignment problem", "transshipment", "Excel Solver", "Gurobi"],
+    "practicalIntuition": "Most real strategic decisions are binary: open or close a location, fund or pass on a project, hire or don't. LP can't handle these. IP is what makes prescriptive analytics applicable to actual business decisions rather than just toy allocation problems.",
+    "commonConfusion": "Forgetting linking constraints in facility location models. Without x_ij ≤ y_j, the solver will happily assign customers to facilities that aren't open — the solution looks optimal but is operationally nonsense.",
+    "assignmentAnchor": "Assignment 3: Multiple Knapsack, Assignment Problem, Transshipment network",
+    "businessMeaning": "Project portfolio selection, warehouse network design, capital budgeting, and route optimization all require integer programming. This is where LP models become enterprise decision tools.",
+    "reviewNext": "Decision Analysis Under Uncertainty",
+    "sourceDeck": "MBAN 5540 exam prep materials (provisional reconstruction — no slides extracted)"
+  },
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Decision Analysis Under Uncertainty",
+    "summary": "This part of the course was about making structured decisions when you don't know what will happen — using expected monetary value, decision trees, and Bayesian updating to turn uncertainty into calculable risk. The exam-prep Nuclear War Manual made these techniques concrete through worked problems.",
+    "keyIdeas": [
+      "EMV (Expected Monetary Value) = Σ(probability × payoff for each outcome) — choose the alternative with the highest EMV",
+      "Decision trees fold back right-to-left: chance nodes take expected values, decision nodes take the max (or min for costs)",
+      "EVPI = EVwPI − EMV* — this is the maximum you should ever pay for perfect information. It's a ceiling, not a target",
+      "Bayesian updating: P(state | signal) = P(signal | state) × P(state) / P(signal) — posteriors must sum to 1.0",
+      "EVSI (Expected Value of Sample Information) measures the value of imperfect information like a market research study"
+    ],
+    "methodsTools": ["decision trees", "EMV", "EVPI", "EVSI", "Bayesian updating", "Precision Tree"],
+    "practicalIntuition": "Every major business decision under uncertainty — product launches, investment decisions, R&D commitments — can be framed as a decision tree. The framework forces you to be explicit about probabilities and payoffs instead of relying on gut feel.",
+    "commonConfusion": "Treating EVPI as a target rather than a ceiling. EVPI tells you the theoretical maximum benefit of perfect information. No real information is perfect, so your actual willingness-to-pay should always be less than EVPI.",
+    "assignmentAnchor": "Assignment 5: Decision analysis with Bayesian updating (Nuclear War Manual Q1-Q5)",
+    "businessMeaning": "Investment committees, product teams, and strategic planners all benefit from formal decision analysis. Quantifying uncertainty forces clearer thinking and more defensible recommendations.",
+    "reviewNext": "Dynamic Programming & Markov Chains",
+    "sourceDeck": "MBAN 5540 Nuclear War Manual (exam prep materials, provisional reconstruction)"
+  },
+  {
+    "courseCode": "MBAN 5540",
+    "lessonTitle": "Dynamic Programming & Markov Chains",
+    "summary": "The final analytical layer in 5540: dynamic programming for multi-stage optimization (work backwards from the end state) and Markov chains for systems that evolve randomly over time. Both appeared in the Nuclear War Manual exam prep.",
+    "keyIdeas": [
+      "Dynamic programming solves multi-stage problems by working backwards: start at the last stage, compute the optimal decision, propagate backward to stage 1",
+      "The Bellman equation: f*(s) = max/min { immediate reward at s + f*(next state) } — this recursive structure is the entire DP algorithm",
+      "DTMC (Discrete-Time Markov Chain): transition matrix P where rows sum to 1. Steady-state: solve πP = π with Σπᵢ = 1",
+      "CTMC (Continuous-Time Markov Chain): uses generator matrix Q where rows sum to 0 instead of 1 — different matrix, different solution method",
+      "Steady-state probabilities describe long-run system behavior — essential for capacity planning, queuing, and reliability analysis"
+    ],
+    "methodsTools": ["dynamic programming", "Bellman equation", "DTMC", "CTMC", "steady-state analysis", "transition matrices"],
+    "practicalIntuition": "Markov chains model systems where the future depends only on the present state, not the full history — queuing systems, customer lifecycle stages, equipment reliability, and inventory levels all have this property. Knowing steady-state behavior lets you size systems correctly.",
+    "commonConfusion": "Confusing DTMC and CTMC at the matrix level: DTMC transition matrix P has rows summing to 1 (probability distributions). CTMC generator matrix Q has rows summing to 0 (rates, not probabilities). Different matrix types require different solution approaches.",
+    "assignmentAnchor": "Exam preparation: Nuclear War Manual Q6-Q8 (DP and Markov chain problems)",
+    "businessMeaning": "Queue management, inventory replenishment, customer lifecycle modeling, and infrastructure reliability engineering all use Markov chain steady-state analysis. DP underpins sequential decision problems in supply chain, pricing, and scheduling.",
+    "reviewNext": "Course overview for MBAN 5540",
+    "sourceDeck": "MBAN 5540 Nuclear War Manual (exam prep materials, provisional reconstruction)"
+  }
+]
