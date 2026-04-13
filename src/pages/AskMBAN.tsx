@@ -64,8 +64,30 @@ const ABBR_MAP: Record<string, string> = {
   'ctmc': 'continuous time markov chain',
 }
 
+const TYPO_MAP: Record<string, string> = {
+  'texhnicques': 'techniques',
+  'algorhyms': 'algorithms',
+  'bayse': 'bayes',
+  'logisitic': 'logistic',
+  'normilization': 'normalization',
+  'simmulation': 'simulation',
+  'foreest': 'forest',
+  'bootsrap': 'bootstrap',
+  'regrresion': 'regression',
+  'classifcation': 'classification',
+  'clustring': 'clustering',
+  'optimizaton': 'optimization',
+  'neurl': 'neural',
+  'transfomer': 'transformer',
+}
+
 function normalizeQuery(q: string): string {
   let normalized = q.toLowerCase().trim()
+  // Repair typos first
+  for (const [typo, fix] of Object.entries(TYPO_MAP)) {
+    normalized = normalized.replace(new RegExp(typo, 'gi'), fix)
+  }
+  // Expand abbreviations
   for (const [abbr, full] of Object.entries(ABBR_MAP)) {
     const re = new RegExp(`\\b${abbr}\\b`, 'gi')
     normalized = normalized.replace(re, full)
@@ -75,7 +97,7 @@ function normalizeQuery(q: string): string {
 
 // ─── Intent Detection ─────────────────────────────────────────────────────────
 
-type Intent = 'compare' | 'explain' | 'when_to_use' | 'assignment' | 'resource' | 'general'
+type Intent = 'compare' | 'explain' | 'when_to_use' | 'assignment' | 'resource' | 'relation' | 'general'
 
 function detectIntent(q: string): Intent {
   const lower = q.toLowerCase()
@@ -84,6 +106,7 @@ function detectIntent(q: string): Intent {
   if (/\bwhen (to|should|would|do)|which should|best for/.test(lower)) return 'when_to_use'
   if (/\bassignment|homework|project|deliverable|due/.test(lower)) return 'assignment'
   if (/\bresource|video|watch|read|learn more|tutorial|link/.test(lower)) return 'resource'
+  if (/\blike\b|similar to|related to|same family|alternatives to|techniques like|methods like|what kind of|closest thing to/.test(lower)) return 'relation'
   return 'general'
 }
 
@@ -122,12 +145,14 @@ function runSearch(
   rawQuery: string,
   mode: 'learn' | 'find',
   scopedCourse?: string,
+  activeTopicId?: string,
 ): SearchResult[] {
   if (!rawQuery.trim()) return []
   const q = normalizeQuery(rawQuery.trim())
   const intent = detectIntent(rawQuery)
   const results: SearchResult[] = []
   const scopeCode = scopedCourse ? scopedCourse.replace('MBAN_', '') : ''
+  const activeTopic = activeTopicId ? topicsData.find(t => t.id === activeTopicId) : undefined
 
   // ── Topics ─────────────────────────────────────────────────────────────────
   for (const t of topicsData) {
@@ -140,14 +165,23 @@ function runSearch(
     if (base <= 0) continue
 
     const courseNum = t.course_code.replace('MBAN_', '')
-    const scopeBoost = scopeCode && courseNum === scopeCode ? 5 : 0
+    // Significantly stronger scope boost so course-scoped results always rise first
+    const scopeBoost = scopeCode && courseNum === scopeCode ? 50 : 0
+    // Exact active topic: top of results
+    const topicBoost = activeTopicId && t.id === activeTopicId ? 100 : 0
+    // Neighbor/followup of active topic
+    const neighborBoost = activeTopic
+      ? [...(activeTopic.nearest_neighbors as string[]), ...(activeTopic.suggested_followups as string[])]
+          .some(n => n.toLowerCase() === t.label.toLowerCase()) ? 30 : 0
+      : 0
     const intentBoost = intent === 'explain' ? 2 : 0
 
     let reason = 'Matched on concept'
     if (labelScore > 0) reason = 'Matched on topic label'
     else if (aliasScore > 0) reason = 'Matched on alias'
+    if (scopeBoost > 0) reason += ` · scoped to ${scopedCourse?.replace('MBAN_', 'MBAN ')}`
 
-    results.push({ kind: 'topic', score: base + scopeBoost + intentBoost, item: t, reason })
+    results.push({ kind: 'topic', score: base + scopeBoost + topicBoost + neighborBoost + intentBoost, item: t, reason })
   }
 
   // ── Methods ────────────────────────────────────────────────────────────────
@@ -161,14 +195,18 @@ function runSearch(
     const base = nameScore + solvesScore + useScore + familyScore + probScore + courseScore
     if (base <= 0) continue
 
-    const scopeBoost = scopeCode && (m.linked_courses || []).some(c => c.includes(scopeCode)) ? 3 : 0
+    const scopeBoost = scopeCode && (m.linked_courses || []).some(c => c.includes(scopeCode)) ? 30 : 0
+    // Boost methods referenced by active topic
+    const topicMethodBoost = activeTopic
+      ? (activeTopic.related_methods as string[]).some(rm => rm.toLowerCase() === m.method_name.toLowerCase()) ? 40 : 0
+      : 0
     const intentBoost = intent === 'when_to_use' ? 2 : 0
 
     let reason = 'Matched on method definition'
     if (nameScore > 0)   reason = 'Matched on method name'
     else if (useScore > 0) reason = 'Matched on when to use'
 
-    results.push({ kind: 'method', score: base + scopeBoost + intentBoost, item: m, reason })
+    results.push({ kind: 'method', score: base + scopeBoost + topicMethodBoost + intentBoost, item: m, reason })
   }
 
   // ── Courses ────────────────────────────────────────────────────────────────
@@ -185,7 +223,7 @@ function runSearch(
     const base = codeScore + titleScore + framingScore + methodScore + toolScore + theoryScore + instrScore
     if (base <= 0) continue
 
-    const scopeBoost = scopeCode && c.course_code === `MBAN ${scopeCode}` ? 5 : 0
+    const scopeBoost = scopeCode && c.course_code === `MBAN ${scopeCode}` ? 50 : 0
 
     let reason = 'Matched on course concept'
     if (codeScore    > 0) reason = 'Matched on course code'
@@ -206,9 +244,13 @@ function runSearch(
     if (base <= 0) continue
 
     const modeBoost = mode === 'find' || intent === 'assignment' ? 4 : 0
-    const scopeBoost = scopeCode && a.course_code.includes(scopeCode) ? 4 : 0
+    const scopeBoost = scopeCode && a.course_code.includes(scopeCode) ? 40 : 0
+    // Directly referenced by active topic
+    const topicRefBoost = activeTopic
+      ? (activeTopic.assignment_refs as string[]).includes(a.id) ? 75 : 0
+      : 0
 
-    results.push({ kind: 'assignment', score: base + modeBoost + scopeBoost, item: a, reason: 'Matched on assignment' })
+    results.push({ kind: 'assignment', score: base + modeBoost + scopeBoost + topicRefBoost, item: a, reason: 'Matched on assignment' })
   }
 
   // ── Resources (Learn mode emphasizes) ─────────────────────────────────────
@@ -221,8 +263,12 @@ function runSearch(
     if (base <= 0) continue
 
     const modeBoost = mode === 'learn' || intent === 'resource' ? 3 : 0
+    // Boost resources directly tied to active topic
+    const topicResourceBoost = activeTopic
+      ? (r.topic_ids as string[]).includes(activeTopic.id) ? 50 : 0
+      : 0
 
-    results.push({ kind: 'resource', score: base + modeBoost, item: r, reason: 'Matched on resource' })
+    results.push({ kind: 'resource', score: base + modeBoost + topicResourceBoost, item: r, reason: 'Matched on resource' })
   }
 
   // ── Slides ─────────────────────────────────────────────────────────────────
@@ -282,9 +328,10 @@ type PrimaryAnswer =
   | { type: 'template'; t: Template }
   | { type: 'topic';    topic: Topic; bridge: ConceptFamily | null }
   | { type: 'method';   m: typeof methods[0] }
+  | { type: 'bridge';   family: ConceptFamily; query: string; suggestions: string[] }
   | { type: 'none' }
 
-function findPrimaryAnswer(rawQuery: string, results: SearchResult[]): PrimaryAnswer {
+function findPrimaryAnswer(rawQuery: string, results: SearchResult[], activeTopicId?: string): PrimaryAnswer {
   const q = normalizeQuery(rawQuery.toLowerCase())
   const words = q.split(/\s+/).filter(w => w.length > 2)
 
@@ -294,6 +341,15 @@ function findPrimaryAnswer(rawQuery: string, results: SearchResult[]): PrimaryAn
     const matchCount = words.filter(w => tq.includes(w)).length
     if (matchCount >= Math.max(2, Math.floor(words.length * 0.4))) {
       return { type: 'template', t }
+    }
+  }
+
+  // Active topic from URL param — highest priority after template
+  if (activeTopicId) {
+    const activeTopic = topicsData.find(t => t.id === activeTopicId)
+    if (activeTopic) {
+      const bridge = findBridgeFamily(rawQuery)
+      return { type: 'topic', topic: activeTopic, bridge }
     }
   }
 
@@ -309,6 +365,16 @@ function findPrimaryAnswer(rawQuery: string, results: SearchResult[]): PrimaryAn
   const topMethod = results.find(r => r.kind === 'method' && r.score >= 8) as
     Extract<SearchResult, { kind: 'method' }> | undefined
   if (topMethod) return { type: 'method', m: topMethod.item }
+
+  // Bridge answer: when concept family matches but no exact topic/method hit
+  const bridgeFamily = findBridgeFamily(rawQuery)
+  if (bridgeFamily) {
+    const suggestions = topicsData
+      .filter(t => (bridgeFamily.topic_ids as string[]).includes(t.id))
+      .map(t => t.label)
+      .slice(0, 5)
+    return { type: 'bridge', family: bridgeFamily, query: rawQuery, suggestions }
+  }
 
   return { type: 'none' }
 }
@@ -331,11 +397,67 @@ function lvlCls(level: string): string {
 
 // ─── Primary Answer Card ──────────────────────────────────────────────────────
 
-function PrimaryAnswerCard({ answer }: { answer: PrimaryAnswer }) {
+function PrimaryAnswerCard({ answer, onChipClick }: { answer: PrimaryAnswer; onChipClick?: (s: string) => void }) {
   if (answer.type === 'none') {
     return (
       <div className="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-4 text-center">
-        <p className="text-gray-500 text-sm">Related material found, but no direct answer for this question.</p>
+        <p className="text-gray-500 text-sm">No direct match found. Try a concept name, method, course code, or one of the chips below.</p>
+      </div>
+    )
+  }
+
+  if (answer.type === 'bridge') {
+    const { family, query, suggestions } = answer
+    const familyTopics = topicsData.filter(t => (family.topic_ids as string[]).includes(t.id))
+    return (
+      <div className="bg-blue-950/30 border border-blue-700/50 rounded-2xl p-5 space-y-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="bg-blue-700/40 text-blue-200 text-xs font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider">
+            Closest Academic Match
+          </span>
+        </div>
+        <div className="text-gray-400 text-xs">Best interpretation of "{query}"</div>
+        <div className="text-white font-semibold text-base">{family.label}</div>
+        <div className="bg-gray-900/60 rounded-xl p-3">
+          <p className="text-gray-100 text-sm leading-relaxed">{family.description}</p>
+          <p className="text-gray-500 text-xs mt-2 italic">Core tension: {family.core_tension}</p>
+        </div>
+        <div className="bg-gray-900/40 rounded-xl p-3 border border-blue-800/30">
+          <div className="text-blue-300 text-xs font-semibold uppercase tracking-wider mb-1">How it connects</div>
+          <p className="text-gray-300 text-sm">{family.one_liner}</p>
+        </div>
+        {familyTopics.length > 0 && (
+          <div>
+            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1.5">Topics in this family</div>
+            <div className="flex flex-wrap gap-1.5">
+              {familyTopics.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => onChipClick?.(t.label)}
+                  className="bg-gray-800 border border-gray-700 hover:border-blue-600 text-gray-300 hover:text-white text-xs px-2 py-0.5 rounded-lg transition-colors"
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        {suggestions.length > 0 && (
+          <div>
+            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1.5">You might be asking about:</div>
+            <div className="flex flex-wrap gap-1.5">
+              {suggestions.map(s => (
+                <button
+                  key={s}
+                  onClick={() => onChipClick?.(s)}
+                  className="bg-blue-900/30 border border-blue-800/50 text-blue-300 hover:text-white text-xs px-2.5 py-1 rounded-full transition-colors"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -391,6 +513,20 @@ function PrimaryAnswerCard({ answer }: { answer: PrimaryAnswer }) {
   if (answer.type === 'topic') {
     const { topic, bridge } = answer
     const courseNum = topic.course_code.replace('MBAN_', 'MBAN ')
+
+    // Layer 2: wire through topic refs
+    const topicAssignments = assignmentsData.filter(a =>
+      (topic.assignment_refs as string[]).includes(a.id)
+    )
+    const topicResources = resourcesData.filter(r =>
+      (r.topic_ids as string[]).includes(topic.id)
+    )
+
+    // Review path: best assignment → best followup → best resource
+    const bestAssignment = topicAssignments[0]
+    const bestFollowup = [...(topic.suggested_followups as string[]), ...(topic.nearest_neighbors as string[])][0]
+    const bestResource = topicResources[0]
+
     return (
       <div className="bg-purple-950/30 border border-purple-700/50 rounded-2xl p-5 space-y-3">
         <div className="flex items-center gap-2 flex-wrap">
@@ -405,16 +541,90 @@ function PrimaryAnswerCard({ answer }: { answer: PrimaryAnswer }) {
         <div className="bg-gray-900/60 rounded-xl p-3">
           <p className="text-gray-100 text-sm leading-relaxed">{topic.summary}</p>
         </div>
+
+        {/* Assignment anchor — why it's relevant */}
+        {topicAssignments.length > 0 && (
+          <div className="bg-orange-900/15 border border-orange-800/30 rounded-xl p-3">
+            <div className="text-orange-300 text-xs font-semibold uppercase tracking-wider mb-1.5">Assignment / Example Anchor</div>
+            <div className="space-y-2">
+              {topicAssignments.slice(0, 2).map(a => (
+                <div key={a.id}>
+                  <div className="text-gray-200 text-sm font-medium">{a.title}</div>
+                  <p className="text-gray-400 text-xs mt-0.5">
+                    This is where you applied {topic.label} — {a.description.slice(0, 100)}{a.description.length > 100 ? '…' : ''}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Reinforcement resources */}
+        {topicResources.length > 0 && (
+          <div className="bg-green-900/10 border border-green-800/25 rounded-xl p-3">
+            <div className="text-green-300 text-xs font-semibold uppercase tracking-wider mb-1.5">Reinforce This Concept</div>
+            <div className="space-y-2">
+              {topicResources.slice(0, 2).map(r => (
+                <div key={r.id} className="flex items-start justify-between gap-2">
+                  <div>
+                    <a href={r.url} target="_blank" rel="noopener noreferrer"
+                      className="text-green-300 hover:text-green-200 text-sm font-medium transition-colors">
+                      {r.title} ↗
+                    </a>
+                    <div className="text-gray-500 text-xs">{r.author}{'duration_min' in r && (r as Resource & { duration_min?: number }).duration_min ? ` · ${(r as Resource & { duration_min?: number }).duration_min} min` : ''}</div>
+                  </div>
+                  <span className="text-xs text-gray-500 shrink-0">{r.type}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Suggested followups */}
         {(topic.suggested_followups as string[]).length > 0 && (
           <div>
             <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1.5">Suggested follow-ups</div>
             <div className="flex flex-wrap gap-1.5">
               {(topic.suggested_followups as string[]).map(f => (
-                <span key={f} className="bg-gray-800 border border-gray-700 text-gray-300 text-xs px-2 py-0.5 rounded-lg">{f}</span>
+                <button
+                  key={f}
+                  onClick={() => onChipClick?.(f)}
+                  className="bg-gray-800 border border-gray-700 hover:border-purple-600 text-gray-300 hover:text-white text-xs px-2 py-0.5 rounded-lg transition-colors"
+                >
+                  {f}
+                </button>
               ))}
             </div>
           </div>
         )}
+
+        {/* Best next review path */}
+        {(bestAssignment || bestFollowup || bestResource) && (
+          <div className="bg-gray-900/40 rounded-xl p-3 border border-gray-700/30">
+            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Best Next Review Path</div>
+            <div className="space-y-1 text-xs">
+              {bestAssignment && (
+                <div className="flex items-start gap-1.5">
+                  <span className="text-orange-400 shrink-0 mt-0.5">1.</span>
+                  <span className="text-gray-300">Start with: <span className="text-orange-300">{bestAssignment.title}</span></span>
+                </div>
+              )}
+              {bestFollowup && (
+                <div className="flex items-start gap-1.5">
+                  <span className="text-purple-400 shrink-0 mt-0.5">2.</span>
+                  <span className="text-gray-300">Then review: <button onClick={() => onChipClick?.(bestFollowup)} className="text-purple-300 hover:text-purple-200 underline">{bestFollowup}</button></span>
+                </div>
+              )}
+              {bestResource && (
+                <div className="flex items-start gap-1.5">
+                  <span className="text-green-400 shrink-0 mt-0.5">3.</span>
+                  <span className="text-gray-300">Reinforce with: <a href={bestResource.url} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-200 underline">{bestResource.title} ↗</a></span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {bridge && (
           <div className="bg-gray-900/40 rounded-xl p-3 border border-gray-700/40">
             <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Broader family: {bridge.label}</div>
@@ -779,7 +989,7 @@ function CommonQuestionCard({ t, onSelect }: { t: Template; onSelect: (q: string
 
 // ─── Suggestion Chips ─────────────────────────────────────────────────────────
 
-const SUGGESTIONS = [
+const GLOBAL_LEARN_CHIPS = [
   'overfitting',
   'bias-variance tradeoff',
   'k-fold CV vs bootstrap',
@@ -794,6 +1004,49 @@ const SUGGESTIONS = [
   'SQL KPI queries',
 ]
 
+function getSuggestionChips(
+  scopedCourse: string | null,
+  activeTopic: Topic | null,
+): string[] {
+  if (!scopedCourse) return GLOBAL_LEARN_CHIPS
+
+  const courseCode = scopedCourse.startsWith('MBAN_') ? scopedCourse : scopedCourse.replace('MBAN ', 'MBAN_')
+
+  // Active topic → followups that exist in same course
+  if (activeTopic) {
+    const courseTopicLabels = new Set(
+      topicsData.filter(t => t.course_code === courseCode).map(t => t.label.toLowerCase())
+    )
+    const followups = [
+      ...(activeTopic.suggested_followups as string[]),
+      ...(activeTopic.nearest_neighbors as string[]),
+    ].filter(f => courseTopicLabels.has(f.toLowerCase()))
+    if (followups.length >= 3) return followups.slice(0, 8)
+  }
+
+  // Default: all topic labels for this course
+  return topicsData.filter(t => t.course_code === courseCode).map(t => t.label).slice(0, 8)
+}
+
+const SCOPED_PLACEHOLDERS: Record<string, string> = {
+  'MBAN_5550': 'Ask about ER diagrams, normalization, SQL joins, or schema design',
+  'MBAN_5560': 'Ask about overfitting, cross-validation, random forest, or boosting',
+  'MBAN_5540': 'Ask about LP formulation, duality, decision analysis, or dynamic programming',
+  'MBAN_5570': 'Ask about Monte Carlo simulation, financial statements, or equity research',
+  'MBAN_5510': 'Ask about AI agents, LangChain, LangGraph interrupts, or middleware',
+  'MBAN_5520': 'Ask about regression, prediction intervals, or business prediction',
+  'MBAN_5800': 'Ask about ethics vs morality, AI bias, or motivated reasoning',
+  'MBAN_5502': 'Ask about Python, OOP, pandas, or experimental design',
+}
+
+function getScopedPlaceholder(scopedCourse: string | null): string {
+  if (!scopedCourse) return 'Explain overfitting, normalization, LangGraph interrupts…'
+  const courseCode = scopedCourse.startsWith('MBAN_') ? scopedCourse : scopedCourse.replace('MBAN ', 'MBAN_')
+  if (SCOPED_PLACEHOLDERS[courseCode]) return SCOPED_PLACEHOLDERS[courseCode]
+  const samples = topicsData.filter(t => t.course_code === courseCode).slice(0, 3).map(t => t.label).join(', ')
+  return samples ? `Ask about topics from this course: ${samples}` : 'Ask a question about this course…'
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AskMBAN() {
@@ -805,20 +1058,36 @@ export default function AskMBAN() {
   const initializedFromUrl = useRef(false)
 
   const scopedCourse = searchParams.get('course') || undefined
-  const qParam       = searchParams.get('q') || ''
+  const topicParam   = searchParams.get('topic')  || ''
+  const qParam       = searchParams.get('q')      || ''
+  const modeParam    = searchParams.get('mode')   || ''
 
   useEffect(() => {
     if (!initializedFromUrl.current) {
       initializedFromUrl.current = true
+      if (modeParam === 'learn' || modeParam === 'find') setMode(modeParam)
       if (qParam) { setQuery(qParam); setSubmitted(qParam) }
     }
-  }, [qParam])
+  }, [qParam, modeParam])
 
   const isMobile  = typeof window !== 'undefined' && window.innerWidth < 768
   const hideChips = inputFocused && isMobile
 
-  const results = useMemo(() => runSearch(submitted, mode, scopedCourse), [submitted, mode, scopedCourse])
-  const primary = useMemo(() => submitted ? findPrimaryAnswer(submitted, results) : null, [submitted, results])
+  // activeTopic: URL param takes priority, else derived from primary answer
+  const activeTopicFromUrl = topicParam ? topicsData.find(t => t.id === topicParam) || null : null
+
+  const results = useMemo(
+    () => runSearch(submitted, mode, scopedCourse, topicParam || undefined),
+    [submitted, mode, scopedCourse, topicParam]
+  )
+  const primary = useMemo(
+    () => submitted ? findPrimaryAnswer(submitted, results, topicParam || undefined) : null,
+    [submitted, results, topicParam]
+  )
+
+  // activeTopic for chip generation — from URL or from primary answer
+  const activeTopic: Topic | null = activeTopicFromUrl ||
+    (primary?.type === 'topic' ? primary.topic : null)
 
   const topicResults      = results.filter(r => r.kind === 'topic')      as Extract<SearchResult, { kind: 'topic' }>[]
   const methodResults     = results.filter(r => r.kind === 'method')     as Extract<SearchResult, { kind: 'method' }>[]
@@ -903,7 +1172,7 @@ export default function AskMBAN() {
             onBlur={() => setInputFocused(false)}
             placeholder={
               learnMode
-                ? 'Explain overfitting, normalization, LangGraph interrupts…'
+                ? getScopedPlaceholder(scopedCourse || null)
                 : 'Find assignment on SQL, project using random forest, method for classification…'
             }
             className="w-full bg-gray-800 border border-gray-700 focus:border-purple-500 rounded-2xl px-5 py-4 text-base text-gray-100 placeholder-gray-500 focus:outline-none transition-colors pr-24"
@@ -931,16 +1200,20 @@ export default function AskMBAN() {
           </button>
         </div>
 
-        {/* Suggestion chips */}
+        {/* Suggestion chips — course-scoped when scope active */}
         {!hideChips && (
           <div className="mt-3 flex flex-wrap gap-2 justify-center">
-            {SUGGESTIONS.map(s => (
+            {getSuggestionChips(scopedCourse || null, activeTopic).map(s => (
               <button
                 key={s}
                 type="button"
                 onClick={() => handleSearch(s)}
                 style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
-                className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-200 border border-gray-700 hover:border-gray-600 px-3 py-1.5 rounded-full transition-colors"
+                className={`text-xs hover:bg-gray-700 border hover:border-gray-600 px-3 py-1.5 rounded-full transition-colors ${
+                  scopedCourse
+                    ? 'bg-gray-800 text-purple-300 border-purple-800/50 hover:text-white'
+                    : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-gray-200'
+                }`}
               >
                 {s}
               </button>
@@ -962,12 +1235,34 @@ export default function AskMBAN() {
           </div>
 
           {results.length === 0 ? (
-            <div className="bg-gray-800 border border-gray-700 rounded-2xl p-10 text-center">
-              <p className="text-gray-400">No results for "{submitted}"</p>
-              <p className="text-gray-600 text-xs mt-1">
-                Try a concept name, method, assignment topic, or course code (e.g. 5560)
-              </p>
-            </div>
+            scopedCourse ? (
+              <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-6">
+                <p className="text-gray-400 text-sm mb-1">No direct answer found in <span className="text-purple-300">{scopedCourse.replace('MBAN_', 'MBAN ')}</span>.</p>
+                <p className="text-gray-600 text-xs mb-3">These are the closest topics in this course:</p>
+                <div className="flex flex-wrap gap-2">
+                  {topicsData
+                    .filter(t => t.course_code === scopedCourse)
+                    .slice(0, 6)
+                    .map(t => (
+                      <button
+                        key={t.id}
+                        onClick={() => handleSearch(t.label)}
+                        style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
+                        className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 border border-gray-600 rounded-full text-sm text-gray-300 hover:text-white transition-colors"
+                      >
+                        {t.label}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gray-800 border border-gray-700 rounded-2xl p-10 text-center">
+                <p className="text-gray-400">No results for "{submitted}"</p>
+                <p className="text-gray-600 text-xs mt-1">
+                  Try a concept name, method, assignment topic, or course code (e.g. 5560)
+                </p>
+              </div>
+            )
           ) : (
             <div className="space-y-8">
 
@@ -977,7 +1272,7 @@ export default function AskMBAN() {
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
                     Primary Answer
                   </div>
-                  <PrimaryAnswerCard answer={primary} />
+                  <PrimaryAnswerCard answer={primary} onChipClick={handleSearch} />
                 </div>
               )}
 

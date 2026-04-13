@@ -418,7 +418,10 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                     {courseTopics.map(t => (
                       <button
                         key={t.id}
-                        onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}&q=${encodeURIComponent(t.label)}`) }}
+                        onClick={() => {
+                          onClose()
+                          navigate(`/ask?mode=learn&course=MBAN_${code}&topic=${t.id}&q=${encodeURIComponent(t.label)}`)
+                        }}
                         style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
                         className="bg-gray-800 border border-gray-700 hover:border-purple-600 text-gray-300 hover:text-white text-sm px-3 py-1.5 rounded-xl transition-colors text-left"
                       >
@@ -437,7 +440,7 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
                     {(course.methods as string[]).slice(0, 4).map(m => (
                       <button
                         key={m}
-                        onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}&q=${encodeURIComponent(m)}`) }}
+                        onClick={() => { onClose(); navigate(`/ask?mode=learn&course=MBAN_${code}&q=${encodeURIComponent(m)}`) }}
                         style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
                         className="bg-gray-800 border border-gray-700 hover:border-purple-600 text-gray-300 hover:text-white text-sm px-4 py-2 rounded-xl transition-colors"
                       >
