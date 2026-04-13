@@ -397,15 +397,19 @@ function CourseDetail({ course, onClose }: { course: Course; onClose: () => void
           {tab === 'ask' && (
             <div className="space-y-5 py-2">
               <div>
-                <div className="text-white font-semibold text-base mb-1">Review this course</div>
-                <p className="text-gray-400 text-sm">Results will be scoped to this course first.</p>
+                <div className="text-white font-semibold text-base mb-1">
+                  Review {course.course_code} concepts, assignments, and source material
+                </div>
+                <p className="text-gray-400 text-sm">
+                  {courseTopics.length} core topic{courseTopics.length !== 1 ? 's' : ''} · {courseAssignments.length} assignment{courseAssignments.length !== 1 ? 's' : ''} · scoped search
+                </p>
               </div>
 
               <button
                 onClick={() => { onClose(); navigate(`/ask?course=MBAN_${code}`) }}
                 className="w-full flex items-center justify-center gap-2 bg-purple-700 hover:bg-purple-600 text-white px-5 py-3 rounded-xl text-sm font-medium transition-colors"
               >
-                Review concepts from {course.course_code}
+                Open scoped Ask for {course.course_code}
               </button>
 
               {/* Course-specific topic chips */}

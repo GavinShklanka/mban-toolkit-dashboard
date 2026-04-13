@@ -1,0 +1,138 @@
+{
+  "tracks": [
+    {
+      "id": "classification",
+      "title": "Classification Lab",
+      "description": "Compare classification methods for binary and multi-class problems",
+      "methods": ["Logistic Regression", "Naive Bayes", "k-Nearest Neighbors (kNN)", "SVM (Support Vector Machine)", "Random Forest", "XGBoost"],
+      "comparisons": [
+        {
+          "pair": ["Logistic Regression", "Naive Bayes"],
+          "use_case": ["Interpretable binary classification with probability output", "Fast probabilistic classification, especially with text or sparse data"],
+          "data_assumption": ["Linear decision boundary in log-odds space", "Feature independence (rarely true but often works)"],
+          "interpretability": ["High — coefficients directly interpretable as odds multipliers", "Medium — class probabilities visible, but independence assumption is opaque"],
+          "tuning_burden": ["Low — regularization strength (C) is the main lever", "Very low — minimal hyperparameters, fast to train"],
+          "overfitting_risk": ["Low with L1/L2 regularization", "Low — strong bias assumption keeps variance down"],
+          "common_metric": ["AUC-ROC, accuracy, log-loss", "AUC-ROC, F1-score"],
+          "best_assignment": ["MBAN 5560 Assignment 1 — Classification Fundamentals", "MBAN 5560 Assignment 1 — Classification Fundamentals"],
+          "best_resource": ["StatQuest: Logistic Regression", "Naive Bayes visual explainer (StatQuest)"]
+        },
+        {
+          "pair": ["Random Forest", "XGBoost"],
+          "use_case": ["Robust general-purpose prediction; built-in feature importance", "State-of-the-art accuracy on tabular data; wins Kaggle competitions"],
+          "data_assumption": ["No distributional assumption; handles mixed types well", "No distributional assumption; benefits from feature engineering"],
+          "interpretability": ["Medium — feature importance available; individual trees inspectable", "Low-Medium — SHAP values needed for full explanation"],
+          "tuning_burden": ["Low-Medium — ntrees, max_depth, mtry", "High — learning rate, n_estimators, max_depth, subsampling, regularization"],
+          "overfitting_risk": ["Low — bagging + random features decorrelate trees", "Medium-High — early stopping critical; overfits noisy data easily"],
+          "common_metric": ["AUC-ROC, accuracy, OOB error", "AUC-ROC, log-loss, accuracy"],
+          "best_assignment": ["MBAN 5560 Assignment 3 — Ensemble Methods", "MBAN 5560 Assignment 3 — Ensemble Methods"],
+          "best_resource": ["StatQuest: Random Forests", "StatQuest: Gradient Boosting"]
+        },
+        {
+          "pair": ["k-Nearest Neighbors (kNN)", "SVM (Support Vector Machine)"],
+          "use_case": ["Non-parametric classification when decision boundary is complex", "High-dimensional classification; effective with kernel trick for nonlinear boundaries"],
+          "data_assumption": ["Distance meaningful in feature space; features must be scaled", "Finds maximum-margin hyperplane; works in transformed feature space via kernel"],
+          "interpretability": ["High conceptually (vote of neighbors) but no global structure", "Low — black box in kernel space; margins not easily explained"],
+          "tuning_burden": ["Low — k and distance metric only; but expensive at inference", "Medium — C (regularization) and kernel parameters (gamma for RBF)"],
+          "overfitting_risk": ["High with small k; curse of dimensionality at high-d", "Low-Medium — margin maximization provides regularization"],
+          "common_metric": ["Accuracy, F1-score", "AUC-ROC, accuracy"],
+          "best_assignment": ["MBAN 5560 Assignment 2 — Model Validation & Instance-Based", "MBAN 5560 Assignment 4 — SVMs and Neural Networks"],
+          "best_resource": ["StatQuest: K-Nearest Neighbors", "StatQuest: Support Vector Machines"]
+        },
+        {
+          "pair": ["Logistic Regression", "Random Forest"],
+          "use_case": ["When you need interpretability and a probability estimate", "When you need accuracy and can tolerate a black-box model"],
+          "data_assumption": ["Linear log-odds relationship between features and outcome", "No linearity assumption; captures interactions automatically"],
+          "interpretability": ["Very high — each coefficient has a direct odds-ratio interpretation", "Medium — feature importance available but individual prediction reasoning is complex"],
+          "tuning_burden": ["Low — few hyperparameters", "Medium — ntrees, depth, mtry"],
+          "overfitting_risk": ["Low with regularization", "Low — OOB error is a free honest estimate"],
+          "common_metric": ["AUC-ROC, calibration curve", "AUC-ROC, accuracy"],
+          "best_assignment": ["MBAN 5560 Assignment 1 — Classification Fundamentals", "MBAN 5560 Assignment 3 — Ensemble Methods"],
+          "best_resource": ["StatQuest: Logistic Regression", "StatQuest: Random Forests"]
+        }
+      ]
+    },
+    {
+      "id": "optimization",
+      "title": "Optimization Lab",
+      "description": "Compare optimization and decision analysis methods for business problems",
+      "methods": ["Linear Programming (LP)", "Integer Programming (IP)", "Dynamic Programming (DP)", "Decision Analysis (EMV/EVPI)", "Sensitivity Analysis"],
+      "comparisons": [
+        {
+          "pair": ["Linear Programming (LP)", "Integer Programming (IP)"],
+          "use_case": ["Continuous allocation problems: resource scheduling, mix optimization", "Discrete decisions: facility location, project selection, yes/no choices"],
+          "data_assumption": ["All decision variables are continuous and non-negative", "Some or all variables must be integers (often binary 0/1)"],
+          "interpretability": ["High — shadow prices give economic value of relaxing constraints", "Medium — solution clear but combinatorial complexity grows fast"],
+          "tuning_burden": ["Low — standard simplex or interior point; exact solution", "High — branch-and-bound; NP-hard in general; solver limits apply"],
+          "overfitting_risk": ["N/A — deterministic optimization", "N/A — deterministic optimization"],
+          "common_metric": ["Objective function value, shadow prices, slack/surplus", "Objective function value, LP relaxation gap, MIP gap"],
+          "best_assignment": ["MBAN 5540 Assignment 2 — LP Formulation and Duality", "MBAN 5540 Assignment 3 — Integer Programming"],
+          "best_resource": ["LP formulation walkthrough (course notes)", "IP and branch-and-bound explainer"]
+        },
+        {
+          "pair": ["Dynamic Programming (DP)", "Linear Programming (LP)"],
+          "use_case": ["Multi-stage sequential decisions where state evolves over time", "Single-stage or simultaneous allocation of continuous resources"],
+          "data_assumption": ["Markovian structure: future depends only on current state", "Linearity in objective and constraints"],
+          "interpretability": ["Medium — Bellman equation logic clear; state space can explode", "High — primal solution + dual shadow prices fully transparent"],
+          "tuning_burden": ["Medium — must define state, stages, and recursion correctly", "Low — standard formulation maps directly to solver"],
+          "overfitting_risk": ["N/A", "N/A"],
+          "common_metric": ["Value function, optimal policy by state", "Optimal objective value, binding constraints"],
+          "best_assignment": ["MBAN 5540 — Dynamic Programming problems", "MBAN 5540 Assignment 2 — LP Formulation and Duality"],
+          "best_resource": ["Bellman equation walkthrough", "LP graphical method explainer"]
+        },
+        {
+          "pair": ["Decision Analysis (EMV/EVPI)", "Sensitivity Analysis"],
+          "use_case": ["Choose among discrete alternatives under uncertainty using expected value", "Test how optimal solution changes as parameters vary — before committing"],
+          "data_assumption": ["Probabilities assigned to uncertain outcomes; outcomes quantified", "Base LP/IP solution available; ranges of validity computable"],
+          "interpretability": ["High — decision trees are visual and intuitive", "High — ranging tables directly show decision stability"],
+          "tuning_burden": ["Low — enumerate outcomes, assign probabilities, compute EMV", "Low — output directly from LP solver sensitivity report"],
+          "overfitting_risk": ["N/A — but probability estimates may be poorly calibrated", "N/A"],
+          "common_metric": ["EMV, EVPI, expected utility", "Ranging: RHS and objective coefficient ranges"],
+          "best_assignment": ["MBAN 5540 Assignment 5 — Decision Analysis", "MBAN 5540 Assignment 2 — LP Formulation and Duality"],
+          "best_resource": ["Decision analysis tree walkthrough", "Sensitivity analysis interpretation guide"]
+        }
+      ]
+    },
+    {
+      "id": "database_design",
+      "title": "Database Design Lab",
+      "description": "Compare database design concepts for relational schema and query development",
+      "methods": ["ER Diagram (ERD)", "Normalization (1NF/2NF/3NF)", "Keys and Constraints", "Schema Design", "SQL Query Writing"],
+      "comparisons": [
+        {
+          "pair": ["ER Diagram (ERD)", "Normalization (1NF/2NF/3NF)"],
+          "use_case": ["Capture business entities and relationships before building the database", "Eliminate redundancy and anomalies in an existing or candidate schema"],
+          "data_assumption": ["Business requirements can be modeled as entities with attributes and relationships", "Functional dependencies between attributes are identifiable"],
+          "interpretability": ["Very high — visual; non-technical stakeholders can validate", "Medium — dependency rules require technical understanding"],
+          "tuning_burden": ["Low — iterative with stakeholder feedback", "Medium — requires identifying all FDs before decomposing"],
+          "overfitting_risk": ["N/A — design process, not model fitting", "N/A"],
+          "common_metric": ["Completeness: all entities, attributes, relationships captured", "Normal form achieved (1NF, 2NF, 3NF); anomaly-free tables"],
+          "best_assignment": ["MBAN 5550 — Database Design (ERD + Normalization)", "MBAN 5550 — Database Design (ERD + Normalization)"],
+          "best_resource": ["ERD notation reference", "Database Normalization Explained (Towards Data Science)"]
+        },
+        {
+          "pair": ["Keys and Constraints", "Schema Design"],
+          "use_case": ["Enforce data integrity: no orphaned records, no duplicate entities", "Translate ERD + normal forms into a deployable relational table structure"],
+          "data_assumption": ["Primary keys uniquely identify each row; FK references valid rows", "ERD and normalization work complete; ready for implementation"],
+          "interpretability": ["High — PKs and FKs are explicit and checkable", "High — table structure is directly readable"],
+          "tuning_burden": ["Low — specify PK, FK, UNIQUE, NOT NULL constraints at creation", "Medium — requires balancing normalization against query performance"],
+          "overfitting_risk": ["N/A", "N/A"],
+          "common_metric": ["Referential integrity, no anomalies on insert/update/delete", "Schema handles all use cases; JOINs work correctly"],
+          "best_assignment": ["MBAN 5550 — Cruise Line Database Project", "MBAN 5550 — Cruise Line Database Project"],
+          "best_resource": ["SQL constraints reference", "Schema design patterns guide"]
+        },
+        {
+          "pair": ["SQL Query Writing", "Schema Design"],
+          "use_case": ["Extract insights and KPIs from an existing database using SELECT/JOIN/GROUP BY", "Design the table structure that makes those queries efficient and correct"],
+          "data_assumption": ["Tables exist with appropriate keys; data is clean and normalized", "Business requirements translated into entity-relationship structure"],
+          "interpretability": ["High — SQL is declarative and readable", "High — schema diagrams visual and stakeholder-readable"],
+          "tuning_burden": ["Medium — complex JOINs and window functions require practice", "Medium — requires normalization and ERD work first"],
+          "overfitting_risk": ["N/A — querying, not fitting", "N/A"],
+          "common_metric": ["Query correctness, performance, KPI accuracy", "Normalization level, query support, anomaly-free"],
+          "best_assignment": ["MBAN 5550 — SQL KPI Queries", "MBAN 5550 — Cruise Line Database Project"],
+          "best_resource": ["Mode SQL Tutorial", "Database schema design patterns"]
+        }
+      ]
+    }
+  ]
+}

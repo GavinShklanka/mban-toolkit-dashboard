@@ -88,5 +88,59 @@
     "topic_ids": ["t_5800_ethics","t_5800_bias","t_5800_mr"],
     "bridge_terms": ["fairness","accountability","transparency","bias","stakeholder","institutional","personal morality"],
     "one_liner": "Distinguish ethics (institutional) from morality (personal); use both to evaluate AI systems."
+  },
+  {
+    "id": "cf_optimization_heuristics",
+    "label": "Optimization Heuristics",
+    "description": "Approximate search methods for hard combinatorial problems where exact solvers fail",
+    "core_tension": "Exact methods guarantee optimality but can't scale; heuristics trade guarantees for speed on large instances.",
+    "topic_ids": ["t_5540_ip","t_5540_dp"],
+    "bridge_terms": ["genetic algorithm","simulated annealing","tabu search","metaheuristic","neighborhood search","local optimum","evolutionary","hill climbing"],
+    "one_liner": "When LP/IP can't scale: metaheuristics explore the solution space intelligently rather than exhaustively."
+  },
+  {
+    "id": "cf_bayesian_reasoning",
+    "label": "Bayesian Reasoning",
+    "description": "Updating beliefs with evidence using Bayes' theorem",
+    "core_tension": "Prior beliefs are subjective but necessary; evidence updates them systematically. The tension is choosing priors wisely.",
+    "topic_ids": ["t_5540_da","t_5560_logreg"],
+    "bridge_terms": ["bayesian inference","prior","posterior","likelihood","belief updating","Bayes theorem","conditional probability","Naive Bayes","Bayes update","posterior probability"],
+    "one_liner": "Prior × likelihood → posterior. Repeat with each new data point to continuously update your beliefs."
+  },
+  {
+    "id": "cf_simulation_uncertainty",
+    "label": "Simulation and Uncertainty",
+    "description": "Using random sampling to propagate uncertainty through complex models",
+    "core_tension": "Analytic distributions are tractable but oversimplified; simulation is flexible but computationally expensive.",
+    "topic_ids": ["t_5570_mc","t_5540_da"],
+    "bridge_terms": ["monte carlo","scenario simulation","uncertainty propagation","@RISK","random sampling","distribution fitting","sensitivity analysis","percentile","confidence band"],
+    "one_liner": "Sample from input distributions → run model thousands of times → characterize the output distribution."
+  },
+  {
+    "id": "cf_dimensionality_reduction",
+    "label": "Dimensionality Reduction",
+    "description": "Compressing high-dimensional data into fewer meaningful components",
+    "core_tension": "More features give more signal but introduce noise and the curse of dimensionality; reduction recovers signal.",
+    "topic_ids": ["t_5560_knn","t_5560_rf"],
+    "bridge_terms": ["PCA","principal components","latent factors","variance explained","feature importance","curse of dimensionality","embedding","projection","eigenvalue","singular value decomposition"],
+    "one_liner": "PCA finds axes of maximum variance; RF feature importance ranks real predictors; kNN degrades as dimensions grow."
+  },
+  {
+    "id": "cf_causal_inference",
+    "label": "Causal Inference",
+    "description": "Distinguishing correlation from causation to support decision-making",
+    "core_tension": "Predictive models optimize correlation; causal inference asks what would happen if we intervene.",
+    "topic_ids": ["t_5520_reg","t_5560_logreg"],
+    "bridge_terms": ["treatment effect","confounding","causality","instrumental variable","randomized control trial","observational study","selection bias","counterfactual","prediction vs causation","spurious correlation"],
+    "one_liner": "Prediction answers 'what will happen'; causation answers 'what would happen if we acted'. Only RCTs or careful design distinguish them."
+  },
+  {
+    "id": "cf_recommendation_systems",
+    "label": "Recommendation Systems",
+    "description": "Personalizing content or product suggestions based on similarity and behavior",
+    "core_tension": "Collaborative filtering is powerful but needs dense data; content-based works cold but misses serendipity.",
+    "topic_ids": ["t_5560_cluster","t_5560_knn"],
+    "bridge_terms": ["collaborative filtering","matrix factorization","user similarity","item similarity","cosine similarity","latent factors","cold start","user-item matrix","nearest neighbor recommendation"],
+    "one_liner": "kNN finds similar users; clustering groups them; matrix factorization discovers latent preference structure."
   }
 ]

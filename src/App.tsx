@@ -10,6 +10,7 @@ import Refresh from './pages/Refresh'
 import Governance from './pages/Governance'
 import Evidence from './pages/Evidence'
 import AskMBAN from './pages/AskMBAN'
+import ModelLab from './pages/ModelLab'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/ladder" element={<Ladder />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/methods" element={<Methods />} />
+          <Route path="/lab" element={<ModelLab />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/router" element={<SolutionRouter />} />
           <Route path="/refresh" element={<Refresh />} />

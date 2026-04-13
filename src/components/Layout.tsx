@@ -5,6 +5,7 @@ const primaryNav = [
   { path: '/', label: 'Home', icon: '🏠', short: 'Home' },
   { path: '/courses', label: 'My Courses', icon: '📚', short: 'Courses' },
   { path: '/methods', label: 'Method Library', icon: '🔬', short: 'Methods' },
+  { path: '/lab', label: 'Model Lab', icon: '⚗️', short: 'Lab' },
   { path: '/projects', label: 'Projects', icon: '📁', short: 'Projects' },
   { path: '/ask', label: 'Ask MBAN', icon: '💬', short: 'Ask' },
 ]
@@ -14,6 +15,7 @@ const mobileNav = [
   { path: '/', label: 'Home' },
   { path: '/courses', label: 'Courses' },
   { path: '/methods', label: 'Methods' },
+  { path: '/lab', label: 'Lab' },
   { path: '/projects', label: 'Projects' },
   { path: '/ask', label: 'Ask' },
 ]

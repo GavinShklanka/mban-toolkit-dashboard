@@ -5,6 +5,7 @@
     "title": "StatQuest: Bias and Variance",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.youtube.com/watch?v=EuBBz3bI-aA",
     "duration_min": 6,
     "description": "Visual intuition for the bias-variance tradeoff with concrete examples."
@@ -15,6 +16,7 @@
     "title": "StatQuest: Cross Validation",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best before assignment",
     "url": "https://www.youtube.com/watch?v=fSytzGwwBVw",
     "duration_min": 6,
     "description": "Clear walkthrough of k-fold cross-validation and why it gives honest estimates."
@@ -25,6 +27,7 @@
     "title": "StatQuest: Random Forests",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ",
     "duration_min": 9,
     "description": "How bagging and random feature selection combine to build robust ensembles."
@@ -35,6 +38,7 @@
     "title": "StatQuest: Logistic Regression",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.youtube.com/watch?v=yIYKR4sgzI8",
     "duration_min": 8,
     "description": "Logistic regression intuition with odds ratios and probability outputs."
@@ -45,6 +49,7 @@
     "title": "StatQuest: K-Nearest Neighbors",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.youtube.com/watch?v=HVXime0nQeI",
     "duration_min": 5,
     "description": "Simple visual walkthrough of how kNN classifies new points."
@@ -55,6 +60,7 @@
     "title": "StatQuest: Bootstrap Resampling",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best for exam review",
     "url": "https://www.youtube.com/watch?v=Xz0x-8-cgaQ",
     "duration_min": 7,
     "description": "Why bootstrapping works and how out-of-bag samples serve as a free test set."
@@ -65,6 +71,7 @@
     "title": "StatQuest: Neural Networks",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best before assignment",
     "url": "https://www.youtube.com/watch?v=CqOfi41LfDw",
     "duration_min": 20,
     "description": "Neural network fundamentals: forward pass, backpropagation, activation functions."
@@ -75,6 +82,7 @@
     "title": "StatQuest: Gradient Boosting",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best before assignment",
     "url": "https://www.youtube.com/watch?v=3CC4N4z3GJc",
     "duration_min": 15,
     "description": "How gradient boosting sequentially corrects residuals to improve prediction."
@@ -85,6 +93,7 @@
     "title": "StatQuest: Support Vector Machines",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.youtube.com/watch?v=efR1C6CvhmE",
     "duration_min": 20,
     "description": "Maximum margin classifiers, soft margins, and kernel tricks explained visually."
@@ -95,6 +104,7 @@
     "title": "StatQuest: K-Means Clustering",
     "author": "Josh Starmer",
     "type": "video",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.youtube.com/watch?v=4b5d3muPQmA",
     "duration_min": 9,
     "description": "K-means algorithm step-by-step with practical interpretation of cluster results."
@@ -105,6 +115,7 @@
     "title": "3Blue1Brown: Backpropagation Calculus",
     "author": "3Blue1Brown",
     "type": "video",
+    "usage_label": "Best for exam review",
     "url": "https://www.youtube.com/watch?v=tIeHLnjs5U8",
     "duration_min": 12,
     "description": "Visual deep dive into how gradients flow backwards through neural network layers."
@@ -115,6 +126,7 @@
     "title": "3Blue1Brown: Attention in Transformers",
     "author": "3Blue1Brown",
     "type": "video",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc",
     "duration_min": 26,
     "description": "Best visual explanation of the self-attention mechanism powering transformers."
@@ -125,6 +137,7 @@
     "title": "LangChain + LangGraph Documentation",
     "author": "LangChain",
     "type": "docs",
+    "usage_label": "Best for assignment reference",
     "url": "https://python.langchain.com/docs/introduction/",
     "description": "Official docs for building chains, agents, and stateful workflows."
   },
@@ -134,6 +147,7 @@
     "title": "Hugging Face NLP Course",
     "author": "Hugging Face",
     "type": "course",
+    "usage_label": "Best before assignment",
     "url": "https://huggingface.co/learn/nlp-course/chapter1/1",
     "description": "Free course covering transformers, fine-tuning, and the Hugging Face ecosystem."
   },
@@ -143,6 +157,7 @@
     "title": "Database Normalization Explained",
     "author": "Towards Data Science",
     "type": "article",
+    "usage_label": "Best before assignment",
     "url": "https://towardsdatascience.com/database-normalization-explained-53e60a651afe",
     "description": "Step-by-step walkthrough of 1NF, 2NF, and 3NF with clear examples."
   },
@@ -152,6 +167,7 @@
     "title": "Mode SQL Tutorial",
     "author": "Mode Analytics",
     "type": "interactive",
+    "usage_label": "Best for exam review",
     "url": "https://mode.com/sql-tutorial/",
     "description": "Interactive SQL practice from basic SELECT to advanced window functions."
   },
@@ -161,6 +177,7 @@
     "title": "Monte Carlo Simulation in Finance",
     "author": "Investopedia",
     "type": "article",
+    "usage_label": "Best quick visual refresher",
     "url": "https://www.investopedia.com/terms/m/montecarlosimulation.asp",
     "description": "How Monte Carlo simulation is applied in financial risk and portfolio analysis."
   },
@@ -170,7 +187,78 @@
     "title": "pandas Documentation",
     "author": "pandas Development Team",
     "type": "docs",
+    "usage_label": "Best for assignment reference",
     "url": "https://pandas.pydata.org/docs/user_guide/index.html",
     "description": "Official pandas user guide covering DataFrames, indexing, groupby, and merging."
+  },
+  {
+    "id": "r_cheatsheet_ml_algorithms",
+    "topic_ids": ["t_5560_logreg","t_5560_rf","t_5560_boost","t_5560_knn","t_5560_svm"],
+    "title": "ML Algorithm Cheat Sheet",
+    "author": "Scikit-learn",
+    "type": "cheat_sheet",
+    "usage_label": "Best for exam review",
+    "url": "https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html",
+    "description": "Decision flowchart for choosing the right ML estimator based on problem type and data size."
+  },
+  {
+    "id": "r_diagram_bv_tradeoff",
+    "topic_ids": ["t_5560_bv","t_5560_overfit"],
+    "title": "Bias-Variance Tradeoff Diagram",
+    "author": "Scott Fortmann-Roe",
+    "type": "diagram",
+    "usage_label": "Best quick visual refresher",
+    "url": "http://scott.fortmann-roe.com/docs/BiasVariance.html",
+    "description": "Interactive visualization showing how bias and variance errors change with model complexity."
+  },
+  {
+    "id": "r_infographic_sql_joins",
+    "topic_ids": ["t_5550_sql","t_5550_kpi"],
+    "title": "SQL JOIN Types Visual Reference",
+    "author": "C.L. Moffatt",
+    "type": "infographic",
+    "usage_label": "Best quick visual refresher",
+    "url": "https://www.codeproject.com/Articles/33052/Visual-Representation-of-SQL-Joins",
+    "description": "Visual reference for all SQL JOIN types using Venn diagrams — INNER, LEFT, RIGHT, FULL, CROSS."
+  },
+  {
+    "id": "r_figure_decision_tree",
+    "topic_ids": ["t_5540_da"],
+    "title": "Decision Tree and EMV Walkthrough",
+    "author": "Decision Skills",
+    "type": "figure",
+    "usage_label": "Best before assignment",
+    "url": "https://www.youtube.com/watch?v=a5yWr1hr6QY",
+    "description": "Step-by-step figure walkthrough of building and rolling back a decision tree with EMV calculations."
+  },
+  {
+    "id": "r_cheatsheet_lp_formulation",
+    "topic_ids": ["t_5540_lp","t_5540_dual"],
+    "title": "LP Formulation Reference Card",
+    "author": "OR-Tools Community",
+    "type": "cheat_sheet",
+    "usage_label": "Best before assignment",
+    "url": "https://developers.google.com/optimization/introduction/overview",
+    "description": "Quick reference for LP formulation steps: variables, objective, constraints, non-negativity, and interpretation."
+  },
+  {
+    "id": "r_diagram_erd_notation",
+    "topic_ids": ["t_5550_erd","t_5550_schema"],
+    "title": "ER Diagram Notation Reference",
+    "author": "Lucidchart",
+    "type": "diagram",
+    "usage_label": "Best before assignment",
+    "url": "https://www.lucidchart.com/pages/er-diagrams",
+    "description": "Complete reference for Crow's Foot and Chen notation in ER diagrams with cardinality examples."
+  },
+  {
+    "id": "r_infographic_neural_network",
+    "topic_ids": ["t_5560_nn"],
+    "title": "Neural Network Architecture Visual",
+    "author": "Towards Data Science",
+    "type": "infographic",
+    "usage_label": "Best quick visual refresher",
+    "url": "https://towardsdatascience.com/a-comprehensive-introduction-to-different-types-of-convolutions-in-deep-learning-669281e58215",
+    "description": "Infographic covering feedforward, convolutional, and recurrent network architectures side-by-side."
   }
 ]

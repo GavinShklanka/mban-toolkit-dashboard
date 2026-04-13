@@ -83,11 +83,9 @@ const TYPO_MAP: Record<string, string> = {
 
 function normalizeQuery(q: string): string {
   let normalized = q.toLowerCase().trim()
-  // Repair typos first
   for (const [typo, fix] of Object.entries(TYPO_MAP)) {
     normalized = normalized.replace(new RegExp(typo, 'gi'), fix)
   }
-  // Expand abbreviations
   for (const [abbr, full] of Object.entries(ABBR_MAP)) {
     const re = new RegExp(`\\b${abbr}\\b`, 'gi')
     normalized = normalized.replace(re, full)
@@ -108,6 +106,10 @@ function detectIntent(q: string): Intent {
   if (/\bresource|video|watch|read|learn more|tutorial|link/.test(lower)) return 'resource'
   if (/\blike\b|similar to|related to|same family|alternatives to|techniques like|methods like|what kind of|closest thing to/.test(lower)) return 'relation'
   return 'general'
+}
+
+function isCompareQuery(q: string): boolean {
+  return /\bvs\b|versus|\bcompare\b|similar to/.test(q.toLowerCase())
 }
 
 // ─── Concept Family Bridge ────────────────────────────────────────────────────
@@ -165,11 +167,8 @@ function runSearch(
     if (base <= 0) continue
 
     const courseNum = t.course_code.replace('MBAN_', '')
-    // Significantly stronger scope boost so course-scoped results always rise first
     const scopeBoost = scopeCode && courseNum === scopeCode ? 50 : 0
-    // Exact active topic: top of results
     const topicBoost = activeTopicId && t.id === activeTopicId ? 100 : 0
-    // Neighbor/followup of active topic
     const neighborBoost = activeTopic
       ? [...(activeTopic.nearest_neighbors as string[]), ...(activeTopic.suggested_followups as string[])]
           .some(n => n.toLowerCase() === t.label.toLowerCase()) ? 30 : 0
@@ -196,7 +195,6 @@ function runSearch(
     if (base <= 0) continue
 
     const scopeBoost = scopeCode && (m.linked_courses || []).some(c => c.includes(scopeCode)) ? 30 : 0
-    // Boost methods referenced by active topic
     const topicMethodBoost = activeTopic
       ? (activeTopic.related_methods as string[]).some(rm => rm.toLowerCase() === m.method_name.toLowerCase()) ? 40 : 0
       : 0
@@ -234,7 +232,7 @@ function runSearch(
     results.push({ kind: 'course', score: base + scopeBoost, item: c, reason })
   }
 
-  // ── Assignments (Find mode emphasizes; Learn mode includes) ────────────────
+  // ── Assignments ────────────────────────────────────────────────────────────
   for (const a of assignmentsData) {
     const titleScore = scoreText(a.title, q) * 4
     const descScore  = scoreText(a.description, q) * 2
@@ -245,7 +243,6 @@ function runSearch(
 
     const modeBoost = mode === 'find' || intent === 'assignment' ? 4 : 0
     const scopeBoost = scopeCode && a.course_code.includes(scopeCode) ? 40 : 0
-    // Directly referenced by active topic
     const topicRefBoost = activeTopic
       ? (activeTopic.assignment_refs as string[]).includes(a.id) ? 75 : 0
       : 0
@@ -253,7 +250,7 @@ function runSearch(
     results.push({ kind: 'assignment', score: base + modeBoost + scopeBoost + topicRefBoost, item: a, reason: 'Matched on assignment' })
   }
 
-  // ── Resources (Learn mode emphasizes) ─────────────────────────────────────
+  // ── Resources ─────────────────────────────────────────────────────────────
   for (const r of resourcesData) {
     const titleScore  = scoreText(r.title, q) * 4
     const descScore   = scoreText(r.description, q) * 2
@@ -263,7 +260,6 @@ function runSearch(
     if (base <= 0) continue
 
     const modeBoost = mode === 'learn' || intent === 'resource' ? 3 : 0
-    // Boost resources directly tied to active topic
     const topicResourceBoost = activeTopic
       ? (r.topic_ids as string[]).includes(activeTopic.id) ? 50 : 0
       : 0
@@ -335,7 +331,6 @@ function findPrimaryAnswer(rawQuery: string, results: SearchResult[], activeTopi
   const q = normalizeQuery(rawQuery.toLowerCase())
   const words = q.split(/\s+/).filter(w => w.length > 2)
 
-  // Template match
   for (const t of templates) {
     const tq = normalizeQuery(t.query.toLowerCase())
     const matchCount = words.filter(w => tq.includes(w)).length
@@ -344,7 +339,6 @@ function findPrimaryAnswer(rawQuery: string, results: SearchResult[], activeTopi
     }
   }
 
-  // Active topic from URL param — highest priority after template
   if (activeTopicId) {
     const activeTopic = topicsData.find(t => t.id === activeTopicId)
     if (activeTopic) {
@@ -353,7 +347,6 @@ function findPrimaryAnswer(rawQuery: string, results: SearchResult[], activeTopi
     }
   }
 
-  // Topic match (highest-scored topic)
   const topTopic = results.find(r => r.kind === 'topic' && r.score >= 6) as
     Extract<SearchResult, { kind: 'topic' }> | undefined
   if (topTopic) {
@@ -361,12 +354,10 @@ function findPrimaryAnswer(rawQuery: string, results: SearchResult[], activeTopi
     return { type: 'topic', topic: topTopic.item, bridge }
   }
 
-  // Method match
   const topMethod = results.find(r => r.kind === 'method' && r.score >= 8) as
     Extract<SearchResult, { kind: 'method' }> | undefined
   if (topMethod) return { type: 'method', m: topMethod.item }
 
-  // Bridge answer: when concept family matches but no exact topic/method hit
   const bridgeFamily = findBridgeFamily(rawQuery)
   if (bridgeFamily) {
     const suggestions = topicsData
@@ -377,6 +368,29 @@ function findPrimaryAnswer(rawQuery: string, results: SearchResult[], activeTopi
   }
 
   return { type: 'none' }
+}
+
+// ─── Domain Helpers (for instructional cards) ─────────────────────────────────
+
+function getCourseDomain(courseCode: string): string {
+  const code = courseCode.replace('MBAN_', '').replace('MBAN ', '')
+  if (code === '5550') return 'db'
+  if (code === '5560') return 'ml'
+  if (code === '5540') return 'optimization'
+  if (code === '5510') return 'ai'
+  if (code === '5570') return 'finance'
+  if (code === '5800') return 'ethics'
+  return 'general'
+}
+
+const COMMON_MISTAKES: Record<string, string> = {
+  db: 'Skipping relationship logic — modeling attributes as entities, or missing FK constraints',
+  ml: 'Data leakage or overclaiming — letting test data influence training, or ignoring confidence intervals',
+  optimization: 'Solving before defining the objective — jumping to math before writing out variables clearly',
+  ai: 'Hardcoding agent flow — building chains when you need stateful graphs for multi-step decisions',
+  finance: 'Ignoring uncertainty — using point estimates without scenario or sensitivity analysis',
+  ethics: 'Conflating ethics and morality — applying personal values where institutional standards apply',
+  general: 'Misapplying the method — always check assumptions before running the model',
 }
 
 // ─── Level Colors ─────────────────────────────────────────────────────────────
@@ -514,7 +528,6 @@ function PrimaryAnswerCard({ answer, onChipClick }: { answer: PrimaryAnswer; onC
     const { topic, bridge } = answer
     const courseNum = topic.course_code.replace('MBAN_', 'MBAN ')
 
-    // Layer 2: wire through topic refs
     const topicAssignments = assignmentsData.filter(a =>
       (topic.assignment_refs as string[]).includes(a.id)
     )
@@ -522,7 +535,6 @@ function PrimaryAnswerCard({ answer, onChipClick }: { answer: PrimaryAnswer; onC
       (r.topic_ids as string[]).includes(topic.id)
     )
 
-    // Review path: best assignment → best followup → best resource
     const bestAssignment = topicAssignments[0]
     const bestFollowup = [...(topic.suggested_followups as string[]), ...(topic.nearest_neighbors as string[])][0]
     const bestResource = topicResources[0]
@@ -542,40 +554,29 @@ function PrimaryAnswerCard({ answer, onChipClick }: { answer: PrimaryAnswer; onC
           <p className="text-gray-100 text-sm leading-relaxed">{topic.summary}</p>
         </div>
 
-        {/* Assignment anchor — why it's relevant */}
-        {topicAssignments.length > 0 && (
-          <div className="bg-orange-900/15 border border-orange-800/30 rounded-xl p-3">
-            <div className="text-orange-300 text-xs font-semibold uppercase tracking-wider mb-1.5">Assignment / Example Anchor</div>
-            <div className="space-y-2">
-              {topicAssignments.slice(0, 2).map(a => (
-                <div key={a.id}>
-                  <div className="text-gray-200 text-sm font-medium">{a.title}</div>
-                  <p className="text-gray-400 text-xs mt-0.5">
-                    This is where you applied {topic.label} — {a.description.slice(0, 100)}{a.description.length > 100 ? '…' : ''}
-                  </p>
+        {/* Study Path micro-block */}
+        {(bestAssignment || bestFollowup || bestResource) && (
+          <div className="bg-gray-900/40 rounded-xl p-3 border border-gray-700/30">
+            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Study Path</div>
+            <div className="space-y-1 text-xs">
+              {bestAssignment && (
+                <div className="flex items-start gap-1.5">
+                  <span className="text-orange-400 shrink-0 mt-0.5">1.</span>
+                  <span className="text-gray-300">First review: <span className="text-orange-300">{bestAssignment.title}</span></span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Reinforcement resources */}
-        {topicResources.length > 0 && (
-          <div className="bg-green-900/10 border border-green-800/25 rounded-xl p-3">
-            <div className="text-green-300 text-xs font-semibold uppercase tracking-wider mb-1.5">Reinforce This Concept</div>
-            <div className="space-y-2">
-              {topicResources.slice(0, 2).map(r => (
-                <div key={r.id} className="flex items-start justify-between gap-2">
-                  <div>
-                    <a href={r.url} target="_blank" rel="noopener noreferrer"
-                      className="text-green-300 hover:text-green-200 text-sm font-medium transition-colors">
-                      {r.title} ↗
-                    </a>
-                    <div className="text-gray-500 text-xs">{r.author}{'duration_min' in r && (r as Resource & { duration_min?: number }).duration_min ? ` · ${(r as Resource & { duration_min?: number }).duration_min} min` : ''}</div>
-                  </div>
-                  <span className="text-xs text-gray-500 shrink-0">{r.type}</span>
+              )}
+              {bestFollowup && (
+                <div className="flex items-start gap-1.5">
+                  <span className="text-purple-400 shrink-0 mt-0.5">2.</span>
+                  <span className="text-gray-300">Then compare: <button onClick={() => onChipClick?.(bestFollowup)} className="text-purple-300 hover:text-purple-200 underline">{bestFollowup}</button></span>
                 </div>
-              ))}
+              )}
+              {bestResource && (
+                <div className="flex items-start gap-1.5">
+                  <span className="text-green-400 shrink-0 mt-0.5">3.</span>
+                  <span className="text-gray-300">Then reinforce: <a href={bestResource.url} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-200 underline">{bestResource.title} ↗</a></span>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -594,33 +595,6 @@ function PrimaryAnswerCard({ answer, onChipClick }: { answer: PrimaryAnswer; onC
                   {f}
                 </button>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* Best next review path */}
-        {(bestAssignment || bestFollowup || bestResource) && (
-          <div className="bg-gray-900/40 rounded-xl p-3 border border-gray-700/30">
-            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Best Next Review Path</div>
-            <div className="space-y-1 text-xs">
-              {bestAssignment && (
-                <div className="flex items-start gap-1.5">
-                  <span className="text-orange-400 shrink-0 mt-0.5">1.</span>
-                  <span className="text-gray-300">Start with: <span className="text-orange-300">{bestAssignment.title}</span></span>
-                </div>
-              )}
-              {bestFollowup && (
-                <div className="flex items-start gap-1.5">
-                  <span className="text-purple-400 shrink-0 mt-0.5">2.</span>
-                  <span className="text-gray-300">Then review: <button onClick={() => onChipClick?.(bestFollowup)} className="text-purple-300 hover:text-purple-200 underline">{bestFollowup}</button></span>
-                </div>
-              )}
-              {bestResource && (
-                <div className="flex items-start gap-1.5">
-                  <span className="text-green-400 shrink-0 mt-0.5">3.</span>
-                  <span className="text-gray-300">Reinforce with: <a href={bestResource.url} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-200 underline">{bestResource.title} ↗</a></span>
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -670,6 +644,59 @@ function PrimaryAnswerCard({ answer, onChipClick }: { answer: PrimaryAnswer; onC
   )
 }
 
+// ─── Best Next Action Card ────────────────────────────────────────────────────
+
+function BestNextActionCard({ primary, onChipClick }: { primary: PrimaryAnswer; onChipClick?: (s: string) => void }) {
+  if (primary.type !== 'topic') return null
+
+  const { topic } = primary
+  const topicAssignments = assignmentsData.filter(a => (topic.assignment_refs as string[]).includes(a.id))
+  const topicResources = resourcesData.filter(r => (r.topic_ids as string[]).includes(topic.id))
+  const bestAssignment = topicAssignments[0]
+  const bestNeighbor = (topic.suggested_followups as string[])[0]
+  const bestResource = topicResources[0]
+
+  let action = ''
+  let why = ''
+  let clickLabel = ''
+  let isLink = false
+  let href = ''
+
+  if (bestAssignment) {
+    action = `Review: ${bestAssignment.title}`
+    why = `This assignment directly applies ${topic.label} — best concrete anchor for this concept.`
+    clickLabel = bestAssignment.title
+  } else if (bestNeighbor) {
+    action = `Explore next: ${bestNeighbor}`
+    why = `${bestNeighbor} is the closest related concept — understanding both sharpens your mental model.`
+    clickLabel = bestNeighbor
+  } else if (bestResource) {
+    action = bestResource.title
+    why = `Best reinforcement material for ${topic.label}.`
+    isLink = true
+    href = bestResource.url
+  }
+
+  if (!action) return null
+
+  return (
+    <div className="bg-amber-950/20 border border-amber-700/40 rounded-2xl p-4">
+      <div className="text-amber-300 text-xs font-semibold uppercase tracking-wider mb-2">Best Next Action</div>
+      <div className="text-white font-medium text-sm mb-1">{action}</div>
+      <p className="text-gray-400 text-xs leading-relaxed">{why}</p>
+      {isLink && href ? (
+        <a href={href} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs text-amber-400 hover:text-amber-300 underline">
+          Open resource ↗
+        </a>
+      ) : clickLabel && onChipClick ? (
+        <button onClick={() => onChipClick(clickLabel)} className="mt-2 text-xs text-amber-400 hover:text-amber-300 underline">
+          Go there →
+        </button>
+      ) : null}
+    </div>
+  )
+}
+
 // ─── Result Cards ─────────────────────────────────────────────────────────────
 
 function TopicCard({ item, reason }: { item: Topic; reason: string }) {
@@ -694,6 +721,65 @@ function TopicCard({ item, reason }: { item: Topic; reason: string }) {
         </div>
       )}
       <div className="text-xs text-gray-600 italic pt-1 border-t border-gray-700/60">{reason}</div>
+    </div>
+  )
+}
+
+// Learn-mode AssignmentCard: enriched with domain hints
+function LearnAssignmentCard({ item, topicContext }: { item: Assignment; topicContext?: Topic | null }) {
+  const courseNum = item.course_code.replace('MBAN_', 'MBAN ')
+  const domain = getCourseDomain(item.course_code)
+  const commonMistake = COMMON_MISTAKES[domain] || COMMON_MISTAKES.general
+
+  const bestArtifact = (item.deliverables as string[])[0] || 'Assignment submission'
+
+  const whyHelps = topicContext
+    ? `Applies ${topicContext.label} to a real scenario — seeing the method in context builds stronger recall.`
+    : `Puts the concept into a concrete deliverable context.`
+
+  const nextConcept = topicContext
+    ? (topicContext.suggested_followups as string[])[0]
+    : null
+
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-3">
+      <div className="flex items-start justify-between gap-2 flex-wrap">
+        <div>
+          <div className="text-white font-semibold text-base">{item.title}</div>
+          <div className="text-gray-500 text-xs mt-0.5">{courseNum} · {item.type}</div>
+        </div>
+        <span className={`text-xs px-2 py-0.5 rounded border shrink-0 ${
+          item.type === 'project'
+            ? 'bg-orange-900/30 text-orange-300 border-orange-800/40'
+            : 'bg-blue-900/30 text-blue-300 border-blue-800/40'
+        }`}>
+          {item.type}
+        </span>
+      </div>
+      <div className="bg-gray-900/60 rounded-xl p-3">
+        <p className="text-gray-200 text-sm leading-relaxed">{item.description}</p>
+      </div>
+      <div className="space-y-2">
+        <div className="bg-blue-900/15 border border-blue-800/30 rounded-xl p-3">
+          <div className="text-blue-300 text-xs font-semibold uppercase tracking-wider mb-1">Why this helps</div>
+          <p className="text-gray-300 text-xs leading-relaxed">{whyHelps}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-2.5">
+            <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">Best artifact to review</div>
+            <p className="text-gray-300 text-xs">{bestArtifact}</p>
+          </div>
+          <div className="bg-yellow-900/10 border border-yellow-800/25 rounded-xl p-2.5">
+            <div className="text-yellow-300 text-xs font-semibold uppercase tracking-wider mb-1">Common mistake</div>
+            <p className="text-gray-300 text-xs leading-relaxed">{commonMistake}</p>
+          </div>
+        </div>
+        {nextConcept && (
+          <div className="text-xs text-gray-500 pt-1">
+            Next linked concept: <span className="text-purple-300">{nextConcept}</span>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -737,8 +823,13 @@ function ResourceCard({ item, reason }: { item: Resource; reason: string }) {
     docs:        'bg-cyan-900/30 text-cyan-300 border-cyan-800/40',
     course:      'bg-green-900/30 text-green-300 border-green-800/40',
     interactive: 'bg-yellow-900/30 text-yellow-300 border-yellow-800/40',
+    diagram:     'bg-purple-900/30 text-purple-300 border-purple-800/40',
+    figure:      'bg-pink-900/30 text-pink-300 border-pink-800/40',
+    infographic: 'bg-teal-900/30 text-teal-300 border-teal-800/40',
+    cheat_sheet: 'bg-orange-900/30 text-orange-300 border-orange-800/40',
   }
   const typeCls = typeColors[item.type] || 'bg-gray-700 text-gray-300 border-gray-600'
+  const usageLabel = (item as Resource & { usage_label?: string }).usage_label
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-2">
       <div className="flex items-start justify-between gap-2 flex-wrap">
@@ -757,10 +848,106 @@ function ResourceCard({ item, reason }: { item: Resource; reason: string }) {
               : ''}
           </div>
         </div>
-        <span className={`text-xs px-2 py-0.5 rounded border shrink-0 ${typeCls}`}>{item.type}</span>
+        <div className="flex flex-col items-end gap-1">
+          <span className={`text-xs px-2 py-0.5 rounded border shrink-0 ${typeCls}`}>{item.type}</span>
+          {usageLabel && (
+            <span className="text-xs text-gray-500 italic">{usageLabel}</span>
+          )}
+        </div>
       </div>
       <p className="text-gray-300 text-sm">{item.description}</p>
       <div className="text-xs text-gray-600 italic pt-1 border-t border-gray-700/60">{reason}</div>
+    </div>
+  )
+}
+
+// Learn-mode MethodCard: enriched with usage and confusion info
+function LearnMethodCard({ item, topicContext }: { item: typeof methods[0]; topicContext?: Topic | null }) {
+  const linkedAssignments = assignmentsData.filter(a =>
+    a.topics && (a.topics as string[]).some(tid => {
+      const t = topicsData.find(t2 => t2.id === tid)
+      return t && (t.related_methods as string[]).some(rm =>
+        rm.toLowerCase() === item.method_name.toLowerCase()
+      )
+    })
+  ).slice(0, 3)
+
+  const bestAssignment = linkedAssignments[0]
+
+  const linkedResources = resourcesData.filter(r => {
+    const relevantTopicIds = topicsData
+      .filter(t => (t.related_methods as string[]).some(rm => rm.toLowerCase() === item.method_name.toLowerCase()))
+      .map(t => t.id)
+    return (r.topic_ids as string[]).some(tid => relevantTopicIds.includes(tid))
+  }).slice(0, 1)
+
+  const bestResource = linkedResources[0]
+  const domain = getCourseDomain((item.linked_courses || [''])[0] ? `MBAN_${(item.linked_courses || [''])[0]}` : '')
+  const typicalConfusion = domain === 'ml'
+    ? 'Confusing training error with test error — always evaluate on held-out data.'
+    : domain === 'optimization'
+      ? 'Setting up the wrong objective — model the decision, not just the math.'
+      : domain === 'db'
+        ? 'Over-normalizing to the point of impractical query complexity.'
+        : 'Applying the method outside its valid assumptions.'
+
+  return (
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 space-y-3">
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <div className="text-white font-semibold text-base">{item.method_name}</div>
+          <div className="text-gray-500 text-xs mt-0.5">{item.method_family}</div>
+        </div>
+        <span className={`border text-xs px-1.5 py-0.5 rounded shrink-0 ${lvlCls(item.analytics_level)}`}>
+          {item.analytics_level}
+        </span>
+      </div>
+      <div className="bg-gray-900/60 rounded-xl p-3">
+        <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-1">What it does</div>
+        <p className="text-gray-200 text-sm leading-relaxed">{item.what_it_solves}</p>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        {bestAssignment && (
+          <div className="bg-orange-900/15 border border-orange-800/30 rounded-xl p-2.5">
+            <div className="text-orange-300 text-xs font-semibold uppercase tracking-wider mb-1">Best assignment example</div>
+            <p className="text-gray-300 text-xs">{bestAssignment.title}</p>
+          </div>
+        )}
+        {bestResource && (
+          <div className="bg-green-900/10 border border-green-800/25 rounded-xl p-2.5">
+            <div className="text-green-300 text-xs font-semibold uppercase tracking-wider mb-1">Fastest refresher</div>
+            <a href={bestResource.url} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-200 text-xs underline">
+              {bestResource.title} ↗
+            </a>
+          </div>
+        )}
+      </div>
+      {linkedAssignments.length > 0 && (
+        <div>
+          <div className="text-gray-600 text-xs font-semibold uppercase tracking-wider mb-1">Used in</div>
+          <div className="flex flex-wrap gap-1.5">
+            {linkedAssignments.map(a => (
+              <span key={a.id} className="bg-gray-700/50 text-gray-400 text-xs px-2 py-0.5 rounded-lg">{a.title}</span>
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="bg-yellow-900/10 border border-yellow-800/25 rounded-xl p-2.5">
+        <div className="text-yellow-300 text-xs font-semibold uppercase tracking-wider mb-1">Typical confusion</div>
+        <p className="text-gray-300 text-xs leading-relaxed">{typicalConfusion}</p>
+      </div>
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs pt-1 border-t border-gray-700/60">
+        {(item.linked_courses || []).length > 0 && (
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-600">Learned in</span>
+            {(item.linked_courses || []).map((c: string) => (
+              <Link key={c} to="/courses" className="bg-purple-900/30 text-purple-300 px-1.5 py-0.5 rounded hover:bg-purple-900/50 transition-colors">
+                MBAN {c}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -1007,12 +1194,22 @@ const GLOBAL_LEARN_CHIPS = [
 function getSuggestionChips(
   scopedCourse: string | null,
   activeTopic: Topic | null,
+  hasSearched: boolean,
 ): string[] {
+  // After search: return followup/neighbor chips from active topic
+  if (hasSearched && activeTopic) {
+    const followups = [
+      ...(activeTopic.suggested_followups as string[]),
+      ...(activeTopic.nearest_neighbors as string[]),
+    ]
+    if (followups.length >= 2) return followups.slice(0, 8)
+  }
+
   if (!scopedCourse) return GLOBAL_LEARN_CHIPS
 
   const courseCode = scopedCourse.startsWith('MBAN_') ? scopedCourse : scopedCourse.replace('MBAN ', 'MBAN_')
 
-  // Active topic → followups that exist in same course
+  // Active topic within scoped course → followups
   if (activeTopic) {
     const courseTopicLabels = new Set(
       topicsData.filter(t => t.course_code === courseCode).map(t => t.label.toLowerCase())
@@ -1024,7 +1221,6 @@ function getSuggestionChips(
     if (followups.length >= 3) return followups.slice(0, 8)
   }
 
-  // Default: all topic labels for this course
   return topicsData.filter(t => t.course_code === courseCode).map(t => t.label).slice(0, 8)
 }
 
@@ -1037,6 +1233,17 @@ const SCOPED_PLACEHOLDERS: Record<string, string> = {
   'MBAN_5520': 'Ask about regression, prediction intervals, or business prediction',
   'MBAN_5800': 'Ask about ethics vs morality, AI bias, or motivated reasoning',
   'MBAN_5502': 'Ask about Python, OOP, pandas, or experimental design',
+}
+
+const SCOPED_HEADERS: Record<string, string> = {
+  'MBAN_5550': 'Review MBAN 5550 concepts, assignments, and source material',
+  'MBAN_5560': 'Review MBAN 5560 concepts, assignments, and source material',
+  'MBAN_5540': 'Review MBAN 5540 concepts, assignments, and source material',
+  'MBAN_5570': 'Review MBAN 5570 concepts, assignments, and source material',
+  'MBAN_5510': 'Review MBAN 5510 concepts, assignments, and source material',
+  'MBAN_5520': 'Review MBAN 5520 concepts, assignments, and source material',
+  'MBAN_5800': 'Review MBAN 5800 concepts, assignments, and source material',
+  'MBAN_5502': 'Review MBAN 5502 concepts, assignments, and source material',
 }
 
 function getScopedPlaceholder(scopedCourse: string | null): string {
@@ -1053,6 +1260,7 @@ export default function AskMBAN() {
   const [query, setQuery]           = useState('')
   const [submitted, setSubmitted]   = useState('')
   const [mode, setMode]             = useState<'learn' | 'find'>('learn')
+  const [hasSearched, setHasSearched] = useState(false)
   const [inputFocused, setInputFocused] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
   const initializedFromUrl = useRef(false)
@@ -1066,14 +1274,13 @@ export default function AskMBAN() {
     if (!initializedFromUrl.current) {
       initializedFromUrl.current = true
       if (modeParam === 'learn' || modeParam === 'find') setMode(modeParam)
-      if (qParam) { setQuery(qParam); setSubmitted(qParam) }
+      if (qParam) { setQuery(qParam); setSubmitted(qParam); setHasSearched(true) }
     }
   }, [qParam, modeParam])
 
   const isMobile  = typeof window !== 'undefined' && window.innerWidth < 768
   const hideChips = inputFocused && isMobile
 
-  // activeTopic: URL param takes priority, else derived from primary answer
   const activeTopicFromUrl = topicParam ? topicsData.find(t => t.id === topicParam) || null : null
 
   const results = useMemo(
@@ -1085,7 +1292,6 @@ export default function AskMBAN() {
     [submitted, results, topicParam]
   )
 
-  // activeTopic for chip generation — from URL or from primary answer
   const activeTopic: Topic | null = activeTopicFromUrl ||
     (primary?.type === 'topic' ? primary.topic : null)
 
@@ -1097,14 +1303,25 @@ export default function AskMBAN() {
   const slideResults      = results.filter(r => r.kind === 'slide')      as Extract<SearchResult, { kind: 'slide' }>[]
   const projectResults    = results.filter(r => r.kind === 'project')    as Extract<SearchResult, { kind: 'project' }>[]
 
-  const handleSearch = (q: string) => { setQuery(q); setSubmitted(q) }
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(query) }
-  const handleClear  = () => { setQuery(''); setSubmitted('') }
+  const handleSearch = (q: string) => { setQuery(q); setSubmitted(q); setHasSearched(true) }
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(query); setHasSearched(true) }
+  const handleClear  = () => { setQuery(''); setSubmitted(''); setHasSearched(false) }
 
   const totalSlides = slides.reduce((a, d) => a + d.slide_count, 0)
-
-  // In Learn mode, show topics + resources prominently. In Find mode, show assignments + methods.
   const learnMode = mode === 'learn'
+
+  // Scoped course stats
+  const courseCode = scopedCourse
+    ? (scopedCourse.startsWith('MBAN_') ? scopedCourse : scopedCourse.replace('MBAN ', 'MBAN_'))
+    : null
+  const scopedTopicCount = courseCode ? topicsData.filter(t => t.course_code === courseCode).length : 0
+  const scopedAssignmentCount = courseCode ? assignmentsData.filter(a => a.course_code === courseCode).length : 0
+
+  // Scoped header text
+  const scopedHeader = courseCode ? (SCOPED_HEADERS[courseCode] || `Review ${courseCode.replace('MBAN_', 'MBAN ')} concepts, assignments, and source material`) : null
+
+  // Compare intent → Model Lab link
+  const showModelLabLink = submitted && isCompareQuery(submitted)
 
   return (
     <div className={`p-5 md:p-10 max-w-3xl mx-auto ${hideChips ? 'pt-3' : ''}`}>
@@ -1112,13 +1329,24 @@ export default function AskMBAN() {
       {/* Header */}
       {!hideChips && (
         <div className="mb-8 text-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Ask MBAN</h1>
-          <p className="text-gray-400 text-sm">
-            Ask a study question, compare methods, or find an assignment.
-          </p>
-          <p className="text-gray-600 text-xs mt-1">
-            {topicsData.length} concepts · {methods.length} methods · {assignmentsData.length} assignments · {resourcesData.length} resources · {totalSlides} slides
-          </p>
+          {scopedCourse && scopedHeader ? (
+            <>
+              <h1 className="text-xl md:text-2xl font-bold text-white mb-1">{scopedHeader}</h1>
+              <p className="text-gray-500 text-xs">
+                {scopedTopicCount} core topic{scopedTopicCount !== 1 ? 's' : ''} · {scopedAssignmentCount} assignment{scopedAssignmentCount !== 1 ? 's' : ''}
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Ask MBAN</h1>
+              <p className="text-gray-400 text-sm">
+                Ask a study question, compare methods, or find an assignment.
+              </p>
+              <p className="text-gray-600 text-xs mt-1">
+                {topicsData.length} concepts · {methods.length} methods · {assignmentsData.length} assignments · {resourcesData.length} resources · {totalSlides} slides
+              </p>
+            </>
+          )}
         </div>
       )}
 
@@ -1200,10 +1428,10 @@ export default function AskMBAN() {
           </button>
         </div>
 
-        {/* Suggestion chips — course-scoped when scope active */}
+        {/* Suggestion chips */}
         {!hideChips && (
           <div className="mt-3 flex flex-wrap gap-2 justify-center">
-            {getSuggestionChips(scopedCourse || null, activeTopic).map(s => (
+            {getSuggestionChips(scopedCourse || null, activeTopic, hasSearched).map(s => (
               <button
                 key={s}
                 type="button"
@@ -1212,7 +1440,9 @@ export default function AskMBAN() {
                 className={`text-xs hover:bg-gray-700 border hover:border-gray-600 px-3 py-1.5 rounded-full transition-colors ${
                   scopedCourse
                     ? 'bg-gray-800 text-purple-300 border-purple-800/50 hover:text-white'
-                    : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-gray-200'
+                    : hasSearched && activeTopic
+                      ? 'bg-gray-800 text-amber-300 border-amber-800/50 hover:text-white'
+                      : 'bg-gray-800 text-gray-400 border-gray-700 hover:text-gray-200'
                 }`}
               >
                 {s}
@@ -1221,6 +1451,21 @@ export default function AskMBAN() {
           </div>
         )}
       </form>
+
+      {/* Model Lab link for compare queries */}
+      {showModelLabLink && (
+        <div className="mb-4 bg-purple-900/20 border border-purple-700/40 rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+          <div className="text-sm text-gray-300">
+            Comparing methods? See a structured side-by-side breakdown.
+          </div>
+          <Link
+            to={`/lab?compare=${encodeURIComponent(submitted)}`}
+            className="bg-purple-700 hover:bg-purple-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors shrink-0"
+          >
+            Open in Model Lab →
+          </Link>
+        </div>
+      )}
 
       {/* ── Results ─────────────────────────────────────────────────────────── */}
       {submitted && (
@@ -1266,7 +1511,7 @@ export default function AskMBAN() {
           ) : (
             <div className="space-y-8">
 
-              {/* Primary Answer */}
+              {/* 1. Primary Answer */}
               {primary && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
@@ -1276,34 +1521,25 @@ export default function AskMBAN() {
                 </div>
               )}
 
-              {/* Learn mode: Topics first, then Resources */}
-              {learnMode && topicResults.length > 0 && (
+              {/* 2. Best Next Action (Learn mode, topic answer only) */}
+              {learnMode && primary && (
+                <BestNextActionCard primary={primary} onChipClick={handleSearch} />
+              )}
+
+              {/* 3. Assignments */}
+              {learnMode && assignmentResults.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
-                    Concepts ({topicResults.length})
+                    Assignments ({assignmentResults.length})
                   </div>
                   <div className="space-y-3">
-                    {topicResults.slice(0, 5).map(r => (
-                      <TopicCard key={r.item.id} item={r.item} reason={r.reason} />
+                    {assignmentResults.slice(0, 4).map(r => (
+                      <LearnAssignmentCard key={r.item.id} item={r.item} topicContext={activeTopic} />
                     ))}
                   </div>
                 </div>
               )}
 
-              {learnMode && resourceResults.length > 0 && (
-                <div>
-                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
-                    Resources ({resourceResults.length})
-                  </div>
-                  <div className="space-y-3">
-                    {resourceResults.slice(0, 4).map(r => (
-                      <ResourceCard key={r.item.id} item={r.item} reason={r.reason} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Find mode: Assignments first */}
               {!learnMode && assignmentResults.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
@@ -1317,16 +1553,21 @@ export default function AskMBAN() {
                 </div>
               )}
 
-              {/* Methods */}
+              {/* 4. Methods */}
               {methodResults.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
                     Methods ({methodResults.length})
                   </div>
                   <div className="space-y-3">
-                    {methodResults.slice(0, 5).map(r => (
-                      <MethodCard key={r.item.method_name} item={r.item} reason={r.reason} />
-                    ))}
+                    {learnMode
+                      ? methodResults.slice(0, 4).map(r => (
+                          <LearnMethodCard key={r.item.method_name} item={r.item} topicContext={activeTopic} />
+                        ))
+                      : methodResults.slice(0, 5).map(r => (
+                          <MethodCard key={r.item.method_name} item={r.item} reason={r.reason} />
+                        ))
+                    }
                   </div>
                 </div>
               )}
@@ -1359,7 +1600,7 @@ export default function AskMBAN() {
                 </div>
               )}
 
-              {/* Applied Examples */}
+              {/* 5. Applied Examples */}
               {projectResults.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
@@ -1373,7 +1614,7 @@ export default function AskMBAN() {
                 </div>
               )}
 
-              {/* Source Snippets */}
+              {/* 6. Source Snippets */}
               {slideResults.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
@@ -1387,15 +1628,28 @@ export default function AskMBAN() {
                 </div>
               )}
 
-              {/* Learn mode: Resources after slides */}
-              {learnMode && assignmentResults.length > 0 && (
+              {/* 7. Reinforcement Material (Resources — Learn mode) */}
+              {learnMode && resourceResults.length > 0 && (
                 <div>
                   <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
-                    Assignments ({assignmentResults.length})
+                    Reinforcement Material ({resourceResults.length})
                   </div>
                   <div className="space-y-3">
-                    {assignmentResults.slice(0, 3).map(r => (
-                      <AssignmentCard key={r.item.id} item={r.item} reason={r.reason} />
+                    {resourceResults.slice(0, 5).map(r => (
+                      <ResourceCard key={r.item.id} item={r.item} reason={r.reason} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!learnMode && resourceResults.length > 0 && (
+                <div>
+                  <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-3">
+                    Resources ({resourceResults.length})
+                  </div>
+                  <div className="space-y-3">
+                    {resourceResults.slice(0, 4).map(r => (
+                      <ResourceCard key={r.item.id} item={r.item} reason={r.reason} />
                     ))}
                   </div>
                 </div>
@@ -1405,8 +1659,48 @@ export default function AskMBAN() {
         </div>
       )}
 
-      {/* Common questions — idle state */}
-      {!submitted && !hideChips && (
+      {/* Best Starting Points — scoped idle state */}
+      {!submitted && !hideChips && scopedCourse && courseCode && (
+        <div className="mb-8">
+          <div className="mb-3">
+            <h2 className="text-white font-semibold text-base mb-1">Best Starting Points</h2>
+            <p className="text-gray-500 text-sm">Top topics for this course — click to explore</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {topicsData.filter(t => t.course_code === courseCode).slice(0, 6).map(t => (
+              <button
+                key={t.id}
+                onClick={() => handleSearch(t.label)}
+                style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
+                className="text-left bg-gray-800/60 hover:bg-gray-800 border border-gray-700 hover:border-purple-600 rounded-xl p-3 transition-colors"
+              >
+                <div className="text-white text-sm font-medium mb-0.5">{t.label}</div>
+                <p className="text-gray-500 text-xs line-clamp-2">{t.summary}</p>
+              </button>
+            ))}
+          </div>
+          {assignmentsData.filter(a => a.course_code === courseCode).length > 0 && (
+            <div className="mt-4">
+              <div className="text-gray-500 text-xs font-semibold uppercase tracking-wider mb-2">Assignments</div>
+              <div className="flex flex-wrap gap-2">
+                {assignmentsData.filter(a => a.course_code === courseCode).map(a => (
+                  <button
+                    key={a.id}
+                    onClick={() => handleSearch(a.title)}
+                    style={{ userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation' } as React.CSSProperties}
+                    className="text-xs bg-gray-800 hover:bg-gray-700 border border-orange-900/40 hover:border-orange-700 text-orange-300 px-3 py-1.5 rounded-full transition-colors"
+                  >
+                    {a.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Common questions — idle state (global) */}
+      {!submitted && !hideChips && !scopedCourse && (
         <div>
           <div className="mb-4">
             <h2 className="text-white font-semibold text-lg mb-1">Common Questions</h2>
