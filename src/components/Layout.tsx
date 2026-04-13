@@ -5,6 +5,7 @@ const navItems = [
   { path: '/ladder', label: 'Ladder', icon: '📊', short: 'Ladder' },
   { path: '/courses', label: 'Courses', icon: '📚', short: 'Courses' },
   { path: '/methods', label: 'Methods', icon: '🔬', short: 'Methods' },
+  { path: '/ask', label: 'Ask MBAN', icon: '💬', short: 'Ask' },
   { path: '/router', label: 'Router', icon: '🗺️', short: 'Router' },
   { path: '/refresh', label: 'Refresh', icon: '💡', short: 'Refresh' },
   { path: '/governance', label: 'Governance', icon: '🛡️', short: 'Gov' },
@@ -44,7 +45,7 @@ export default function Layout({ children }: LayoutProps) {
           ))}
         </nav>
         <div className="p-4 border-t border-gray-800">
-          <div className="text-xs text-gray-600">v2.1-delta · Apr 2026</div>
+          <div className="text-xs text-gray-600">v2.0 · Apr 2026</div>
         </div>
       </aside>
 

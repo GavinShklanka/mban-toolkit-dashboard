@@ -10,9 +10,10 @@ const metrics = [
 ]
 
 const navCards = [
+  { path: '/ask', icon: '💬', label: 'Ask MBAN', desc: 'Search methods, courses, and 476 extracted slides. 7 featured Q&A responses.', highlight: true },
   { path: '/ladder', icon: '📊', label: 'Analytics Ladder', desc: '6-stage progression from Descriptive → Agentic AI' },
   { path: '/courses', icon: '📚', label: 'Course Intelligence', desc: '9 courses with evidence, methods, and deliverables' },
-  { path: '/methods', icon: '🔬', label: 'Method Registry', desc: '35+ searchable/filterable analytics methods' },
+  { path: '/methods', icon: '🔬', label: 'Method Registry', desc: '51 searchable/filterable analytics methods' },
   { path: '/router', icon: '🗺️', label: 'Solution Router', desc: 'Map business problems to methods and tools' },
   { path: '/refresh', icon: '💡', label: 'Interactive Refresh', desc: 'Q&A pairs and self-test prompts by topic' },
   { path: '/governance', icon: '🛡️', label: 'Governance & Risk', desc: 'Methods × risk dimensions color-coded grid' },
@@ -25,7 +26,7 @@ export default function Cockpit() {
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">Knowledge Cockpit</h1>
-        <p className="text-gray-400 text-sm">MBAN Toolkit Dashboard · Saint Mary's University · v2.1-delta</p>
+        <p className="text-gray-400 text-sm">MBAN Toolkit Dashboard · Saint Mary's University · v2.0</p>
       </div>
 
       {/* Alert Banner */}
@@ -69,9 +70,15 @@ export default function Cockpit() {
             <div className="text-xs text-red-400 mt-1">5891</div>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-gray-700 flex items-center justify-between text-xs text-gray-500">
-          <span>Correction log: <span className="text-green-400 font-medium">23 upgrades</span>, 0 downgrades</span>
-          <span>System version: {seed.system_metadata.version}</span>
+        <div className="mt-4 pt-4 border-t border-gray-700 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
+          <span>Correction log: <span className="text-green-400 font-medium">24 upgrades</span> (incl. Hai Wang / MBAN 5550)</span>
+          <span>
+            <span className="text-blue-400 font-medium">{(seed.system_metadata as any).slide_decks_extracted} decks</span>
+            {' · '}
+            <span className="text-blue-300 font-medium">{(seed.system_metadata as any).total_slides_extracted} slides</span>
+            {' extracted · '}
+            v{seed.system_metadata.version}
+          </span>
         </div>
       </div>
 
@@ -100,11 +107,16 @@ export default function Cockpit() {
             <Link
               key={card.path}
               to={card.path}
-              className="bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-purple-600 rounded-xl p-4 transition-all group"
+              className={`border rounded-xl p-4 transition-all group ${
+                (card as any).highlight
+                  ? 'bg-purple-900/20 border-purple-700 hover:border-purple-500 col-span-1 sm:col-span-2 lg:col-span-1'
+                  : 'bg-gray-800 border-gray-700 hover:border-purple-600'
+              }`}
             >
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-xl">{card.icon}</span>
-                <span className="text-white font-medium text-sm group-hover:text-purple-300">{card.label}</span>
+                <span className={`font-medium text-sm group-hover:text-purple-300 ${(card as any).highlight ? 'text-purple-200' : 'text-white'}`}>{card.label}</span>
+                {(card as any).highlight && <span className="ml-auto text-xs bg-purple-700/50 text-purple-300 px-1.5 py-0.5 rounded">New</span>}
               </div>
               <p className="text-gray-400 text-xs">{card.desc}</p>
             </Link>
